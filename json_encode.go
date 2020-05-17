@@ -1,11 +1,11 @@
 package amino
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"reflect"
-	"time"
 
 	"github.com/pkg/errors"
 
@@ -18,7 +18,10 @@ import (
 // This is the main entrypoint for encoding all types in json form.  This
 // function calls encodeReflectJSON*, and generally those functions should
 // only call this one, for the disfix wrapper is only written here.
-// NOTE: Unlike encodeReflectBinary, rv may be a pointer.
+// NOTE: Unlike encodeReflectBinary, rv may be a pointer.  This is because
+// unlike the binary representation, in JSON there is a concrete representation
+// of no value -- null.  So, a nil pointer here encodes as null, whereas
+// encodeReflectBinary() assumes that the pointer is already dereferenced.
 // CONTRACT: rv is valid.
 func (cdc *Codec) encodeReflectJSON(w io.Writer, info *TypeInfo, rv reflect.Value, fopts FieldOptions) (err error) {
 	if !rv.IsValid() {
@@ -33,34 +36,24 @@ func (cdc *Codec) encodeReflectJSON(w io.Writer, info *TypeInfo, rv reflect.Valu
 	}
 
 	// Dereference value if pointer.
-	var isNilPtr bool
-	rv, _, isNilPtr = derefPointers(rv)
-
-	// Write null if necessary.
-	if isNilPtr {
-		err = writeStr(w, `null`)
-		return
-	}
-
-	// Special case:
-	if rv.Type() == timeType {
-		// Amino time strips the timezone.
-		// NOTE: This must be done before json.Marshaler override below.
-		ct := rv.Interface().(time.Time).Round(0).UTC()
-		rv = reflect.ValueOf(ct)
-	}
-	// Handle override if rv implements json.Marshaler.
-	if rv.CanAddr() { // Try pointer first.
-		if rv.Addr().Type().Implements(jsonMarshalerType) {
-			err = invokeMarshalJSON(w, rv.Addr())
+	if rv.Kind() == reflect.Ptr {
+		if rv.IsNil() {
+			err = writeStr(w, `null`)
 			return
 		}
-	} else if rv.Type().Implements(jsonMarshalerType) {
-		err = invokeMarshalJSON(w, rv)
-		return
+		rv = rv.Elem()
 	}
 
-	// Handle override if rv implements json.Marshaler.
+	// Handle the most special case, "well known".
+	if info.IsJSONWellKnownType {
+		var ok bool
+		ok, err = encodeReflectJSONWellKnown(w, info, rv, fopts)
+		if ok || err != nil {
+			return
+		}
+	}
+
+	// Handle override if rv implements amino.Marshaler.
 	if info.IsAminoMarshaler {
 		// First, encode rv into repr instance.
 		var (
@@ -71,10 +64,7 @@ func (cdc *Codec) encodeReflectJSON(w io.Writer, info *TypeInfo, rv reflect.Valu
 		if err != nil {
 			return
 		}
-		rinfo, err = cdc.getTypeInfoWlock(info.AminoMarshalReprType)
-		if err != nil {
-			return
-		}
+		rinfo = info.ReprType
 		// Then, encode the repr instance.
 		err = cdc.encodeReflectJSON(w, rinfo, rrv, fopts)
 		return
@@ -93,9 +83,6 @@ func (cdc *Codec) encodeReflectJSON(w io.Writer, info *TypeInfo, rv reflect.Valu
 
 	case reflect.Struct:
 		return cdc.encodeReflectJSONStruct(w, info, rv, fopts)
-
-	case reflect.Map:
-		return cdc.encodeReflectJSONMap(w, info, rv, fopts)
 
 	//----------------------------------------
 	// Signed, Unsigned
@@ -147,12 +134,13 @@ func (cdc *Codec) encodeReflectJSONInterface(w io.Writer, iinfo *TypeInfo, rv re
 	}
 
 	// Get concrete non-pointer reflect value & type.
-	var crv, isPtr, isNilPtr = derefPointers(rv.Elem())
-	if isPtr && crv.Kind() == reflect.Interface {
+	var crv = rv.Elem()
+	var _, crvIsPtr, crvIsNilPtr = maybeDerefValue(crv)
+	if crvIsPtr && crv.Kind() == reflect.Interface {
 		// See "MARKER: No interface-pointers" in codec.go
 		panic("should not happen")
 	}
-	if isNilPtr {
+	if crvIsNilPtr {
 		panic(fmt.Sprintf("Illegal nil-pointer of type %v for registered interface %v. "+
 			"For compatibility with other languages, nil-pointer interface values are forbidden.", crv.Type(), iinfo.Type))
 	}
@@ -160,7 +148,7 @@ func (cdc *Codec) encodeReflectJSONInterface(w io.Writer, iinfo *TypeInfo, rv re
 
 	// Get *TypeInfo for concrete type.
 	var cinfo *TypeInfo
-	cinfo, err = cdc.getTypeInfoWlock(crt)
+	cinfo, err = cdc.getTypeInfoWLock(crt)
 	if err != nil {
 		return
 	}
@@ -169,27 +157,52 @@ func (cdc *Codec) encodeReflectJSONInterface(w io.Writer, iinfo *TypeInfo, rv re
 		return
 	}
 
-	// Write interface wrapper.
-	// Part 1:
-	err = writeStr(w, _fmt(`{"type":"%s","value":`, cinfo.Name))
-	if err != nil {
+	// Write Value to buffer
+	buf := new(bytes.Buffer)
+	cdc.encodeReflectJSON(buf, cinfo, crv, fopts)
+	value := buf.Bytes()
+	if len(value) == 0 {
+		err = errors.New("JSON bytes cannot be empty")
 		return
 	}
-	// Part 2:
-	defer func() {
+	if cinfo.IsJSONAnyValueType {
+		// Sanity check
+		if value[0] == '{' || value[len(value)-1] == '}' {
+			err = errors.Errorf("unexpected JSON object %s", value)
+			return
+		}
+		// Write TypeURL
+		err = writeStr(w, _fmt(`{"@type":"%s","value":`, cinfo.TypeURL))
 		if err != nil {
 			return
 		}
+		// Write Value
+		err = writeStr(w, string(value))
+		if err != nil {
+			return
+		}
+		// Write closing brace.
 		err = writeStr(w, `}`)
-	}()
-
-	// NOTE: In the future, we may write disambiguation bytes
-	// here, if it is only to be written for interface values.
-	// Currently, go-amino JSON *always* writes disfix bytes for
-	// all registered concrete types.
-
-	err = cdc.encodeReflectJSON(w, cinfo, crv, fopts)
-	return err
+		return
+	} else {
+		// Sanity check
+		if value[0] != '{' || value[len(value)-1] != '}' {
+			err = errors.Errorf("expected JSON object but got %s", value)
+			return
+		}
+		// Write TypeURL
+		err = writeStr(w, _fmt(`{"@type":"%s"`, cinfo.TypeURL))
+		if err != nil {
+			return
+		}
+		// Write Value
+		if len(value) > 2 {
+			err = writeStr(w, ","+string(value[1:]))
+		} else {
+			err = writeStr(w, `}`)
+		}
+		return
+	}
 }
 
 func (cdc *Codec) encodeReflectJSONList(w io.Writer, info *TypeInfo, rv reflect.Value, fopts FieldOptions) (err error) {
@@ -240,14 +253,16 @@ func (cdc *Codec) encodeReflectJSONList(w io.Writer, info *TypeInfo, rv reflect.
 
 		// Write elements with comma.
 		var einfo *TypeInfo
-		einfo, err = cdc.getTypeInfoWlock(ert)
+		einfo, err = cdc.getTypeInfoWLock(ert)
 		if err != nil {
 			return
 		}
 		for i := 0; i < length; i++ {
 			// Get dereferenced element value and info.
-			var erv, _, isNil = derefPointers(rv.Index(i))
-			if isNil {
+			var erv = rv.Index(i)
+			if erv.Kind() == reflect.Ptr &&
+				erv.IsNil() {
+				// then
 				err = writeStr(w, `null`)
 			} else {
 				err = cdc.encodeReflectJSON(w, einfo, erv, fopts)
@@ -294,16 +309,12 @@ func (cdc *Codec) encodeReflectJSONStruct(w io.Writer, info *TypeInfo, rv reflec
 
 	var writeComma = false
 	for _, field := range info.Fields {
+		var finfo = field.TypeInfo
 		// Get dereferenced field value and info.
-		var frv, _, isNil = derefPointers(rv.Field(field.Index))
-		var finfo *TypeInfo
-		finfo, err = cdc.getTypeInfoWlock(field.Type)
-		if err != nil {
-			return
-		}
+		var frv, _, frvIsNil = maybeDerefValue(rv.Field(field.Index))
 		// If frv is empty and omitempty, skip it.
 		// NOTE: Unlike Amino:binary, we don't skip null fields unless "omitempty".
-		if field.JSONOmitEmpty && isEmpty(frv, field.ZeroValue) {
+		if field.JSONOmitEmpty && isJSONEmpty(frv, field.ZeroValue) {
 			continue
 		}
 		// Now we know we're going to write something.
@@ -326,7 +337,7 @@ func (cdc *Codec) encodeReflectJSONStruct(w io.Writer, info *TypeInfo, rv reflec
 			return
 		}
 		// Write field value.
-		if isNil {
+		if frvIsNil {
 			err = writeStr(w, `null`)
 		} else {
 			err = cdc.encodeReflectJSON(w, finfo, frv, field.FieldOptions)
@@ -339,88 +350,8 @@ func (cdc *Codec) encodeReflectJSONStruct(w io.Writer, info *TypeInfo, rv reflec
 	return err
 }
 
-// TODO: TEST
-func (cdc *Codec) encodeReflectJSONMap(w io.Writer, info *TypeInfo, rv reflect.Value, fopts FieldOptions) (err error) {
-	if printLog {
-		fmt.Println("(e) encodeReflectJSONMap")
-		defer func() {
-			fmt.Printf("(e) -> err: %v\n", err)
-		}()
-	}
-
-	// Part 1.
-	err = writeStr(w, `{`)
-	if err != nil {
-		return
-	}
-	// Part 2.
-	defer func() {
-		if err == nil {
-			err = writeStr(w, `}`)
-		}
-	}()
-
-	// Ensure that the map key type is a string.
-	if rv.Type().Key().Kind() != reflect.String {
-		err = errors.New("encodeReflectJSONMap: map key type must be a string")
-		return
-	}
-
-	var writeComma = false
-	for _, krv := range rv.MapKeys() {
-		// Get dereferenced object value and info.
-		var vrv, _, isNil = derefPointers(rv.MapIndex(krv))
-
-		// Add a comma if we need to.
-		if writeComma {
-			err = writeStr(w, `,`)
-			if err != nil {
-				return
-			}
-			writeComma = false //nolint:ineffassign
-		}
-		// Write field name.
-		err = invokeStdlibJSONMarshal(w, krv.Interface())
-		if err != nil {
-			return
-		}
-		// Write colon.
-		err = writeStr(w, `:`)
-		if err != nil {
-			return
-		}
-		// Write field value.
-		if isNil {
-			err = writeStr(w, `null`)
-		} else {
-			var vinfo *TypeInfo
-			vinfo, err = cdc.getTypeInfoWlock(vrv.Type())
-			if err != nil {
-				return
-			}
-			err = cdc.encodeReflectJSON(w, vinfo, vrv, fopts) // pass through fopts
-		}
-		if err != nil {
-			return
-		}
-		writeComma = true
-	}
-	return err
-
-}
-
 //----------------------------------------
 // Misc.
-
-// CONTRACT: rv implements json.Marshaler.
-func invokeMarshalJSON(w io.Writer, rv reflect.Value) error {
-	blob, err := rv.Interface().(json.Marshaler).MarshalJSON()
-	if err != nil {
-		return err
-	}
-	_, err = w.Write(blob)
-	return err
-}
 
 func invokeStdlibJSONMarshal(w io.Writer, v interface{}) error {
 	// Note: Please don't stream out the output because that adds a newline
@@ -445,7 +376,7 @@ func _fmt(s string, args ...interface{}) string {
 
 // For json:",omitempty".
 // Returns true for zero values, but also non-nil zero-length slices and strings.
-func isEmpty(rv reflect.Value, zrv reflect.Value) bool {
+func isJSONEmpty(rv reflect.Value, zrv reflect.Value) bool {
 	if !rv.IsValid() {
 		return true
 	}
@@ -459,4 +390,34 @@ func isEmpty(rv reflect.Value, zrv reflect.Value) bool {
 		}
 	}
 	return false
+}
+
+func isJSONAnyValueType(rt reflect.Type) bool {
+	if isJSONWellKnownType(rt) {
+		// All well known types are to be encoded as "{@type,value}" in
+		// JSON.  Some of these may be structs/objects, such as
+		// gAnyType, but nevertheless they must be encoded as
+		// {@type,value}, the latter specifically
+		// {@type:"/google.protobuf.Any",value:{@type,value}).
+		return true
+	} else {
+		// Otherwise, it depends on the kind.
+		switch rt.Kind() {
+		case
+			reflect.Bool, reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32,
+			reflect.Int64, reflect.Uint, reflect.Uint8, reflect.Uint16,
+			reflect.Uint32, reflect.Uint64, reflect.Float32, reflect.Float64,
+			// Primitive types get special {@type,value} treatment.  In
+			// binary form, most of these types would be encoded
+			// wrapped in an implicit struct, except for lists (both of
+			// bytes and of anything else), and for strings...
+			reflect.Array, reflect.Slice, reflect.String:
+			// ...which are all non-objects that must be encoded as
+			// {@type,value}.
+			return true
+		default:
+			return false
+		}
+		return false
+	}
 }

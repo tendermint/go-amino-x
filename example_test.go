@@ -16,17 +16,12 @@ package amino_test
 
 import (
 	"fmt"
+	"reflect"
 
 	amino "github.com/tendermint/go-amino"
 )
 
 func Example() {
-
-	defer func() {
-		if e := recover(); e != nil {
-			fmt.Println("Recovered:", e)
-		}
-	}()
 
 	type Message interface{}
 
@@ -44,28 +39,32 @@ func Example() {
 		Peers int
 	}
 
-	var cdc = amino.NewCodec()
-	cdc.RegisterInterface((*Message)(nil), nil)
-	cdc.RegisterConcrete(&bcMessage{}, "bcMessage", nil)
-	cdc.RegisterConcrete(&bcResponse{}, "bcResponse", nil)
-	cdc.RegisterConcrete(&bcStatus{}, "bcStatus", nil)
+	// amino.RegisterPackage registers globally.
+	amino.RegisterPackage(
+		amino.NewPackage(
+			reflect.TypeOf(bcMessage{}).PkgPath(),
+			"amino_test",
+			amino.GetCallersDirname(),
+		).
+			WithTypes(&bcMessage{}, &bcResponse{}, &bcStatus{}),
+	)
 
 	var bm = &bcMessage{Message: "ABC", Height: 100}
 	var msg = bm
 
 	var bz []byte // the marshalled bytes.
 	var err error
-	bz, err = cdc.MarshalBinaryLengthPrefixed(msg)
+	bz, err = amino.MarshalBinaryInterfaceLengthPrefixed(msg)
 	fmt.Printf("Encoded: %X (err: %v)\n", bz, err)
 
 	var msg2 Message
-	err = cdc.UnmarshalBinaryLengthPrefixed(bz, &msg2)
+	err = amino.UnmarshalBinaryLengthPrefixed(bz, &msg2)
 	fmt.Printf("Decoded: %v (err: %v)\n", msg2, err)
 	var bm2 = msg2.(*bcMessage)
 	fmt.Printf("Decoded successfully: %v\n", *bm == *bm2)
 
 	// Output:
-	// Encoded: 0B740613650A034142431064 (err: <nil>)
+	// Encoded: 210A152F616D696E6F5F746573742E62634D65737361676512080A0341424310C801 (err: <nil>)
 	// Decoded: &{ABC 100} (err: <nil>)
 	// Decoded successfully: true
 }

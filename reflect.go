@@ -4,16 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
-	"time"
+	"unicode"
 )
 
 //----------------------------------------
 // Constants
 
-const printLog = false
-
 var (
-	timeType            = reflect.TypeOf(time.Time{})
 	jsonMarshalerType   = reflect.TypeOf(new(json.Marshaler)).Elem()
 	jsonUnmarshalerType = reflect.TypeOf(new(json.Unmarshaler)).Elem()
 	errorType           = reflect.TypeOf(new(error)).Elem()
@@ -26,46 +23,30 @@ var (
 //----------------------------------------
 // Misc.
 
-func getTypeFromPointer(ptr interface{}) reflect.Type {
-	rt := reflect.TypeOf(ptr)
-	if rt.Kind() != reflect.Ptr {
-		panic(fmt.Sprintf("expected pointer, got %v", rt))
-	}
-	return rt.Elem()
-}
-
-func checkUnsafe(field FieldInfo) {
-	if field.Unsafe {
-		return
-	}
-	switch field.Type.Kind() {
-	case reflect.Float32, reflect.Float64:
-		panic("floating point types are unsafe for go-amino")
-	}
-}
-
 // CONTRACT: by the time this is called, len(bz) >= _n
 // Returns true so you can write one-liners.
 func slide(bz *[]byte, n *int, _n int) bool {
-	if _n < 0 || _n > len(*bz) {
-		panic(fmt.Sprintf("impossible slide: len:%v _n:%v", len(*bz), _n))
+	if bz != nil {
+		if _n < 0 || _n > len(*bz) {
+			panic(fmt.Sprintf("impossible slide: len:%v _n:%v", len(*bz), _n))
+		}
+		*bz = (*bz)[_n:]
 	}
-	*bz = (*bz)[_n:]
 	if n != nil {
 		*n += _n
 	}
 	return true
 }
 
-// Dereference pointer recursively.
+// maybe dereference if pointer.
 // drv: the final non-pointer value (which may be invalid).
 // isPtr: whether rv.Kind() == reflect.Ptr.
 // isNilPtr: whether a nil pointer at any level.
-func derefPointers(rv reflect.Value) (drv reflect.Value, isPtr bool, isNilPtr bool) {
-	for rv.Kind() == reflect.Ptr {
-		isPtr = true
+func maybeDerefValue(rv reflect.Value) (drv reflect.Value, rvIsPtr bool, rvIsNilPtr bool) {
+	if rv.Kind() == reflect.Ptr {
+		rvIsPtr = true
 		if rv.IsNil() {
-			isNilPtr = true
+			rvIsNilPtr = true
 			return
 		}
 		rv = rv.Elem()
@@ -74,87 +55,91 @@ func derefPointers(rv reflect.Value) (drv reflect.Value, isPtr bool, isNilPtr bo
 	return
 }
 
-// Dereference pointer recursively or return zero value.
-// drv: the final non-pointer value (which is never invalid).
-// isPtr: whether rv.Kind() == reflect.Ptr.
-// isNilPtr: whether a nil pointer at any level.
-func derefPointersZero(rv reflect.Value) (drv reflect.Value, isPtr bool, isNilPtr bool) {
-	for rv.Kind() == reflect.Ptr {
-		isPtr = true
+// Dereference-and-construct pointers.
+func maybeDerefAndConstruct(rv reflect.Value) reflect.Value {
+	if rv.Kind() == reflect.Ptr {
 		if rv.IsNil() {
-			isNilPtr = true
-			rt := rv.Type().Elem()
-			for rt.Kind() == reflect.Ptr {
-				rt = rt.Elem()
-			}
-			drv = reflect.New(rt).Elem()
-			return
+			newPtr := reflect.New(rv.Type().Elem())
+			rv.Set(newPtr)
 		}
 		rv = rv.Elem()
 	}
-	drv = rv
-	return
+	if rv.Kind() == reflect.Ptr {
+		panic("unexpected pointer pointer")
+	}
+	return rv
 }
 
-// Returns isDefaultValue=true iff is ultimately nil or empty
-// after (recursive) dereferencing.
-// If isDefaultValue=false, erv is set to the non-nil non-default
-// dereferenced value.
-// A zero/empty struct is not considered default for this
-// function.
-func isDefaultValue(rv reflect.Value) (erv reflect.Value, isDefaultValue bool) {
-	rv, _, isNilPtr := derefPointers(rv)
-	if isNilPtr {
-		return rv, true
-	}
+// Returns isDefaultValue=true iff is zero and isn't a struct.
+// NOTE: Also works for Maps, Chans, and Funcs, though they are not
+// otherwise supported by Amino.  For future?
+func isNonstructDefaultValue(rv reflect.Value) (isDefault bool) {
 	switch rv.Kind() {
+	case reflect.Ptr:
+		if rv.IsNil() {
+			return true
+		} else {
+			erv := rv.Elem()
+			return isNonstructDefaultValue(erv)
+		}
 	case reflect.Bool:
-		return rv, false
+		return rv.Bool() == false
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		return rv, rv.Int() == 0
+		return rv.Int() == 0
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		return rv, rv.Uint() == 0
+		return rv.Uint() == 0
 	case reflect.String:
-		return rv, rv.Len() == 0
+		return rv.Len() == 0
 	case reflect.Chan, reflect.Map, reflect.Slice:
-		return rv, rv.IsNil() || rv.Len() == 0
+		return rv.IsNil() || rv.Len() == 0
 	case reflect.Func, reflect.Interface:
-		return rv, rv.IsNil()
+		return rv.IsNil()
+	case reflect.Struct:
+		return false
 	default:
-		return rv, false
+		return false
 	}
 }
 
-// Returns the default value of a type.  For a time type or a pointer(s) to
-// time, the default value is not zero (or nil), but the time value of 1970.
+// Returns the default value of a type.  For a time type or a
+// pointer(s) to time, the default value is not zero (or nil), but the
+// time value of 1970.
+//
+// The default value of a struct pointer is nil, while the default value of
+// other pointers is not nil.  This is due to a proto3 wart, e.g. while there
+// is a way to distinguish between a nil struct/message vs an empty one (via
+// its presence or absence in an outer struct), there is no such way to
+// distinguish between nil bytes/lists and empty bytes/lists, are they are all
+// absent in binary encoding.
 func defaultValue(rt reflect.Type) (rv reflect.Value) {
 	switch rt.Kind() {
 	case reflect.Ptr:
 		// Dereference all the way and see if it's a time type.
-		refType := rt.Elem()
-		for refType.Kind() == reflect.Ptr {
-			refType = refType.Elem()
+		ert := rt.Elem()
+		if ert.Kind() == reflect.Ptr {
+			panic("nested pointers not allowed")
 		}
-		if refType == timeType {
+		if ert == timeType {
 			// Start from the top and construct pointers as needed.
-			rv = reflect.New(rt).Elem()
-			refType, refValue := rt, rv
-			for refType.Kind() == reflect.Ptr {
-				newPtr := reflect.New(refType.Elem())
-				refValue.Set(newPtr)
-				refType = refType.Elem()
-				refValue = refValue.Elem()
-			}
+			rv = reflect.New(rt.Elem())
 			// Set to 1970, the whole point of this function.
-			refValue.Set(reflect.ValueOf(zeroTime))
+			rv.Elem().Set(reflect.ValueOf(emptyTime))
+			return rv
+		} else if ert.Kind() == reflect.Struct {
+			rv = reflect.Zero(rt)
+			return rv
+		} else {
+			rv = reflect.New(rt.Elem())
 			return rv
 		}
 	case reflect.Struct:
 		if rt == timeType {
 			// Set to 1970, the whole point of this function.
 			rv = reflect.New(rt).Elem()
-			rv.Set(reflect.ValueOf(zeroTime))
+			rv.Set(reflect.ValueOf(emptyTime))
 			return rv
+		} else {
+			return reflect.Zero(rt)
 		}
 	}
 
@@ -163,6 +148,8 @@ func defaultValue(rt reflect.Type) (rv reflect.Value) {
 	return reflect.Zero(rt)
 }
 
+// NOTE: Also works for Maps and Chans, though they are not
+// otherwise supported by Amino.  For future?
 func isNil(rv reflect.Value) bool {
 	switch rv.Kind() {
 	case reflect.Interface, reflect.Chan, reflect.Func, reflect.Map, reflect.Ptr, reflect.Slice:
@@ -188,38 +175,16 @@ func constructConcreteType(cinfo *TypeInfo) (crv, irvSet reflect.Value) {
 	return
 }
 
-// CONTRACT: rt.Kind() != reflect.Ptr
-func typeToTyp3(rt reflect.Type, opts FieldOptions) Typ3 {
-	switch rt.Kind() {
-	case reflect.Interface:
-		return Typ3ByteLength
-	case reflect.Array, reflect.Slice:
-		return Typ3ByteLength
-	case reflect.String:
-		return Typ3ByteLength
-	case reflect.Struct, reflect.Map:
-		return Typ3ByteLength
-	case reflect.Int64, reflect.Uint64:
-		if opts.BinFixed64 {
-			return Typ38Byte
-		}
-		return Typ3Varint
-	case reflect.Int32, reflect.Uint32:
-		if opts.BinFixed32 {
-			return Typ3_4Byte
-		}
-		return Typ3Varint
-
-	case reflect.Int16, reflect.Int8, reflect.Int,
-		reflect.Uint16, reflect.Uint8, reflect.Uint, reflect.Bool:
-		return Typ3Varint
-	case reflect.Float64:
-		return Typ38Byte
-	case reflect.Float32:
-		return Typ3_4Byte
-	default:
-		panic(fmt.Sprintf("unsupported field type %v", rt))
+// Like constructConcreteType(), but if pointer preferred, returns a nil one.
+// We like nil pointers for efficiency.
+func constructConcreteTypeNilPreferred(cinfo *TypeInfo) (crv reflect.Value) {
+	// Construct new concrete type.
+	if cinfo.PointerPreferred {
+		crv = reflect.Zero(cinfo.PtrToType)
+	} else {
+		crv = reflect.New(cinfo.Type).Elem()
 	}
+	return
 }
 
 func toReprObject(rv reflect.Value) (rrv reflect.Value, err error) {
@@ -239,4 +204,73 @@ func toReprObject(rv reflect.Value) (rrv reflect.Value, err error) {
 	}
 	rrv = mwouts[0]
 	return
+}
+
+func isExported(field reflect.StructField) bool {
+	// Test 1:
+	if field.PkgPath != "" {
+		return false
+	}
+	// Test 2:
+	var first rune
+	for _, c := range field.Name {
+		first = c
+		break
+	}
+	// TODO: JAE: I'm not sure that the unicode spec
+	// is the correct spec to use, so this might be wrong.
+
+	return unicode.IsUpper(first)
+}
+
+func marshalAminoReprType(rm reflect.Method) (rrt reflect.Type) {
+	// Verify form of this method.
+	if rm.Type.NumIn() != 1 {
+		panic(fmt.Sprintf("MarshalAmino should have 1 input parameters (including receiver); got %v", rm.Type))
+	}
+	if rm.Type.NumOut() != 2 {
+		panic(fmt.Sprintf("MarshalAmino should have 2 output parameters; got %v", rm.Type))
+	}
+	if out := rm.Type.Out(1); out != errorType {
+		panic(fmt.Sprintf("MarshalAmino should have second output parameter of error type, got %v", out))
+	}
+	rrt = rm.Type.Out(0)
+	if rrt.Kind() == reflect.Ptr {
+		panic(fmt.Sprintf("Representative objects cannot be pointers; got %v", rrt))
+	}
+	return
+}
+
+func unmarshalAminoReprType(rm reflect.Method) (rrt reflect.Type) {
+	// Verify form of this method.
+	if rm.Type.NumIn() != 2 {
+		panic(fmt.Sprintf("UnmarshalAmino should have 2 input parameters (including receiver); got %v", rm.Type))
+	}
+	if in1 := rm.Type.In(0); in1.Kind() != reflect.Ptr {
+		panic(fmt.Sprintf("UnmarshalAmino first input parameter should be pointer type but got %v", in1))
+	}
+	if rm.Type.NumOut() != 1 {
+		panic(fmt.Sprintf("UnmarshalAmino should have 1 output parameters; got %v", rm.Type))
+	}
+	if out := rm.Type.Out(0); out != errorType {
+		panic(fmt.Sprintf("UnmarshalAmino should have first output parameter of error type, got %v", out))
+	}
+	rrt = rm.Type.In(1)
+	if rrt.Kind() == reflect.Ptr {
+		panic(fmt.Sprintf("Representative objects cannot be pointers; got %v", rrt))
+	}
+	return
+}
+
+func toPBMessage(cdc *Codec, rv reflect.Value) (pbrv reflect.Value) {
+	rm := rv.MethodByName("ToPBMessage")
+	pbrv = rm.Call([]reflect.Value{reflect.ValueOf(cdc)})[0]
+	return
+}
+
+// NOTE: do not change this definition.
+// It is also defined for genproto.
+func isListType(rt reflect.Type) bool {
+	return rt.Kind() == reflect.Slice ||
+		rt.Kind() == reflect.Array
 }

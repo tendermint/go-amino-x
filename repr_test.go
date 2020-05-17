@@ -2,14 +2,18 @@ package amino
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/tendermint/go-amino/pkg"
 )
+
+type FooList []*Foo
 
 type Foo struct {
 	a string
-	b int
+	b int32
 	c []*Foo
 	D string // exposed
 }
@@ -30,32 +34,33 @@ func (f Foo) MarshalAmino() ([]pair, error) { // nolint: golint
 	return []pair{
 		{"a", f.a},
 		{"b", f.b},
-		{"c", f.c},
+		{"c", FooList(f.c)},
 		{"D", f.D},
 	}, nil
 }
 
 func (f *Foo) UnmarshalAmino(repr []pair) error {
 	f.a = repr[0].get("a").(string)
-	f.b = repr[1].get("b").(int)
-	f.c = repr[2].get("c").([]*Foo)
+	f.b = repr[1].get("b").(int32)
+	f.c = repr[2].get("c").(FooList)
 	f.D = repr[3].get("D").(string)
 	return nil
 }
 
+var gopkg = reflect.TypeOf(Foo{}).PkgPath()
+var testPackage = pkg.NewPackage(gopkg, "tests", "").
+	WithDependencies().
+	WithTypes(FooList(nil))
+
 func TestMarshalAminoBinary(t *testing.T) {
 
 	cdc := NewCodec()
-	cdc.RegisterInterface((*interface{})(nil), nil)
-	// register a bunch of concrete "implementations" which are type aliases:
-	cdc.RegisterConcrete(string(""), "string", nil)
-	cdc.RegisterConcrete(int(0), "int", nil)
-	cdc.RegisterConcrete(([]*Foo)(nil), "[]*Foo", nil)
+	cdc.RegisterPackage(testPackage)
 
 	var f = Foo{
 		a: "K",
 		b: 2,
-		c: []*Foo{nil, nil, nil},
+		c: []*Foo{&Foo{}, &Foo{}, &Foo{}},
 		D: "J",
 	}
 	bz, err := cdc.MarshalBinaryLengthPrefixed(f)
@@ -74,10 +79,7 @@ func TestMarshalAminoBinary(t *testing.T) {
 func TestMarshalAminoJSON(t *testing.T) {
 
 	cdc := NewCodec()
-	cdc.RegisterInterface((*interface{})(nil), nil)
-	cdc.RegisterConcrete(string(""), "string", nil)
-	cdc.RegisterConcrete(int(0), "int", nil)
-	cdc.RegisterConcrete(([]*Foo)(nil), "[]*Foo", nil)
+	cdc.RegisterPackage(testPackage)
 
 	var f = Foo{
 		a: "K",

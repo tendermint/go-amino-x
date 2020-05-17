@@ -143,14 +143,14 @@ func TestForceWriteEmpty(t *testing.T) {
 
 	type OuterWriteEmpty struct {
 		In  InnerWriteEmpty `amino:"write_empty"`
-		Val int             `amino:"write_empty" binary:"fixed32"`
+		Val int32           `amino:"write_empty" binary:"fixed32"`
 	}
 
 	cdc := amino.NewCodec()
 
 	b, err := cdc.MarshalBinaryBare(OuterWriteEmpty{})
 	assert.NoError(t, err)
-	assert.Equal(t, []byte{10, 5, 13, 0, 0, 0, 0, 16, 0}, b)
+	assert.Equal(t, []byte{0xa, 0x5, 0xd, 0x0, 0x0, 0x0, 0x0, 0x15, 0x0, 0x0, 0x0, 0x0}, b)
 
 	b, err = cdc.MarshalBinaryBare(InnerWriteEmpty{})
 	assert.NoError(t, err)
@@ -159,8 +159,8 @@ func TestForceWriteEmpty(t *testing.T) {
 
 func TestStructSlice(t *testing.T) {
 	type Foo struct {
-		A int
-		B int
+		A uint
+		B uint
 	}
 
 	type Foos struct {
@@ -187,7 +187,7 @@ func TestStructPointerSlice1(t *testing.T) {
 	type Foo struct {
 		A string
 		B int
-		C []*Foo
+		C []*Foo `amino:"nil_elements"`
 		D string // exposed
 	}
 
@@ -215,17 +215,17 @@ func TestStructPointerSlice1(t *testing.T) {
 	}
 	bz2, err := cdc.MarshalBinaryLengthPrefixed(f3)
 	assert.NoError(t, err)
-	assert.Equal(t, bz, bz2, "empty slices should be decoded to nil unless empty_elements")
+	assert.Equal(t, bz, bz2, "empty slice elements should be encoded the same as nil")
 }
 
-// Like TestStructPointerSlice2, but with EmptyElements.
+// Like TestStructPointerSlice2, but without nil_elements field tag.
 func TestStructPointerSlice2(t *testing.T) {
 	cdc := amino.NewCodec()
 
 	type Foo struct {
 		A string
 		B int
-		C []*Foo `amino:"empty_elements"`
+		C []*Foo
 		D string // exposed
 	}
 
@@ -236,7 +236,7 @@ func TestStructPointerSlice2(t *testing.T) {
 		D: "j",
 	}
 	_, err := cdc.MarshalBinaryLengthPrefixed(f)
-	assert.Error(t, err, "nil elements of a slice/array not supported when empty_elements field tag set.")
+	assert.Error(t, err, "nil elements of a slice/array not supported unless nil_elements field tag set.")
 
 	f.C = []*Foo{{}, {}, {}}
 	bz, err := cdc.MarshalBinaryLengthPrefixed(f)
