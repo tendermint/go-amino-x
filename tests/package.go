@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/tendermint/go-amino/pkg"
+	"github.com/tendermint/go-amino-x/pkg"
 )
 
 // Creates one much like amino.RegisterPackage, but without registration.
@@ -11,7 +11,7 @@ import (
 // NOTE: This package registration is independent of test registration.
 // See tests/common.go StructTypes etc to add to tests.
 var Package = pkg.NewPackage(
-	"github.com/tendermint/go-amino/tests",
+	"github.com/tendermint/go-amino-x/tests",
 	"tests",
 	pkg.GetCallersDirName(),
 ).WithDependencies().WithTypes(

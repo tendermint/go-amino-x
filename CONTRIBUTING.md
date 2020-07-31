@@ -56,7 +56,7 @@ If you find a crasher related to your changes please fix it, or file an issue co
 [gofuzz]: https://github.com/google/gofuzz
 [go-fuzzer]: https://github.com/dvyukov/go-fuzz
 [protobuf]: https://developers.google.com/protocol-buffers/
-[build flag]: https://github.com/tendermint/go-amino/blob/faa6e731944e2b7b6a46ad202902851e8ce85bee/tests/proto3/proto3_compat_test.go#L1
+[build flag]: https://github.com/tendermint/go-amino-x/blob/faa6e731944e2b7b6a46ad202902851e8ce85bee/tests/proto3/proto3_compat_test.go#L1
 [tendermint]: https://github.com/tendermint/tendermint/
 [Gopkg.toml]: https://github.com/tendermint/tendermint/blob/master/Gopkg.toml
 

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/tendermint/go-amino/genproto"
-	"github.com/tendermint/go-amino/tests"
+	"github.com/tendermint/go-amino-x/genproto"
+	"github.com/tendermint/go-amino-x/tests"
 )
 
 func main() {

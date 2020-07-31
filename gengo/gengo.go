@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/tendermint/go-amino"
-	"github.com/tendermint/go-amino/libs/press"
+	"github.com/tendermint/go-amino-x"
+	"github.com/tendermint/go-amino-x/libs/press"
 )
 
 // shortcut

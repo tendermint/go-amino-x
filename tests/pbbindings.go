@@ -2,8 +2,8 @@ package tests
 
 import (
 	proto "google.golang.org/protobuf/proto"
-	amino "github.com/tendermint/go-amino"
-	testspb "github.com/tendermint/go-amino/tests/pb"
+	amino "github.com/tendermint/go-amino-x"
+	testspb "github.com/tendermint/go-amino-x/tests/pb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	time "time"
 	anypb "google.golang.org/protobuf/types/known/anypb"

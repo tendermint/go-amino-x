@@ -13,8 +13,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	amino "github.com/tendermint/go-amino"
-	"github.com/tendermint/go-amino/pkg"
+	amino "github.com/tendermint/go-amino-x"
+	"github.com/tendermint/go-amino-x/pkg"
 )
 
 type Dummy struct{}

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/tendermint/go-amino/pkg"
+	"github.com/tendermint/go-amino-x/pkg"
 )
 
 // Useful for debugging.

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/tendermint/go-amino"
-	"github.com/tendermint/go-amino/genproto"
-	"github.com/tendermint/go-amino/genproto/example/submodule"
-	"github.com/tendermint/go-amino/genproto/example/submodule2"
+	"github.com/tendermint/go-amino-x"
+	"github.com/tendermint/go-amino-x/genproto"
+	"github.com/tendermint/go-amino-x/genproto/example/submodule"
+	"github.com/tendermint/go-amino-x/genproto/example/submodule2"
 )
 
 // amino

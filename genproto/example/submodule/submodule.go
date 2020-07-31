@@ -1,7 +1,7 @@
 package submodule
 
 import (
-	"github.com/tendermint/go-amino/genproto/example/submodule2"
+	"github.com/tendermint/go-amino-x/genproto/example/submodule2"
 )
 
 type StructSM struct {

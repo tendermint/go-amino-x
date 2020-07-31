@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"strings"
 
-	"github.com/tendermint/go-amino/libs/detrand"
+	"github.com/tendermint/go-amino-x/libs/detrand"
 )
 
 type line struct {

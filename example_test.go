@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"reflect"
 
-	amino "github.com/tendermint/go-amino"
+	amino "github.com/tendermint/go-amino-x"
 )
 
 func Example() {

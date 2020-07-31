@@ -8,7 +8,7 @@ import (
 	"go/token"
 
 	"github.com/jaekwon/testify/assert"
-	"github.com/tendermint/go-amino/tests"
+	"github.com/tendermint/go-amino-x/tests"
 )
 
 func TestGenerateProtoBindings(t *testing.T) {

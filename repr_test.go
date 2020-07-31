@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tendermint/go-amino/pkg"
+	"github.com/tendermint/go-amino-x/pkg"
 )
 
 type FooList []*Foo

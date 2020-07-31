@@ -15,8 +15,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tendermint/go-amino"
-	"github.com/tendermint/go-amino/pkg"
+	"github.com/tendermint/go-amino-x"
+	"github.com/tendermint/go-amino-x/pkg"
 )
 
 // TODO sort

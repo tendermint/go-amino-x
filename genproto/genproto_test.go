@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/jaekwon/testify/assert"
-	sm1 "github.com/tendermint/go-amino/genproto/example/submodule"
+	sm1 "github.com/tendermint/go-amino-x/genproto/example/submodule"
 )
 
 func TestBasic(t *testing.T) {
@@ -25,16 +25,16 @@ func TestBasic(t *testing.T) {
 package test;
 
 // imports
-import "github.com/tendermint/go-amino/genproto/example/submodule2/types.proto";`)
+import "github.com/tendermint/go-amino-x/genproto/example/submodule2/types.proto";`)
 
 	p3doc = p3c.GenerateProto3SchemaForTypes(sm1.Package, reflect.TypeOf(obj))
 	assert.Equal(t, p3doc.Print(), `syntax = "proto3";
 package submodule;
 
-option go_package = "github.com/tendermint/go-amino/genproto/example/submodule/pb";
+option go_package = "github.com/tendermint/go-amino-x/genproto/example/submodule/pb";
 
 // imports
-import "github.com/tendermint/go-amino/genproto/example/submodule2/types.proto";
+import "github.com/tendermint/go-amino-x/genproto/example/submodule2/types.proto";
 
 // messages
 message StructSM {

@@ -8,7 +8,7 @@ BREAKING CHANGE:
 at the global level.
  - Nested pointers are not allowed.  Pointers to primitives, structs, and
    interfaces are allowed.  See
-https://github.com/tendermint/go-amino/pull/290#issuecomment-650717598.
+https://github.com/tendermint/go-amino-x/pull/290#issuecomment-650717598.
 
 ## 0.15.0 (May 2, 2018)
 
@@ -20,15 +20,15 @@ IMPROVEMENTS:
  - Amino becomes a go-module (requires go 1.11) but keeps dep support for backwards compatibility ([#255]). 
 
  
-[#255]: https://github.com/tendermint/go-amino/pull/255 
-[#261]: https://github.com/tendermint/go-amino/issues/261
+[#255]: https://github.com/tendermint/go-amino-x/pull/255 
+[#261]: https://github.com/tendermint/go-amino-x/issues/261
  
 ## 0.14.1 (November 6, 2018)
 
 IMPROVEMENTS:
  - go-amino compiles again on 32-bit platforms ([#242])
  
-[#242]: https://github.com/tendermint/go-amino/pull/242
+[#242]: https://github.com/tendermint/go-amino-x/pull/242
 
 ## 0.14.0 (October 26, 2018)
 
@@ -37,7 +37,7 @@ BREAKING CHANGE:
  encoding (of `int32`, `int64`) ([#237])
  
  [proto3's]: https://developers.google.com/protocol-buffers/docs/proto#scalar
- [#237]: https://github.com/tendermint/go-amino/issues/237
+ [#237]: https://github.com/tendermint/go-amino-x/issues/237
 
 ## 0.13.0 (October 15, 2018)
 
@@ -54,12 +54,12 @@ IMPROVEMENTS:
   - Optimize performance by removing unnecessary allocation in `UvarintSize` ([#225] by [@ValarDragon])
   - Add test that shows compatibility with stdlib (JSON time encoding) ([#131] by [@odeke-em]) 
   
-[#224]: https://github.com/tendermint/go-amino/pull/224
-[#222]: https://github.com/tendermint/go-amino/pull/222
-[#228]: https://github.com/tendermint/go-amino/pull/228
-[#227]: https://github.com/tendermint/go-amino/pull/227
-[#225]: https://github.com/tendermint/go-amino/pull/225
-[#131]: https://github.com/tendermint/go-amino/pull/131
+[#224]: https://github.com/tendermint/go-amino-x/pull/224
+[#222]: https://github.com/tendermint/go-amino-x/pull/222
+[#228]: https://github.com/tendermint/go-amino-x/pull/228
+[#227]: https://github.com/tendermint/go-amino-x/pull/227
+[#225]: https://github.com/tendermint/go-amino-x/pull/225
+[#131]: https://github.com/tendermint/go-amino-x/pull/131
 [@ValarDragon]: https://github.com/ValarDragon
 [@odeke-em]: https://github.com/odeke-em
 

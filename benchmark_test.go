@@ -8,8 +8,8 @@ import (
 
 	fuzz "github.com/google/gofuzz"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/go-amino"
-	"github.com/tendermint/go-amino/tests"
+	"github.com/tendermint/go-amino-x"
+	"github.com/tendermint/go-amino-x/tests"
 	"google.golang.org/protobuf/proto"
 )
 

@@ -14,8 +14,8 @@ import (
 	"github.com/jaekwon/testify/require"
 	proto "google.golang.org/protobuf/proto"
 
-	"github.com/tendermint/go-amino"
-	"github.com/tendermint/go-amino/tests"
+	"github.com/tendermint/go-amino-x"
+	"github.com/tendermint/go-amino-x/tests"
 )
 
 //-------------------------------------

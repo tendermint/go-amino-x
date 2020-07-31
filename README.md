@@ -59,12 +59,12 @@ Each package should declare in a package local file (by convention called amino.
 which should look like the following:
 
 ```go
-// see github.com/tendermint/go-amino/protogen/example/main.go
+// see github.com/tendermint/go-amino-x/protogen/example/main.go
 package main
 
 import (
-	"github.com/tendermint/go-amino"
-	"github.com/tendermint/go-amino/genproto/example/submodule"
+	"github.com/tendermint/go-amino-x"
+	"github.com/tendermint/go-amino-x/genproto/example/submodule"
 )
 
 var Package = amino.RegisterPackage(

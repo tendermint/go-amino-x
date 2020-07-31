@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/jaekwon/testify/assert"
-	"github.com/tendermint/go-amino"
-	"github.com/tendermint/go-amino/tests"
+	"github.com/tendermint/go-amino-x"
+	"github.com/tendermint/go-amino-x/tests"
 )
 
 func TestAnyWellKnownNative(t *testing.T) {
