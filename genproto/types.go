@@ -329,7 +329,7 @@ func (nl NList) Name() string {
 		ename = "Bytes"
 	} else {
 		// Get name from .Type, not ReprType.Type.
-		ename = capitalize(nl.UltiElem.Type.Name())
+		ename = nl.UltiElem.Name
 	}
 
 	if nl.FieldOptions.BinFixed64 {
@@ -392,10 +392,6 @@ func (nl NList) Key() string {
 
 //----------------------------------------
 // Other
-
-func capitalize(s string) string {
-	return strings.ToUpper(s[0:1]) + s[1:]
-}
 
 // Find root struct fields that are nested list types.
 // If not a struct, assume an implicit struct with single field.

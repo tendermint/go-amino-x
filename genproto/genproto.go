@@ -189,7 +189,7 @@ func (p3c *P3Context) GenerateProto3MessagePartial(p3doc *P3Doc, rt reflect.Type
 		panic(fmt.Errorf("can only generate proto3 message schemas from user-defined package-level declared structs, got rt %v", rt))
 	}
 
-	p3msg.Name = info.Type.Name() // not rinfo.
+	p3msg.Name = info.Name // not rinfo.
 
 	for _, field := range rsfields { // rinfo.
 		fp3, fp3IsRepeated, implicit :=
@@ -397,7 +397,7 @@ func typeToP3Type(root *amino.Package, info *amino.TypeInfo, fopts amino.FieldOp
 		// NOTE: we don't use rt, because the p3 package and name should still
 		// match the declaration, rather than inherit or refer to the repr type
 		// (if it is registered at all).
-		return NewP3MessageType(info.Package.P3PkgName, info.Type.Name()), false, false
+		return NewP3MessageType(info.Package.P3PkgName, info.Name), false, false
 	default:
 		panic("unexpected rt kind")
 	}
@@ -410,7 +410,7 @@ func WriteProto3Schema(pkg *amino.Package) {
 	p3c.RegisterPackage(pkg)
 	p3c.ValidateBasic()
 	filename := path.Join(pkg.DirName, "types.proto")
-	p3c.WriteProto3SchemaForTypes(filename, pkg, pkg.Types...)
+	p3c.WriteProto3SchemaForTypes(filename, pkg, pkg.ReflectTypes()...)
 }
 
 // Symlinks .proto files from pkg info to dirname, keeping the go path

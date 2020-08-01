@@ -1,6 +1,8 @@
 package tests
 
 import (
+	"reflect"
+
 	"github.com/tendermint/go-amino-x/pkg"
 )
 
@@ -30,7 +32,11 @@ var Package = pkg.NewPackage(
 	EmbeddedSt2{},
 	EmbeddedSt3{},
 	EmbeddedSt4{},
-	EmbeddedSt5{},
+	pkg.Type{ // example of overriding type name.
+		Type:             reflect.TypeOf(EmbeddedSt5{}),
+		Name:             "EmbeddedSt5NameOverride",
+		PointerPreferred: false,
+	},
 	AminoMarshalerStruct1{},
 	ReprStruct1{},
 	AminoMarshalerStruct2{},

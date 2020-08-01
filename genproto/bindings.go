@@ -65,7 +65,7 @@ func GenerateProtoBindingsForTypes(pkg *amino.Package, rtz ...reflect.Type) (fil
 func WriteProtoBindings(pkg *amino.Package) {
 	filename := path.Join(pkg.DirName, "pbbindings.go")
 	fmt.Printf("writing proto3 bindings to %v for package %v\n", filename, pkg)
-	err := WriteProtoBindingsForTypes(filename, pkg, pkg.Types...)
+	err := WriteProtoBindingsForTypes(filename, pkg, pkg.ReflectTypes()...)
 	if err != nil {
 		panic(err)
 	}
@@ -113,7 +113,7 @@ func generateMethodsForType(imports *ast.GenDecl, scope *ast.Scope, pkg *amino.P
 			_fields("msg", "proto.Message", "err", "error"),
 			_block(
 				// Body: declaration for pb message.
-				_var("pbo", _x("*%v.%v", p3pkgName, info.Type.Name()), nil),
+				_var("pbo", _x("*%v.%v", p3pkgName, info.Name), nil),
 				// Body: copying over fields.
 				_block(go2pbStmts(pkg, true, imports, scope2, _i("pbo"), _i("goo"), false, info, amino.FieldOptions{}, 0)...),
 				// Body: return value.
@@ -136,7 +136,7 @@ func generateMethodsForType(imports *ast.GenDecl, scope *ast.Scope, pkg *amino.P
 			_fields("msg", "proto.Message"),
 			_block(
 				// Body: declaration for pb message.
-				_a("pbo", ":=", _x("new~(~%v.%v~)", p3pkgName, info.Type.Name())),
+				_a("pbo", ":=", _x("new~(~%v.%v~)", p3pkgName, info.Name)),
 				// Body: return value.
 				_a("msg", "=", "pbo"),
 				_return(),
@@ -155,8 +155,8 @@ func generateMethodsForType(imports *ast.GenDecl, scope *ast.Scope, pkg *amino.P
 			_fields("err", "error"),
 			_block(
 				// Body: declaration for pb message.
-				_var("pbo", _x("*%v.%v", p3pkgName, info.Type.Name()),
-					_x("%v.~(~*%v.%v~)", "msg", p3pkgName, info.Type.Name())),
+				_var("pbo", _x("*%v.%v", p3pkgName, info.Name),
+					_x("%v.~(~*%v.%v~)", "msg", p3pkgName, info.Name)),
 				// Body: copying over fields.
 				_block(pb2goStmts(pkg, true, imports, scope2, _i("goo"), true, info, _i("pbo"), amino.FieldOptions{}, 0)...),
 				// Body: return.
@@ -184,8 +184,8 @@ func generateMethodsForType(imports *ast.GenDecl, scope *ast.Scope, pkg *amino.P
 		rinfo := info.ReprType
 		scope2 := ast.NewScope(scope)
 		addVars(scope2, "goo", "empty")
-		goorte := typeExpr(pkg, rinfo.Type, imports, scope2)
-		methods = append(methods, _func(fmt.Sprintf("is%vEmptyRepr", info.Type.Name()),
+		goorte := goTypeExpr(pkg, rinfo.Type, imports, scope2)
+		methods = append(methods, _func(fmt.Sprintf("is%vEmptyRepr", info.Name),
 			"", "",
 			_fields("goor", goorte),
 			_fields("empty", "bool"),
@@ -375,7 +375,7 @@ func go2pbStmts(rootPkg *amino.Package, isRoot bool, imports *ast.GenDecl, scope
 			pbote_ := p3goTypeExprString(rootPkg, imports, scope, gooType, fopts)
 			pbov_ := addVarUniq(scope, "pbov")
 			b = append(b,
-				_if(_call(_x("is%vEmptyRepr", gooType.Type.Name()), goor),
+				_if(_call(_x("is%vEmptyRepr", gooType.Name), goor),
 					_var(pbov_, _x(pbote_), nil),
 					_a("msg", "=", pbov_),
 					_return()))
@@ -388,7 +388,7 @@ func go2pbStmts(rootPkg *amino.Package, isRoot bool, imports *ast.GenDecl, scope
 			defer func() {
 				newb := b // named for clarity
 				b = append(oldb,
-					_if(_not(_call(_x("is%vEmptyRepr", gooType.Type.Name()), goor)),
+					_if(_not(_call(_x("is%vEmptyRepr", gooType.Name), goor)),
 						newb...))
 			}()
 			// end b switcharoo pattern
@@ -883,7 +883,7 @@ func isEmptyReprStmts(isRoot bool, imports *ast.GenDecl, scope *ast.Scope, goo a
 	if !isRoot && gooType.Registered && hasPBBindings(gooType) {
 		e_ := addVarUniq(scope, "e")
 		b = append(b,
-			_a(e_, ":=", _call(_x("is%vEmptyRepr", gooType.Type.Name()), goor)),
+			_a(e_, ":=", _call(_x("is%vEmptyRepr", gooType.Name), goor)),
 			_if(_x("%v__==__false", e_),
 				_return(_i("false")),
 			),
@@ -1919,7 +1919,7 @@ func p3goTypeExprString(rootPkg *amino.Package, imports *ast.GenDecl, scope *ast
 			panic(fmt.Sprintf("package not registered for type %v", info))
 		}
 		pkgName := addImportAuto(imports, scope, pkg.GoPkgName+"pb", pkg.P3GoPkgPath)
-		return fmt.Sprintf("*%v.%v", pkgName, info.Type.Name())
+		return fmt.Sprintf("*%v.%v", pkgName, info.Name)
 	case reflect.Int:
 		return "int64"
 	case reflect.Uint:
@@ -1965,7 +1965,7 @@ func isImplicitList(info *amino.TypeInfo, fopts amino.FieldOptions) (implicit bo
 	}
 }
 
-func typeExpr(rootPkg *amino.Package, rt reflect.Type, imports *ast.GenDecl, scope *ast.Scope) ast.Expr {
+func goTypeExpr(rootPkg *amino.Package, rt reflect.Type, imports *ast.GenDecl, scope *ast.Scope) ast.Expr {
 	name := rt.Name()
 	if name != "" {
 		pkgPath := rt.PkgPath()
@@ -1979,11 +1979,11 @@ func typeExpr(rootPkg *amino.Package, rt reflect.Type, imports *ast.GenDecl, sco
 	}
 	switch rt.Kind() {
 	case reflect.Array:
-		return _arr(rt.Len(), typeExpr(rootPkg, rt.Elem(), imports, scope))
+		return _arr(rt.Len(), goTypeExpr(rootPkg, rt.Elem(), imports, scope))
 	case reflect.Slice:
-		return _sl(typeExpr(rootPkg, rt.Elem(), imports, scope))
+		return _sl(goTypeExpr(rootPkg, rt.Elem(), imports, scope))
 	case reflect.Ptr:
-		return _ptr(typeExpr(rootPkg, rt.Elem(), imports, scope))
+		return _ptr(goTypeExpr(rootPkg, rt.Elem(), imports, scope))
 	default:
 		expr := rt.String()
 		if strings.Contains(expr, ".") {

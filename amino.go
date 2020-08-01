@@ -21,6 +21,7 @@ import (
 // Package "pkg" exists So dependencies can create Packages.
 // We export it here so this amino package can use it natively.
 type Package = pkg.Package
+type Type = pkg.Type
 
 var (
 	// Global methods for global auto-sealing codec.

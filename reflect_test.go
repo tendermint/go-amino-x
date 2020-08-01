@@ -412,7 +412,7 @@ func TestCodecRoundtripUnmarshalOnConcreteNonNilRegisteredTypeDef(t *testing.T) 
 
 func TestCodecBinaryStructFieldNilInterface(t *testing.T) {
 	cdc := amino.NewCodec()
-	cdc.RegisterTypeFrom(reflect.TypeOf(&tests.InterfaceFieldsStruct{}), tests.Package)
+	cdc.RegisterTypeFrom(reflect.TypeOf(tests.InterfaceFieldsStruct{}), tests.Package)
 
 	i1 := &tests.InterfaceFieldsStruct{F1: new(tests.InterfaceFieldsStruct), F2: nil}
 	bz, err := cdc.MarshalBinaryLengthPrefixed(i1)

@@ -1225,7 +1225,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Int32ArAr = nil
 			} else {
-				var pbos = make([]*testspb.Int32List, goorl)
+				var pbos = make([]*testspb.Int32ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Int32ArAr[i]
@@ -1243,7 +1243,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Int32List{Value: pbos1}
+								pbos[i] = &testspb.Int32ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -1256,7 +1256,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Int32FixedArAr = nil
 			} else {
-				var pbos = make([]*testspb.Fixed32Int32List, goorl)
+				var pbos = make([]*testspb.Fixed32Int32ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Int32FixedArAr[i]
@@ -1274,7 +1274,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Fixed32Int32List{Value: pbos1}
+								pbos[i] = &testspb.Fixed32Int32ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -1287,7 +1287,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Int64ArAr = nil
 			} else {
-				var pbos = make([]*testspb.Int64List, goorl)
+				var pbos = make([]*testspb.Int64ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Int64ArAr[i]
@@ -1305,7 +1305,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Int64List{Value: pbos1}
+								pbos[i] = &testspb.Int64ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -1318,7 +1318,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Int64FixedArAr = nil
 			} else {
-				var pbos = make([]*testspb.Fixed64Int64List, goorl)
+				var pbos = make([]*testspb.Fixed64Int64ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Int64FixedArAr[i]
@@ -1336,7 +1336,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Fixed64Int64List{Value: pbos1}
+								pbos[i] = &testspb.Fixed64Int64ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -1349,7 +1349,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.IntArAr = nil
 			} else {
-				var pbos = make([]*testspb.IntList, goorl)
+				var pbos = make([]*testspb.Int64ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.IntArAr[i]
@@ -1367,7 +1367,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.IntList{Value: pbos1}
+								pbos[i] = &testspb.Int64ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -1442,7 +1442,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Uint16ArAr = nil
 			} else {
-				var pbos = make([]*testspb.Uint16List, goorl)
+				var pbos = make([]*testspb.UInt16List, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Uint16ArAr[i]
@@ -1460,7 +1460,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Uint16List{Value: pbos1}
+								pbos[i] = &testspb.UInt16List{Value: pbos1}
 							}
 						}
 					}
@@ -1473,7 +1473,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Uint32ArAr = nil
 			} else {
-				var pbos = make([]*testspb.Uint32List, goorl)
+				var pbos = make([]*testspb.UInt32ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Uint32ArAr[i]
@@ -1491,7 +1491,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Uint32List{Value: pbos1}
+								pbos[i] = &testspb.UInt32ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -1504,7 +1504,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Uint32FixedArAr = nil
 			} else {
-				var pbos = make([]*testspb.Fixed32Uint32List, goorl)
+				var pbos = make([]*testspb.Fixed32UInt32ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Uint32FixedArAr[i]
@@ -1522,7 +1522,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Fixed32Uint32List{Value: pbos1}
+								pbos[i] = &testspb.Fixed32UInt32ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -1535,7 +1535,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Uint64ArAr = nil
 			} else {
-				var pbos = make([]*testspb.Uint64List, goorl)
+				var pbos = make([]*testspb.UInt64ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Uint64ArAr[i]
@@ -1553,7 +1553,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Uint64List{Value: pbos1}
+								pbos[i] = &testspb.UInt64ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -1566,7 +1566,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Uint64FixedArAr = nil
 			} else {
-				var pbos = make([]*testspb.Fixed64Uint64List, goorl)
+				var pbos = make([]*testspb.Fixed64UInt64ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Uint64FixedArAr[i]
@@ -1584,7 +1584,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Fixed64Uint64List{Value: pbos1}
+								pbos[i] = &testspb.Fixed64UInt64ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -1597,7 +1597,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.UintArAr = nil
 			} else {
-				var pbos = make([]*testspb.UintList, goorl)
+				var pbos = make([]*testspb.UInt64ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.UintArAr[i]
@@ -1615,7 +1615,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.UintList{Value: pbos1}
+								pbos[i] = &testspb.UInt64ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -1628,7 +1628,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.StrArAr = nil
 			} else {
-				var pbos = make([]*testspb.StringList, goorl)
+				var pbos = make([]*testspb.StringValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.StrArAr[i]
@@ -1646,7 +1646,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.StringList{Value: pbos1}
+								pbos[i] = &testspb.StringValueList{Value: pbos1}
 							}
 						}
 					}
@@ -1704,7 +1704,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.TimeArAr = nil
 			} else {
-				var pbos = make([]*testspb.TimeList, goorl)
+				var pbos = make([]*testspb.TimestampList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.TimeArAr[i]
@@ -1724,7 +1724,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.TimeList{Value: pbos1}
+								pbos[i] = &testspb.TimestampList{Value: pbos1}
 							}
 						}
 					}
@@ -3355,7 +3355,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Int32SlSl = nil
 			} else {
-				var pbos = make([]*testspb.Int32List, goorl)
+				var pbos = make([]*testspb.Int32ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Int32SlSl[i]
@@ -3373,7 +3373,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Int32List{Value: pbos1}
+								pbos[i] = &testspb.Int32ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -3386,7 +3386,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Int32FixedSlSl = nil
 			} else {
-				var pbos = make([]*testspb.Fixed32Int32List, goorl)
+				var pbos = make([]*testspb.Fixed32Int32ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Int32FixedSlSl[i]
@@ -3404,7 +3404,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Fixed32Int32List{Value: pbos1}
+								pbos[i] = &testspb.Fixed32Int32ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -3417,7 +3417,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Int64SlSl = nil
 			} else {
-				var pbos = make([]*testspb.Int64List, goorl)
+				var pbos = make([]*testspb.Int64ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Int64SlSl[i]
@@ -3435,7 +3435,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Int64List{Value: pbos1}
+								pbos[i] = &testspb.Int64ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -3448,7 +3448,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Int64FixedSlSl = nil
 			} else {
-				var pbos = make([]*testspb.Fixed64Int64List, goorl)
+				var pbos = make([]*testspb.Fixed64Int64ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Int64FixedSlSl[i]
@@ -3466,7 +3466,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Fixed64Int64List{Value: pbos1}
+								pbos[i] = &testspb.Fixed64Int64ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -3479,7 +3479,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.IntSlSl = nil
 			} else {
-				var pbos = make([]*testspb.IntList, goorl)
+				var pbos = make([]*testspb.Int64ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.IntSlSl[i]
@@ -3497,7 +3497,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.IntList{Value: pbos1}
+								pbos[i] = &testspb.Int64ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -3572,7 +3572,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Uint16SlSl = nil
 			} else {
-				var pbos = make([]*testspb.Uint16List, goorl)
+				var pbos = make([]*testspb.UInt16List, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Uint16SlSl[i]
@@ -3590,7 +3590,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Uint16List{Value: pbos1}
+								pbos[i] = &testspb.UInt16List{Value: pbos1}
 							}
 						}
 					}
@@ -3603,7 +3603,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Uint32SlSl = nil
 			} else {
-				var pbos = make([]*testspb.Uint32List, goorl)
+				var pbos = make([]*testspb.UInt32ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Uint32SlSl[i]
@@ -3621,7 +3621,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Uint32List{Value: pbos1}
+								pbos[i] = &testspb.UInt32ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -3634,7 +3634,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Uint32FixedSlSl = nil
 			} else {
-				var pbos = make([]*testspb.Fixed32Uint32List, goorl)
+				var pbos = make([]*testspb.Fixed32UInt32ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Uint32FixedSlSl[i]
@@ -3652,7 +3652,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Fixed32Uint32List{Value: pbos1}
+								pbos[i] = &testspb.Fixed32UInt32ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -3665,7 +3665,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Uint64SlSl = nil
 			} else {
-				var pbos = make([]*testspb.Uint64List, goorl)
+				var pbos = make([]*testspb.UInt64ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Uint64SlSl[i]
@@ -3683,7 +3683,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Uint64List{Value: pbos1}
+								pbos[i] = &testspb.UInt64ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -3696,7 +3696,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.Uint64FixedSlSl = nil
 			} else {
-				var pbos = make([]*testspb.Fixed64Uint64List, goorl)
+				var pbos = make([]*testspb.Fixed64UInt64ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.Uint64FixedSlSl[i]
@@ -3714,7 +3714,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.Fixed64Uint64List{Value: pbos1}
+								pbos[i] = &testspb.Fixed64UInt64ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -3727,7 +3727,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.UintSlSl = nil
 			} else {
-				var pbos = make([]*testspb.UintList, goorl)
+				var pbos = make([]*testspb.UInt64ValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.UintSlSl[i]
@@ -3745,7 +3745,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.UintList{Value: pbos1}
+								pbos[i] = &testspb.UInt64ValueList{Value: pbos1}
 							}
 						}
 					}
@@ -3758,7 +3758,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.StrSlSl = nil
 			} else {
-				var pbos = make([]*testspb.StringList, goorl)
+				var pbos = make([]*testspb.StringValueList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.StrSlSl[i]
@@ -3776,7 +3776,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.StringList{Value: pbos1}
+								pbos[i] = &testspb.StringValueList{Value: pbos1}
 							}
 						}
 					}
@@ -3834,7 +3834,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			if goorl == 0 {
 				pbo.TimeSlSl = nil
 			} else {
-				var pbos = make([]*testspb.TimeList, goorl)
+				var pbos = make([]*testspb.TimestampList, goorl)
 				for i := 0; i < goorl; i += 1 {
 					{
 						goore := goo.TimeSlSl[i]
@@ -3854,7 +3854,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 										}
 									}
 								}
-								pbos[i] = &testspb.TimeList{Value: pbos1}
+								pbos[i] = &testspb.TimestampList{Value: pbos1}
 							}
 						}
 					}
@@ -6941,14 +6941,14 @@ func isEmbeddedSt4EmptyRepr(goor EmbeddedSt4) (empty bool) {
 	return
 }
 func (goo EmbeddedSt5) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
-	var pbo *testspb.EmbeddedSt5
+	var pbo *testspb.EmbeddedSt5NameOverride
 	{
-		if isEmbeddedSt5EmptyRepr(goo) {
-			var pbov *testspb.EmbeddedSt5
+		if isEmbeddedSt5NameOverrideEmptyRepr(goo) {
+			var pbov *testspb.EmbeddedSt5NameOverride
 			msg = pbov
 			return
 		}
-		pbo = new(testspb.EmbeddedSt5)
+		pbo = new(testspb.EmbeddedSt5NameOverride)
 		{
 			pbo.Foo1 = int64(goo.Foo1)
 		}
@@ -7035,12 +7035,12 @@ func (goo EmbeddedSt5) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err err
 	return
 }
 func (goo EmbeddedSt5) EmptyPBMessage(cdc *amino.Codec) (msg proto.Message) {
-	pbo := new(testspb.EmbeddedSt5)
+	pbo := new(testspb.EmbeddedSt5NameOverride)
 	msg = pbo
 	return
 }
 func (goo *EmbeddedSt5) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err error) {
-	var pbo *testspb.EmbeddedSt5 = msg.(*testspb.EmbeddedSt5)
+	var pbo *testspb.EmbeddedSt5NameOverride = msg.(*testspb.EmbeddedSt5NameOverride)
 	{
 		if pbo != nil {
 			{
@@ -7117,9 +7117,9 @@ func (goo *EmbeddedSt5) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err 
 	return
 }
 func (_ EmbeddedSt5) GetTypeURL() (typeURL string) {
-	return "/tests.EmbeddedSt5"
+	return "/tests.EmbeddedSt5NameOverride"
 }
-func isEmbeddedSt5EmptyRepr(goor EmbeddedSt5) (empty bool) {
+func isEmbeddedSt5NameOverrideEmptyRepr(goor EmbeddedSt5) (empty bool) {
 	{
 		empty = true
 		{

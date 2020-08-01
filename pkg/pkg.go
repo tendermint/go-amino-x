@@ -9,13 +9,23 @@ import (
 	"strings"
 )
 
+type Type struct {
+	Type             reflect.Type
+	Name             string // proto3 name (override)
+	PointerPreferred bool   // whether pointer is preferred for decoding interface.
+}
+
+func (t *Type) FullName(pkg *Package) string {
+	return fmt.Sprintf("%v.%v", pkg.P3PkgName, t.Name)
+}
+
 type Package struct {
 	// General info
 	GoPkgPath    string
 	GoPkgName    string
 	DirName      string
 	Dependencies []*Package
-	Types        []reflect.Type
+	Types        []Type
 
 	// Proto3 info
 	P3GoPkgPath  string
@@ -103,21 +113,48 @@ func (pkg *Package) WithDependencies(deps ...*Package) *Package {
 
 func (pkg *Package) WithTypes(objs ...interface{}) *Package {
 	for _, obj := range objs {
-		objType := reflect.TypeOf(obj)
+		var objType reflect.Type
+		var name string
+		var pointerPreferred bool
+		objType = reflect.TypeOf(obj)
+		if objType.Kind() == reflect.Ptr && objType.Elem() == reflect.TypeOf(Type{}) {
+			panic("Use pkg.Type{}, not *pkg.Type{}")
+		}
+		if objType == reflect.TypeOf(Type{}) {
+			objType = obj.(Type).Type
+			name = obj.(Type).Name
+			if name != capitalize(name) {
+				panic(fmt.Sprintf("Type name must be capitalized, but got %v", name))
+			}
+			pointerPreferred = obj.(Type).PointerPreferred
+		}
+		// Init deref and ptr types.
 		objDerefType := objType
-		for objDerefType.Kind() == reflect.Ptr {
-			objDerefType = objDerefType.Elem()
+		if objDerefType.Kind() == reflect.Ptr {
+			objDerefType = objType.Elem()
+			if objDerefType.Kind() == reflect.Ptr {
+				panic("unexpected nested pointers")
+			}
+			pointerPreferred = true
+		} else {
+			pointerPreferred = false
 		}
 		if objDerefType.PkgPath() != pkg.GoPkgPath {
 			panic(fmt.Sprintf("unexpected package for %v, expected %v got %v for obj %v obj type %v", objDerefType, pkg.GoPkgPath, objDerefType.PkgPath(), obj, objType))
 		}
-		exists, err := pkg.HasType(objType)
-		if exists {
-			panic(err)
+		// Check that deref type don't already exist.
+		_, ok := pkg.GetType(objDerefType)
+		if ok {
+			panic(fmt.Errorf("type %v already registered with package", objDerefType))
 		}
-		// NOTE: keep pointer info, as preference for deserialization.
-		// This is how amino.Codec.RegisterTypeFrom() knows.
-		pkg.Types = append(pkg.Types, objType)
+		if name == "" {
+			name = objDerefType.Name()
+		}
+		pkg.Types = append(pkg.Types, Type{
+			Type:             objDerefType,
+			Name:             name,
+			PointerPreferred: pointerPreferred,
+		})
 	}
 	return pkg
 }
@@ -137,41 +174,30 @@ func (pkg *Package) WithP3SchemaFile(file string) *Package {
 	return pkg
 }
 
-// err is always non-nil and includes some generic message.
-// (since the caller may either expect the type in the package or not).
-func (pkg *Package) HasType(rt reflect.Type) (exists bool, err error) {
-	for _, rt2 := range pkg.Types {
-		if rt == rt2 {
-			return true, fmt.Errorf("type %v already registered with package", rt)
-		}
-		if rt.Kind() == reflect.Ptr && rt.Elem() == rt2 {
-			return true, fmt.Errorf("non-pointer receiver registered in package but got %v", rt)
-		}
-		if rt2.Kind() == reflect.Ptr && rt == rt2.Elem() {
-			return true, fmt.Errorf("pointer receiver registered in package but got %v", rt)
+func (pkg *Package) GetType(rt reflect.Type) (t Type, ok bool) {
+	if rt.Kind() == reflect.Ptr {
+		panic("unexpected pointer type")
+	}
+	for _, t := range pkg.Types {
+		if rt == t.Type {
+			return t, true
 		}
 	}
-	return false, fmt.Errorf("type %v not registered with package", rt)
+	return Type{}, false
 }
 
 func (pkg *Package) HasName(name string) (exists bool) {
-	for _, rt := range pkg.Types {
-		if rt.Kind() == reflect.Ptr {
-			rt = rt.Elem()
-		}
-		if rt.Name() == name {
+	for _, t := range pkg.Types {
+		if t.Name == name {
 			return true
 		}
 	}
 	return false
 }
 
-func (pkg *Package) HasFullName(name string) (exists bool) {
-	for _, rt := range pkg.Types {
-		if rt.Kind() == reflect.Ptr {
-			rt = rt.Elem()
-		}
-		if pkg.FullNameForType(rt) == name {
+func (pkg *Package) HasFullName(fullname string) (exists bool) {
+	for _, t := range pkg.Types {
+		if t.FullName(pkg) == fullname {
 			return true
 		}
 	}
@@ -180,14 +206,15 @@ func (pkg *Package) HasFullName(name string) (exists bool) {
 
 // panics of rt was not registered.
 func (pkg *Package) FullNameForType(rt reflect.Type) string {
+	drt := rt
 	if rt.Kind() == reflect.Ptr {
-		rt = rt.Elem()
+		drt = rt.Elem()
 	}
-	exists, err := pkg.HasType(rt)
-	if !exists {
-		panic(err)
+	t, ok := pkg.GetType(drt)
+	if !ok {
+		panic(fmt.Errorf("Unknown type %v", drt))
 	}
-	return fmt.Sprintf("%v.%v", pkg.P3PkgName, rt.Name())
+	return t.FullName(pkg)
 }
 
 // panics of rt (or a pointer to it) was not registered.
@@ -231,6 +258,14 @@ func (pkg *Package) CrawlPackages(seen map[*Package]struct{}) (res []*Package) {
 		res = append(res, pkg)
 	}
 	return res
+}
+
+func (pkg *Package) ReflectTypes() []reflect.Type {
+	rtz := make([]reflect.Type, len(pkg.Types))
+	for i, t := range pkg.Types {
+		rtz[i] = t.Type
+	}
+	return rtz
 }
 
 //----------------------------------------
@@ -302,4 +337,8 @@ func DefaultPkgName(gopkgPath string) (name string) {
 	name = parts[len(parts)-1]
 	name = strings.ToLower(name)
 	return name
+}
+
+func capitalize(s string) string {
+	return strings.ToUpper(s[0:1]) + s[1:]
 }

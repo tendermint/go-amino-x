@@ -58,22 +58,22 @@ message ArraysStruct {
 message ArraysArraysStruct {
 	repeated Int8List Int8ArAr = 1;
 	repeated Int16List Int16ArAr = 2;
-	repeated Int32List Int32ArAr = 3;
-	repeated Fixed32Int32List Int32FixedArAr = 4;
-	repeated Int64List Int64ArAr = 5;
-	repeated Fixed64Int64List Int64FixedArAr = 6;
-	repeated IntList IntArAr = 7;
+	repeated Int32ValueList Int32ArAr = 3;
+	repeated Fixed32Int32ValueList Int32FixedArAr = 4;
+	repeated Int64ValueList Int64ArAr = 5;
+	repeated Fixed64Int64ValueList Int64FixedArAr = 6;
+	repeated Int64ValueList IntArAr = 7;
 	repeated bytes ByteArAr = 8;
 	repeated bytes Uint8ArAr = 9;
-	repeated Uint16List Uint16ArAr = 10;
-	repeated Uint32List Uint32ArAr = 11;
-	repeated Fixed32Uint32List Uint32FixedArAr = 12;
-	repeated Uint64List Uint64ArAr = 13;
-	repeated Fixed64Uint64List Uint64FixedArAr = 14;
-	repeated UintList UintArAr = 15;
-	repeated StringList StrArAr = 16;
+	repeated UInt16List Uint16ArAr = 10;
+	repeated UInt32ValueList Uint32ArAr = 11;
+	repeated Fixed32UInt32ValueList Uint32FixedArAr = 12;
+	repeated UInt64ValueList Uint64ArAr = 13;
+	repeated Fixed64UInt64ValueList Uint64FixedArAr = 14;
+	repeated UInt64ValueList UintArAr = 15;
+	repeated StringValueList StrArAr = 16;
 	repeated BytesList BytesArAr = 17;
-	repeated TimeList TimeArAr = 18;
+	repeated TimestampList TimeArAr = 18;
 	repeated EmptyStructList EmptyArAr = 19;
 }
 message SlicesStruct {
@@ -100,22 +100,22 @@ message SlicesStruct {
 message SlicesSlicesStruct {
 	repeated Int8List Int8SlSl = 1;
 	repeated Int16List Int16SlSl = 2;
-	repeated Int32List Int32SlSl = 3;
-	repeated Fixed32Int32List Int32FixedSlSl = 4;
-	repeated Int64List Int64SlSl = 5;
-	repeated Fixed64Int64List Int64FixedSlSl = 6;
-	repeated IntList IntSlSl = 7;
+	repeated Int32ValueList Int32SlSl = 3;
+	repeated Fixed32Int32ValueList Int32FixedSlSl = 4;
+	repeated Int64ValueList Int64SlSl = 5;
+	repeated Fixed64Int64ValueList Int64FixedSlSl = 6;
+	repeated Int64ValueList IntSlSl = 7;
 	repeated bytes ByteSlSl = 8;
 	repeated bytes Uint8SlSl = 9;
-	repeated Uint16List Uint16SlSl = 10;
-	repeated Uint32List Uint32SlSl = 11;
-	repeated Fixed32Uint32List Uint32FixedSlSl = 12;
-	repeated Uint64List Uint64SlSl = 13;
-	repeated Fixed64Uint64List Uint64FixedSlSl = 14;
-	repeated UintList UintSlSl = 15;
-	repeated StringList StrSlSl = 16;
+	repeated UInt16List Uint16SlSl = 10;
+	repeated UInt32ValueList Uint32SlSl = 11;
+	repeated Fixed32UInt32ValueList Uint32FixedSlSl = 12;
+	repeated UInt64ValueList Uint64SlSl = 13;
+	repeated Fixed64UInt64ValueList Uint64FixedSlSl = 14;
+	repeated UInt64ValueList UintSlSl = 15;
+	repeated StringValueList StrSlSl = 16;
 	repeated BytesList BytesSlSl = 17;
-	repeated TimeList TimeSlSl = 18;
+	repeated TimestampList TimeSlSl = 18;
 	repeated EmptyStructList EmptySlSl = 19;
 }
 message PointersStruct {
@@ -193,7 +193,7 @@ message EmbeddedSt4 {
 	PointersStruct PointersStructField = 8;
 	uint64 Foo5 = 9;
 }
-message EmbeddedSt5 {
+message EmbeddedSt5NameOverride {
 	sint64 Foo1 = 1;
 	PrimitivesStruct PrimitivesStruct = 2;
 	string Foo2 = 3;
@@ -304,48 +304,42 @@ message BytesListList {
 message EmptyStructList {
 	repeated EmptyStruct Value = 1;
 }
-message Fixed32Int32List {
+message Fixed32Int32ValueList {
 	repeated sfixed32 Value = 1;
 }
-message Fixed32Uint32List {
+message Fixed32UInt32ValueList {
 	repeated fixed32 Value = 1;
 }
-message Fixed64Int64List {
+message Fixed64Int64ValueList {
 	repeated sfixed64 Value = 1;
 }
-message Fixed64Uint64List {
+message Fixed64UInt64ValueList {
 	repeated fixed64 Value = 1;
 }
 message Int16List {
 	repeated sint32 Value = 1;
 }
-message Int32List {
+message Int32ValueList {
 	repeated sint32 Value = 1;
 }
-message Int64List {
+message Int64ValueList {
 	repeated sint64 Value = 1;
 }
 message Int8List {
 	repeated sint32 Value = 1;
 }
-message IntList {
-	repeated sint64 Value = 1;
-}
-message StringList {
+message StringValueList {
 	repeated string Value = 1;
 }
-message TimeList {
+message TimestampList {
 	repeated google.protobuf.Timestamp Value = 1;
 }
-message Uint16List {
+message UInt16List {
 	repeated uint32 Value = 1;
 }
-message Uint32List {
+message UInt32ValueList {
 	repeated uint32 Value = 1;
 }
-message Uint64List {
-	repeated uint64 Value = 1;
-}
-message UintList {
+message UInt64ValueList {
 	repeated uint64 Value = 1;
 }

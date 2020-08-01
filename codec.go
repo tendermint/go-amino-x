@@ -32,8 +32,9 @@ type InterfaceInfo struct {
 
 type ConcreteInfo struct {
 	Registered            bool      // Registered with Register*().
+	Name                  string    // Registered name which may override default reflection name.
 	PointerPreferred      bool      // Deserialize to pointer type if possible.
-	TypeURL               string    // <domain and path>/<p3 package no slashes>.<Type.Name>
+	TypeURL               string    // <domain and path>/<p3 package no slashes>.<Name>
 	IsAminoMarshaler      bool      // Implements MarshalAmino() (<ReprObject>, error) and UnmarshalAmino(<ReprObject>) (error).
 	ReprType              *TypeInfo // <ReprType> if IsAminoMarshaler, that, or by default the identity Type.
 	IsJSONValueType       bool      // If true, the Any representation uses the "value" field (instead of embedding @type).
@@ -185,19 +186,19 @@ type Codec struct {
 	// proto3 name of format "<pkg path no slashes>.<MessageName>"
 	// which follows the TypeURL's last (and required) slash.
 	// only registered types have names.
-	nameToTypeInfo map[string]*TypeInfo
-	packages       pkg.PackageSet
-	usePBBindings  bool
+	fullnameToTypeInfo map[string]*TypeInfo
+	packages           pkg.PackageSet
+	usePBBindings      bool
 }
 
 func NewCodec() *Codec {
 	cdc := &Codec{
-		sealed:         false,
-		autoseal:       false,
-		typeInfos:      make(map[reflect.Type]*TypeInfo),
-		nameToTypeInfo: make(map[string]*TypeInfo),
-		packages:       pkg.NewPackageSet(),
-		usePBBindings:  false,
+		sealed:             false,
+		autoseal:           false,
+		typeInfos:          make(map[reflect.Type]*TypeInfo),
+		fullnameToTypeInfo: make(map[string]*TypeInfo),
+		packages:           pkg.NewPackageSet(),
+		usePBBindings:      false,
 	}
 	cdc.registerWellKnownTypes()
 	return cdc
@@ -208,12 +209,12 @@ func NewCodec() *Codec {
 // modifications to the underlying codec.
 func (cdc *Codec) WithPBBindings() *Codec {
 	return &Codec{
-		sealed:         true,
-		autoseal:       false,
-		typeInfos:      cdc.typeInfos,
-		nameToTypeInfo: cdc.nameToTypeInfo,
-		packages:       cdc.packages,
-		usePBBindings:  true,
+		sealed:             true,
+		autoseal:           false,
+		typeInfos:          cdc.typeInfos,
+		fullnameToTypeInfo: cdc.fullnameToTypeInfo,
+		packages:           cdc.packages,
+		usePBBindings:      true,
 	}
 }
 
@@ -229,8 +230,8 @@ func (cdc *Codec) RegisterPackage(pkg *Package) {
 	}
 
 	// Register types for package.
-	for _, rt := range pkg.Types {
-		cdc.RegisterTypeFrom(rt, pkg)
+	for _, t := range pkg.Types {
+		cdc.RegisterTypeFrom(t.Type, pkg)
 	}
 }
 
@@ -244,29 +245,14 @@ func (cdc *Codec) RegisterTypeFrom(rt reflect.Type, pkg *Package) {
 	cdc.assertNotSealed()
 
 	// Get p3 full name.
-	if exists, err := pkg.HasType(rt); !exists {
-		panic(err)
-	} else {
-		// ignore irrelevant error message
-	}
-
-	// Get pointerPreferred.
-	var pointerPreferred bool
-	if rt.Kind() == reflect.Ptr {
-		rt = rt.Elem()
-		if rt.Kind() == reflect.Ptr {
-			// We can encode/decode pointer-pointers, but not register them.
-			panic(fmt.Sprintf("registering pointer-pointers not yet supported: *%v", rt))
-		}
-		if rt.Kind() == reflect.Interface {
-			// MARKER: No interface-pointers
-			panic(fmt.Sprintf("expected a non-interface (got interface pointer): %v", rt))
-		}
-		pointerPreferred = true
+	t, ok := pkg.GetType(rt)
+	if !ok {
+		panic(fmt.Errorf("type %v not registered on package %v", rt, pkg))
 	}
 
 	// Get type_url
 	typeURL := pkg.TypeURLForType(rt)
+	pointerPreferred := t.PointerPreferred
 	cdc.registerType(pkg, rt, typeURL, pointerPreferred, true)
 }
 
@@ -310,6 +296,7 @@ func (cdc *Codec) registerType(pkg *Package, rt reflect.Type, typeURL string, po
 	info.Package = pkg
 	info.ConcreteInfo.Registered = true
 	info.ConcreteInfo.PointerPreferred = pointerPreferred
+	info.ConcreteInfo.Name = typeURLtoShortname(typeURL)
 	info.ConcreteInfo.TypeURL = typeURL
 
 	// Separate locking instance,
@@ -462,16 +449,16 @@ func (cdc *Codec) registerTypeInfoWLocked(info *TypeInfo, primary bool) {
 
 	// Everybody's dooing a brand-new dance, now
 	// Come on baby, doo the registration!
-	name := typeURLtoName(info.TypeURL)
-	existing, ok := cdc.nameToTypeInfo[name]
+	fullname := typeURLtoFullname(info.TypeURL)
+	existing, ok := cdc.fullnameToTypeInfo[fullname]
 	if primary {
 		if ok {
-			panic(fmt.Sprintf("name <%s> already registered for %v (TypeURL: %v)", name, existing.Type, info.TypeURL))
+			panic(fmt.Sprintf("fullname <%s> already registered for %v (TypeURL: %v)", fullname, existing.Type, info.TypeURL))
 		}
-		cdc.nameToTypeInfo[name] = info
+		cdc.fullnameToTypeInfo[fullname] = info
 	} else {
 		if !ok {
-			panic(fmt.Sprintf("name <%s> not yet registered", name))
+			panic(fmt.Sprintf("fullname <%s> not yet registered", fullname))
 		}
 	}
 }
@@ -523,31 +510,31 @@ func (cdc *Codec) getTypeInfoWLocked(rt reflect.Type) (info *TypeInfo, err error
 }
 
 func (cdc *Codec) getTypeInfoFromTypeURLRLock(typeURL string, fopts FieldOptions) (info *TypeInfo, err error) {
-	name := typeURLtoName(typeURL)
-	return cdc.getTypeInfoFromNameRLock(name, fopts)
+	fullname := typeURLtoFullname(typeURL)
+	return cdc.getTypeInfoFromFullnameRLock(fullname, fopts)
 }
 
-func (cdc *Codec) getTypeInfoFromNameRLock(name string, fopts FieldOptions) (info *TypeInfo, err error) {
+func (cdc *Codec) getTypeInfoFromFullnameRLock(fullname string, fopts FieldOptions) (info *TypeInfo, err error) {
 	// We do not use defer cdc.mtx.Unlock() here due to performance overhead of
 	// defer in go1.11 (and prior versions). Ensure new code paths unlock the
 	// mutex.
 	cdc.mtx.RLock()
 
 	// Special cases: time and duration
-	if name == "google.protobuf.Timestamp" && !fopts.UseGoogleTypes {
+	if fullname == "google.protobuf.Timestamp" && !fopts.UseGoogleTypes {
 		cdc.mtx.RUnlock()
 		info, err = cdc.getTypeInfoWLock(timeType)
 		return
 	}
-	if name == "google.protobuf.Duration" && !fopts.UseGoogleTypes {
+	if fullname == "google.protobuf.Duration" && !fopts.UseGoogleTypes {
 		cdc.mtx.RUnlock()
 		info, err = cdc.getTypeInfoWLock(durationType)
 		return
 	}
 
-	info, ok := cdc.nameToTypeInfo[name]
+	info, ok := cdc.fullnameToTypeInfo[fullname]
 	if !ok {
-		err = fmt.Errorf("unrecognized concrete type name %s", name)
+		err = fmt.Errorf("unrecognized concrete type full name %s", fullname)
 		cdc.mtx.RUnlock()
 		return
 	}
@@ -784,10 +771,19 @@ func parseFieldOptions(field reflect.StructField) (skip bool, fopts FieldOptions
 //----------------------------------------
 // Misc.
 
-func typeURLtoName(typeURL string) (name string) {
+func typeURLtoFullname(typeURL string) (fullname string) {
 	parts := strings.Split(typeURL, "/")
 	if len(parts) == 1 {
-		panic(fmt.Sprintf("invalid type_url name \"%v\", must contain at least one slash and be followed by the full name", typeURL))
+		panic(fmt.Sprintf("invalid type_url \"%v\", must contain at least one slash and be followed by the full name", typeURL))
+	}
+	return parts[len(parts)-1]
+}
+
+func typeURLtoShortname(typeURL string) (name string) {
+	fullname := typeURLtoFullname(typeURL)
+	parts := strings.Split(fullname, ".")
+	if len(parts) == 1 {
+		panic(fmt.Sprintf("invalid type_url \"%v\", full name must contain dot", typeURL))
 	}
 	return parts[len(parts)-1]
 }
