@@ -15,7 +15,7 @@ import (
 var Package = pkg.NewPackage(
 	"github.com/tendermint/go-amino-x/tests",
 	"tests",
-	pkg.GetCallersDirName(),
+	pkg.GetCallersDirname(),
 ).WithDependencies().WithTypes(
 	EmptyStruct{},
 	PrimitivesStruct{},

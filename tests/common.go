@@ -32,6 +32,8 @@ type PrimitivesStruct struct {
 	Bytes       []byte
 	Time        time.Time
 	Empty       EmptyStruct
+
+	unexposed int8
 }
 
 type ShortArraysStruct struct {

@@ -271,7 +271,7 @@ func (pkg *Package) ReflectTypes() []reflect.Type {
 //----------------------------------------
 
 // Utility for whoever is making a NewPackage manually.
-func GetCallersDirName() string {
+func GetCallersDirname() string {
 	var dirName = "" // derive from caller.
 	_, filename, _, ok := runtime.Caller(1)
 	if !ok {
