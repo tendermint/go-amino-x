@@ -343,6 +343,11 @@ func (cdc *Codec) marshalBinaryBareReflect(o interface{}) ([]byte, error) {
 		bz = buf.Bytes()
 	}
 
+	// If bz is empty, prefer nil.
+	if len(bz) == 0 {
+		bz = nil
+	}
+
 	return bz, nil
 }
 
