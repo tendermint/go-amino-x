@@ -425,7 +425,7 @@ func (cdc *Codec) MustMarshalAny(o interface{}) []byte {
 // Returns an error if not all of bz is consumed.
 func (cdc *Codec) UnmarshalLengthPrefixed(bz []byte, ptr interface{}) error {
 	if len(bz) == 0 {
-		return errors.New("unMarshalLengthPrefixed cannot decode empty bytes")
+		return errors.New("unmarshalLengthPrefixed cannot decode empty bytes")
 	}
 
 	// Read byte-length prefix.
@@ -526,17 +526,17 @@ func (cdc *Codec) Unmarshal(bz []byte, ptr interface{}) error {
 	if cdc.usePBBindings {
 		pbm, ok := ptr.(PBMessager)
 		if ok {
-			return cdc.unMarshalPBBindings(bz, pbm)
+			return cdc.unmarshalPBBindings(bz, pbm)
 		} else {
 			// Fall back to using reflection for native primitive types.
 		}
 	}
 
-	return cdc.unMarshalReflect(bz, ptr)
+	return cdc.unmarshalReflect(bz, ptr)
 }
 
 // Use reflection.
-func (cdc *Codec) unMarshalReflect(bz []byte, ptr interface{}) error {
+func (cdc *Codec) unmarshalReflect(bz []byte, ptr interface{}) error {
 	rv := reflect.ValueOf(ptr)
 	if rv.Kind() != reflect.Ptr {
 		return ErrNoPointer
@@ -610,7 +610,7 @@ func (cdc *Codec) unMarshalReflect(bz []byte, ptr interface{}) error {
 }
 
 // Use pbbindings.
-func (cdc *Codec) unMarshalPBBindings(bz []byte, pbm PBMessager) error {
+func (cdc *Codec) unmarshalPBBindings(bz []byte, pbm PBMessager) error {
 	pbo := pbm.EmptyPBMessage(cdc)
 	err := proto.Unmarshal(bz, pbo)
 	if err != nil {

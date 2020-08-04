@@ -192,7 +192,7 @@ func _testDeepCopy(t *testing.T, rt reflect.Type) {
 //----------------------------------------
 // Register/interface tests
 
-func TestCodecMarhsalBinaryFailsOnUnregisteredConcrete(t *testing.T) {
+func TestCodecMashalFailsOnUnregisteredConcrete(t *testing.T) {
 	cdc := amino.NewCodec()
 
 	bz, err := cdc.Marshal(struct{ tests.Interface1 }{tests.Concrete1{}})
@@ -340,6 +340,23 @@ func TestCodecRoundtripNonNilRegisteredWrappedValue(t *testing.T) {
 	err = cdc.Unmarshal(bz, &i1)
 	assert.NoError(t, err)
 	assert.Equal(t, c3, i1)
+}
+
+// MarshalAny(msg) and Marshal(&msg) are the same.
+func TestCodecMarshalAny(t *testing.T) {
+	cdc := amino.NewCodec()
+	cdc.RegisterTypeFrom(reflect.TypeOf(tests.ConcreteWrappedBytes{}), tests.Package)
+
+	obj := tests.ConcreteWrappedBytes{Value: []byte("0123")}
+	ifc := (interface{})(obj)
+
+	bz1, err := cdc.MarshalAny(obj)
+	assert.Nil(t, err)
+
+	bz2, err := cdc.Marshal(&ifc)
+	assert.Nil(t, err)
+
+	assert.Equal(t, bz1, bz2, "Marshal(*interface) or MarshalAny(concrete) incorrectly serialized\nMarshalAny(concrete): %X\nMarshal(*interface):  %X", bz1, bz2)
 }
 
 // Like TestCodecRoundtripNonNilRegisteredTypeDef, but JSON.

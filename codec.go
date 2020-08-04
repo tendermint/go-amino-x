@@ -86,7 +86,7 @@ func (info *TypeInfo) GetTyp3(fopts FieldOptions) Typ3 {
 // of a Codec.
 func (info *TypeInfo) IsStructOrUnpacked(fopt FieldOptions) bool {
 	rinfo := info.ReprType
-	if rinfo.Type.Kind() == reflect.Struct {
+	if rinfo.Type.Kind() == reflect.Struct || rinfo.Type.Kind() == reflect.Interface {
 		return true
 	}
 	// We can't just look at the kind and info.Type.Elem(),
