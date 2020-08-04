@@ -91,7 +91,7 @@ func _testCodec(t *testing.T, rt reflect.Type, codecType string) {
 		// Encode to bz.
 		switch codecType {
 		case "binary":
-			bz, err = cdc.MarshalBinaryBare(ptr)
+			bz, err = cdc.Marshal(ptr)
 		case "json":
 			bz, err = cdc.MarshalJSON(ptr)
 		default:
@@ -104,7 +104,7 @@ func _testCodec(t *testing.T, rt reflect.Type, codecType string) {
 		// Decode from bz.
 		switch codecType {
 		case "binary":
-			err = cdc.UnmarshalBinaryBare(bz, ptr2)
+			err = cdc.Unmarshal(bz, ptr2)
 		case "json":
 			err = cdc.UnmarshalJSON(bz, ptr2)
 		default:
@@ -192,19 +192,19 @@ func _testDeepCopy(t *testing.T, rt reflect.Type) {
 //----------------------------------------
 // Register/interface tests
 
-func TestCodecMarhsalBinaryBareFailsOnUnregisteredConcrete(t *testing.T) {
+func TestCodecMarhsalBinaryFailsOnUnregisteredConcrete(t *testing.T) {
 	cdc := amino.NewCodec()
 
-	bz, err := cdc.MarshalBinaryBare(struct{ tests.Interface1 }{tests.Concrete1{}})
+	bz, err := cdc.Marshal(struct{ tests.Interface1 }{tests.Concrete1{}})
 	assert.Error(t, err, "concrete type not registered")
 	assert.Empty(t, bz)
 }
 
-func TestCodecMarshalBinaryBarePassesOnRegistered(t *testing.T) {
+func TestCodecMarshalPassesOnRegistered(t *testing.T) {
 	cdc := amino.NewCodec()
 	cdc.RegisterTypeFrom(reflect.TypeOf(tests.Concrete1{}), tests.Package)
 
-	bz, err := cdc.MarshalBinaryBare(struct{ tests.Interface1 }{tests.Concrete1{}})
+	bz, err := cdc.Marshal(struct{ tests.Interface1 }{tests.Concrete1{}})
 	assert.NoError(t, err, "correctly registered")
 	assert.Equal(t, bz,
 		//     0x0a --> field #1 Typ3ByteLength (anonymous struct)
@@ -222,7 +222,7 @@ func TestCodecRegisterAndMarshalMultipleConcrete(t *testing.T) {
 	cdc.RegisterTypeFrom(reflect.TypeOf(tests.Concrete2{}), tests.Package)
 
 	{ // test tests.Concrete1, no conflict.
-		bz, err := cdc.MarshalBinaryBare(struct{ tests.Interface1 }{tests.Concrete1{}})
+		bz, err := cdc.Marshal(struct{ tests.Interface1 }{tests.Concrete1{}})
 		assert.NoError(t, err, "correctly registered")
 		assert.Equal(t, bz,
 			//     0x0a --> field #1 Typ3ByteLength (anonymous struct)
@@ -235,7 +235,7 @@ func TestCodecRegisterAndMarshalMultipleConcrete(t *testing.T) {
 	}
 
 	{ // test tests.Concrete2, no conflict
-		bz, err := cdc.MarshalBinaryBare(struct{ tests.Interface1 }{tests.Concrete2{}})
+		bz, err := cdc.Marshal(struct{ tests.Interface1 }{tests.Concrete2{}})
 		assert.NoError(t, err, "correctly registered")
 		assert.Equal(t, bz,
 			//     0x0a --> field #1 Typ3ByteLength (anonymous struct)
@@ -256,7 +256,7 @@ func TestCodecRoundtripNonNilRegisteredTypeDef(t *testing.T) {
 	c3 := tests.ConcreteTypeDef{}
 	copy(c3[:], []byte("0123"))
 
-	bz, err := cdc.MarshalBinaryBare(struct{ tests.Interface1 }{c3})
+	bz, err := cdc.Marshal(struct{ tests.Interface1 }{c3})
 	assert.Nil(t, err)
 	assert.Equal(t, bz,
 		//     0x0a --> field #1 Typ3ByteLength (anonymous struct)
@@ -273,7 +273,7 @@ func TestCodecRoundtripNonNilRegisteredTypeDef(t *testing.T) {
 		"ConcreteTypeDef incorrectly serialized")
 
 	var i1 tests.Interface1
-	err = cdc.UnmarshalBinaryBare(bz, &i1)
+	err = cdc.Unmarshal(bz, &i1)
 	assert.Error(t, err) // This fails, because the interface was wrapped in an anonymous struct.
 
 	// try wrapping it in an Any struct
@@ -288,8 +288,8 @@ func TestCodecRoundtripNonNilRegisteredTypeDef(t *testing.T) {
 	}
 
 	// var i1c3 tests.Interface1 = c3
-	// bz, err = cdc.MarshalBinaryBare(&i1c3)
-	bz, err = cdc.MarshalBinaryBare(anyc3)
+	// bz, err = cdc.Marshal(&i1c3)
+	bz, err = cdc.Marshal(anyc3)
 	assert.Nil(t, err)
 	assert.Equal(t, bz,
 		//     0x0a --> field #1 Typ3ByteLength (Any TypeURL)
@@ -304,12 +304,12 @@ func TestCodecRoundtripNonNilRegisteredTypeDef(t *testing.T) {
 		"ConcreteTypeDef incorrectly serialized")
 
 	// This time it should work.
-	err = cdc.UnmarshalBinaryBare(bz, &i1)
+	err = cdc.Unmarshal(bz, &i1)
 	assert.NoError(t, err)
 	assert.Equal(t, c3, i1)
 
 	// The easiest way is this:
-	bz2, err := cdc.MarshalBinaryInterfaceBare(c3)
+	bz2, err := cdc.MarshalAny(c3)
 	assert.Nil(t, err)
 	assert.Equal(t, bz, bz2)
 }
@@ -322,7 +322,7 @@ func TestCodecRoundtripNonNilRegisteredWrappedValue(t *testing.T) {
 
 	c3 := tests.ConcreteWrappedBytes{Value: []byte("0123")}
 
-	bz, err := cdc.MarshalBinaryInterfaceBare(c3)
+	bz, err := cdc.MarshalAny(c3)
 	assert.Nil(t, err)
 	assert.Equal(t, bz,
 		//     0x0a --> field #1 Typ3ByteLength (Any TypeURL)
@@ -337,7 +337,7 @@ func TestCodecRoundtripNonNilRegisteredWrappedValue(t *testing.T) {
 		"ConcreteWrappedBytes incorrectly serialized")
 
 	var i1 tests.Interface1
-	err = cdc.UnmarshalBinaryBare(bz, &i1)
+	err = cdc.Unmarshal(bz, &i1)
 	assert.NoError(t, err)
 	assert.Equal(t, c3, i1)
 }
@@ -350,7 +350,7 @@ func TestCodecJSONRoundtripNonNilRegisteredTypeDef(t *testing.T) {
 	var c3 tests.ConcreteTypeDef
 	copy(c3[:], []byte("0123"))
 
-	bz, err := cdc.MarshalJSONInterface(c3)
+	bz, err := cdc.MarshalJSONAny(c3)
 	assert.Nil(t, err)
 	assert.Equal(t, string(bz),
 		`{"@type":"/tests.ConcreteTypeDef","value":"MDEyMw=="}`,
@@ -370,7 +370,7 @@ func TestCodecRoundtripMarshalOnConcreteNonNilRegisteredTypeDef(t *testing.T) {
 	var c3 tests.ConcreteTypeDef
 	copy(c3[:], []byte("0123"))
 
-	bz, err := cdc.MarshalBinaryInterfaceBare(c3)
+	bz, err := cdc.MarshalAny(c3)
 	assert.Nil(t, err)
 	assert.Equal(t, bz,
 		//     0x0a --> field #1 Typ3ByteLength (Any TypeURL)
@@ -385,7 +385,7 @@ func TestCodecRoundtripMarshalOnConcreteNonNilRegisteredTypeDef(t *testing.T) {
 		"ConcreteTypeDef incorrectly serialized")
 
 	var i1 tests.Interface1
-	err = cdc.UnmarshalBinaryBare(bz, &i1)
+	err = cdc.Unmarshal(bz, &i1)
 	assert.NoError(t, err)
 	assert.Equal(t, c3, i1)
 }
@@ -398,14 +398,14 @@ func TestCodecRoundtripUnmarshalOnConcreteNonNilRegisteredTypeDef(t *testing.T) 
 	var c3a tests.ConcreteTypeDef
 	copy(c3a[:], []byte("0123"))
 
-	bz, err := cdc.MarshalBinaryBare(c3a)
+	bz, err := cdc.Marshal(c3a)
 	assert.Nil(t, err)
 	assert.Equal(t, bz,
 		[]byte{0xa, 0x4, 0x30, 0x31, 0x32, 0x33},
 		"ConcreteTypeDef incorrectly serialized")
 
 	var c3b tests.ConcreteTypeDef
-	err = cdc.UnmarshalBinaryBare(bz, &c3b)
+	err = cdc.Unmarshal(bz, &c3b)
 	assert.Nil(t, err)
 	assert.Equal(t, c3a, c3b)
 }
@@ -415,11 +415,11 @@ func TestCodecBinaryStructFieldNilInterface(t *testing.T) {
 	cdc.RegisterTypeFrom(reflect.TypeOf(tests.InterfaceFieldsStruct{}), tests.Package)
 
 	i1 := &tests.InterfaceFieldsStruct{F1: new(tests.InterfaceFieldsStruct), F2: nil}
-	bz, err := cdc.MarshalBinaryLengthPrefixed(i1)
+	bz, err := cdc.MarshalLengthPrefixed(i1)
 	assert.NoError(t, err)
 
 	i2 := new(tests.InterfaceFieldsStruct)
-	err = cdc.UnmarshalBinaryLengthPrefixed(bz, i2)
+	err = cdc.UnmarshalLengthPrefixed(bz, i2)
 
 	assert.NoError(t, err)
 	require.Equal(t, i2, i1, "i1 and i2 should be the same after decoding")

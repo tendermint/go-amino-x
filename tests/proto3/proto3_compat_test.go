@@ -38,7 +38,7 @@ func TestFixed32Roundtrip(t *testing.T) {
 	type testi32 struct {
 		Int32 int32 `binary:"fixed32"`
 	}
-	ab, err := cdc.MarshalBinaryBare(testi32{Int32: 150})
+	ab, err := cdc.Marshal(testi32{Int32: 150})
 	assert.NoError(t, err, "unexpected error")
 
 	pb, err := proto.Marshal(&p3.TestInt32Fixed{Fixed32: 150})
@@ -52,7 +52,7 @@ func TestFixed32Roundtrip(t *testing.T) {
 	err = proto.Unmarshal(ab, &pt)
 	assert.NoError(t, err, "unexpected error")
 
-	err = cdc.UnmarshalBinaryBare(pb, &att)
+	err = cdc.Unmarshal(pb, &att)
 	assert.NoError(t, err, "unexpected error")
 
 	assert.Equal(t, uint32(att.Int32), pt.Foo)
@@ -65,7 +65,7 @@ func TestVarintZigzagRoundtrip(t *testing.T) {
 		Int32 int `binary:"varint"`
 	}
 	varint := testInt32Varint{Int32: 6000000}
-	ab, err := cdc.MarshalBinaryBare(varint)
+	ab, err := cdc.Marshal(varint)
 	assert.NoError(t, err, "unexpected error")
 	pb, err := proto.Marshal(&p3.TestInt32Varint{Int32: 6000000})
 	assert.NoError(t, err, "unexpected error")
@@ -76,7 +76,7 @@ func TestVarintZigzagRoundtrip(t *testing.T) {
 	err = proto.Unmarshal(ab, &amToP3)
 	assert.NoError(t, err, "unexpected error")
 
-	err = cdc.UnmarshalBinaryBare(pb, &p3ToAm)
+	err = cdc.Unmarshal(pb, &p3ToAm)
 	assert.NoError(t, err, "unexpected error")
 
 	assert.EqualValues(t, varint.Int32, amToP3.Int32)
@@ -89,7 +89,7 @@ func TestFixedU64Roundtrip(t *testing.T) {
 
 	pvint64 := p3.TestFixedInt64{Int64: 150}
 	avint64 := testFixed64Uint{Int64: 150}
-	ab, err := cdc.MarshalBinaryBare(avint64)
+	ab, err := cdc.Marshal(avint64)
 	assert.NoError(t, err, "unexpected error")
 
 	pb, err := proto.Marshal(&pvint64)
@@ -102,7 +102,7 @@ func TestFixedU64Roundtrip(t *testing.T) {
 	err = proto.Unmarshal(ab, &amToP3)
 	assert.NoError(t, err, "unexpected error")
 
-	err = cdc.UnmarshalBinaryBare(pb, &p3ToAm)
+	err = cdc.Unmarshal(pb, &p3ToAm)
 	assert.NoError(t, err, "unexpected error")
 
 	assert.EqualValues(t, p3ToAm.Int64, amToP3.Int64)
@@ -113,7 +113,7 @@ func TestMultidimensionalSlices(t *testing.T) {
 		{1, 2},
 		{3, 4, 5}}
 
-	_, err := cdc.MarshalBinaryBare(s)
+	_, err := cdc.Marshal(s)
 	assert.Error(t, err, "expected error: multidimensional slices are not allowed")
 }
 
@@ -122,7 +122,7 @@ func TestMultidimensionalArrays(t *testing.T) {
 		{1, 2},
 		{3, 4}}
 
-	_, err := cdc.MarshalBinaryBare(arr)
+	_, err := cdc.Marshal(arr)
 	assert.Error(t, err, "expected error: multidimensional arrays are not allowed")
 }
 
@@ -131,21 +131,21 @@ func TestMultidimensionalByteArraysAndSlices(t *testing.T) {
 		{1, 2},
 		{3, 4}}
 
-	_, err := cdc.MarshalBinaryBare(arr)
+	_, err := cdc.Marshal(arr)
 	assert.NoError(t, err, "unexpected error: multidimensional arrays are allowed, as long as they are only of bytes")
 
 	s := [][]byte{
 		{1, 2},
 		{3, 4, 5}}
 
-	_, err = cdc.MarshalBinaryBare(s)
+	_, err = cdc.Marshal(s)
 	assert.NoError(t, err, "unexpected error: multidimensional slices are allowed, as long as they are only of bytes")
 
 	s2 := [][][]byte{{
 		{1, 2},
 		{3, 4, 5}}}
 
-	_, err = cdc.MarshalBinaryBare(s2)
+	_, err = cdc.Marshal(s2)
 	assert.NoError(t, err, "unexpected error: multidimensional slices are allowed, as long as they are only of bytes")
 
 }
@@ -153,7 +153,7 @@ func TestMultidimensionalByteArraysAndSlices(t *testing.T) {
 func TestProto3CompatPtrsRoundtrip(t *testing.T) {
 	s := p3.SomeStruct{}
 
-	ab, err := cdc.MarshalBinaryBare(s)
+	ab, err := cdc.Marshal(s)
 	assert.NoError(t, err)
 
 	pb, err := proto.Marshal(&s)
@@ -172,14 +172,14 @@ func TestProto3CompatPtrsRoundtrip(t *testing.T) {
 	err = proto.Unmarshal(ab, &amToP3)
 	assert.NoError(t, err, "unexpected error")
 
-	err = cdc.UnmarshalBinaryBare(pb, &p3ToAm)
+	err = cdc.Unmarshal(pb, &p3ToAm)
 	assert.NoError(t, err, "unexpected error")
 
 	assert.EqualValues(t, p3ToAm, amToP3)
 
 	s2 := p3.SomeStruct{Emb: &p3.EmbeddedStruct{}}
 
-	ab, err = cdc.MarshalBinaryBare(s2)
+	ab, err = cdc.Marshal(s2)
 	assert.NoError(t, err)
 
 	pb, err = proto.Marshal(&s2)
@@ -189,7 +189,7 @@ func TestProto3CompatPtrsRoundtrip(t *testing.T) {
 	err = proto.Unmarshal(ab, &amToP3)
 	assert.NoError(t, err, "unexpected error")
 
-	err = cdc.UnmarshalBinaryBare(pb, &p3ToAm)
+	err = cdc.Unmarshal(pb, &p3ToAm)
 	assert.NoError(t, err, "unexpected error")
 
 	assert.EqualValues(t, p3ToAm, amToP3)
@@ -217,7 +217,7 @@ func TestProto3CompatEmptyTimestamp(t *testing.T) {
 
 	// unmarshaling an empty slice behaves a bit differently in proto3 compared to amino:
 	res := &goAminoGotTime{}
-	err = cdc.UnmarshalBinaryBare(pb, res)
+	err = cdc.Unmarshal(pb, res)
 	assert.NoError(t, err)
 	// NOTE: this behaves differently because amino defaults the time to 1970-01-01 00:00:00 +0000 UTC while
 	// decoding; protobuf defaults to nil here (see the following lines below):
@@ -236,9 +236,9 @@ func TestProto3CompatTimestampNow(t *testing.T) {
 	assert.NoError(t, err)
 	pt := p3.ProtoGotTime{T: ptts}
 	at := goAminoGotTime{T: &now}
-	ab1, err := cdc.MarshalBinaryBare(at)
+	ab1, err := cdc.Marshal(at)
 	assert.NoError(t, err)
-	ab2, err := cdc.MarshalBinaryBare(pt)
+	ab2, err := cdc.Marshal(pt)
 	assert.NoError(t, err)
 	// amino's encoding of time.Time is the same as proto's encoding of the well known type
 	// timestamp.Timestamp (they can be used interchangeably):
@@ -264,7 +264,7 @@ func TestProto3CompatTimestampNow(t *testing.T) {
 func TestProto3EpochTime(t *testing.T) {
 	pbRes := p3.ProtoGotTime{}
 	// amino encode epoch (1970) and decode using proto; expect the resulting time to be epoch again:
-	ab, err := cdc.MarshalBinaryBare(goAminoGotTime{T: &epoch})
+	ab, err := cdc.Marshal(goAminoGotTime{T: &epoch})
 	assert.NoError(t, err)
 	err = proto.Unmarshal(ab, &pbRes)
 	assert.NoError(t, err)
@@ -277,10 +277,10 @@ func TestProtoNegativeSeconds(t *testing.T) {
 	pbRes := p3.ProtoGotTime{}
 	// test with negative seconds (0001-01-01 -> seconds = -62135596800, nanos = 0):
 	ntm, err := time.Parse("2006-01-02 15:04:05 +0000 UTC", "0001-01-01 00:00:00 +0000 UTC")
-	ab, err := cdc.MarshalBinaryBare(goAminoGotTime{T: &ntm})
+	ab, err := cdc.Marshal(goAminoGotTime{T: &ntm})
 	assert.NoError(t, err)
 	res := &goAminoGotTime{}
-	err = cdc.UnmarshalBinaryBare(ab, res)
+	err = cdc.Unmarshal(ab, res)
 	assert.NoError(t, err)
 	assert.EqualValues(t, ntm, *res.T)
 	err = proto.Unmarshal(ab, &pbRes)
@@ -305,13 +305,13 @@ func TestIntVarintCompat(t *testing.T) {
 	}
 	for _, tc := range tcs {
 		tv := p3.TestInts{Int32: tc.val32, Int64: tc.val64}
-		ab, err := cdc.MarshalBinaryBare(tv)
+		ab, err := cdc.Marshal(tv)
 		assert.NoError(t, err)
 		pb, err := proto.Marshal(&tv)
 		assert.NoError(t, err)
 		assert.Equal(t, ab, pb)
 		var res p3.TestInts
-		err = cdc.UnmarshalBinaryBare(pb, &res)
+		err = cdc.Unmarshal(pb, &res)
 		assert.NoError(t, err)
 		var res2 p3.TestInts
 		err = proto.Unmarshal(ab, &res2)
@@ -341,7 +341,7 @@ func TestIntVarintCompat(t *testing.T) {
 		pb, err := proto.Marshal(&ptv)
 		assert.NoError(t, err)
 		atv := TestInt{tc.val}
-		ab, err := cdc.MarshalBinaryBare(atv)
+		ab, err := cdc.Marshal(atv)
 		assert.NoError(t, err)
 		if tc.val == 0 {
 			// amino results in []byte(nil)
@@ -353,7 +353,7 @@ func TestIntVarintCompat(t *testing.T) {
 		}
 		// can we get back the int from the proto?
 		var res TestInt
-		err = cdc.UnmarshalBinaryBare(pb, &res)
+		err = cdc.Unmarshal(pb, &res)
 		assert.NoError(t, err)
 		assert.EqualValues(t, res.Int, tc.val)
 	}
@@ -372,7 +372,7 @@ func TestIntVarintCompat(t *testing.T) {
 	assert.NoError(t, err)
 
 	var res p3.TestInts
-	err = cdc.UnmarshalBinaryBare(b.Bytes(), &res)
+	err = cdc.Unmarshal(b.Bytes(), &res)
 	assert.Error(t, err)
 }
 
@@ -416,7 +416,7 @@ func TestTypeDefCompatibility(t *testing.T) {
 		8: {strAr, p3StrSl},
 	}
 	for i, tc := range tcs {
-		ab, err := amino.MarshalBinaryBare(tc.AminoType)
+		ab, err := amino.Marshal(tc.AminoType)
 		require.NoError(t, err)
 
 		pb, err := proto.Marshal(tc.ProtoMsg)

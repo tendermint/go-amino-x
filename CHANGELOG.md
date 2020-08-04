@@ -1,14 +1,20 @@
 # Changelog
 
-## 1.0.0-rc0 (June 28th, 2020)
+## Go-Amino-X 1.0.0-rc0 (June 28th, 2020)
 
 BREAKING CHANGE:
+ - Many changes have been made; go-amino-x binary and JSON are not backwards
+   compatible.
  - Interfaces are encoded as google.protobuf.Any. As representations are
    deterministic, local Codecs are no longer required.  Just register packages
 at the global level.
  - Nested pointers are not allowed.  Pointers to primitives, structs, and
    interfaces are allowed.  See
 https://github.com/tendermint/go-amino-x/pull/290#issuecomment-650717598.
+ - IMPORTNT: Field tag for lists "EmptyElements" replaced with "NilElements",
+   with opposite behavior.
+ - MarshalBinaryBare() renamed to Marshal().  The default encoding is bare,
+use length-prefixed for streaming messages.
 
 ## 0.15.0 (May 2, 2018)
 
@@ -44,7 +50,7 @@ BREAKING CHANGE:
 BREAKING CHANGE:
  - `time.Time`: validate seconds since 1970 are in valid range during encoding; i.e. in the interval [-62135596800, 253402300800)
  - `time.Time`: match encoding of time.Time to protobuf's well known type [Timestamp] ([#224])
- - Rename `MarshalBinary` to `MarshalBinaryLengthPrefixed` ([#222])
+ - Rename `Marshal` to `MarshalLengthPrefixed` ([#222])
  
 [Timestamp]: https://github.com/protocolbuffers/protobuf/blob/d2980062c859649523d5fd51d6b55ab310e47482/src/google/protobuf/timestamp.proto#L123-L135
 
@@ -132,7 +138,7 @@ NEW FEATURES:
 ## 0.9.7 (April 25, 2019)
 
 FEATURES:
- - Add MustUnmarshalBinary and MustUnmarshalBinaryBare to the Codec
+ - Add MustUnmarshal and MustUnmarshal to the Codec
    - both methods are analogous to their marshalling counterparts
    - both methods will panic in case of an error
  - MarshalJSONIndent
@@ -164,13 +170,13 @@ BUG FIXES:
 ## 0.9.2 (Mar 24, 2018)
 
 BUG FIXES:
- - Fix UnmarshalBinaryReader consuming too much from bufio.
- - Fix UnmarshalBinaryReader obeying limit.
+ - Fix UnmarshalReader consuming too much from bufio.
+ - Fix UnmarshalReader obeying limit.
 
 ## 0.9.1 (Mar 24, 2018)
 
 BUG FIXES:
- - Fix UnmarshalBinaryReader returned n
+ - Fix UnmarshalReader returned n
 
 ## 0.9.0 (Mar 10, 2018)
 

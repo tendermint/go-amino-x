@@ -424,7 +424,7 @@ func go2pbStmts(rootPkg *amino.Package, isRoot bool, imports *ast.GenDecl, scope
 		b = append(b,
 			_a(typeUrl_, ":=", _call(_x("cdc.GetTypeURL"), goo)),
 			_a(bz_, ":=", "[]byte~(~nil~)"),
-			_a(bz_, "err", "=", _call(_x("cdc.MarshalBinaryBare"), goor)),
+			_a(bz_, "err", "=", _call(_x("cdc.Marshal"), goor)),
 			_if(_x("err__!=__nil"),
 				_return(),
 			),
@@ -698,7 +698,7 @@ func pb2goStmts(rootPkg *amino.Package, isRoot bool, imports *ast.GenDecl, scope
 			_a(typeUrl_, ":=", _sel(pbo, "TypeUrl")),
 			_a(bz_, ":=", _sel(pbo, "Value")),
 			_a(goorp_, ":=", _ref(goor)), // goor is addressable. NOTE &*a == a if a != nil.
-			_a("err", "=", _x("cdc.UnmarshalBinaryAny~(~%v,%v,%v~)",
+			_a("err", "=", _x("cdc.UnmarshalAny~(~%v,%v,%v~)",
 				typeUrl_, bz_, goorp_)),
 			_if(_x("err__!=__nil"),
 				_return(),

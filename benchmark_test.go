@@ -87,11 +87,11 @@ func _benchmarkBinary(b *testing.B, cdc *amino.Codec, rt reflect.Type, codecType
 		}
 		switch codecType {
 		case "binary":
-			bz, err = cdc.MarshalBinaryBare(ptr)
+			bz, err = cdc.Marshal(ptr)
 		case "json":
 			bz, err = cdc.MarshalJSON(ptr)
 		case "binary_pb":
-			bz, err = pbcdc.MarshalBinaryBare(ptr)
+			bz, err = pbcdc.Marshal(ptr)
 		case "binary_pb_translate_only":
 			pbm, _ = ptr.(amino.PBMessager)
 			pbo, err = pbm.ToPBMessage(pbcdc)
@@ -113,11 +113,11 @@ func _benchmarkBinary(b *testing.B, cdc *amino.Codec, rt reflect.Type, codecType
 		}
 		switch codecType {
 		case "binary":
-			err = cdc.UnmarshalBinaryBare(bz, ptr2)
+			err = cdc.Unmarshal(bz, ptr2)
 		case "json":
 			err = cdc.UnmarshalJSON(bz, ptr2)
 		case "binary_pb":
-			err = pbcdc.UnmarshalBinaryBare(bz, ptr2)
+			err = pbcdc.Unmarshal(bz, ptr2)
 		case "binary_pb_translate_only":
 			err = pbm.FromPBMessage(pbcdc, pbo)
 		default:

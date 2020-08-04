@@ -7397,7 +7397,7 @@ func (goo ReprElem2) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error
 			if goo.Value != nil {
 				typeUrl := cdc.GetTypeURL(goo.Value)
 				bz := []byte(nil)
-				bz, err = cdc.MarshalBinaryBare(goo.Value)
+				bz, err = cdc.Marshal(goo.Value)
 				if err != nil {
 					return
 				}
@@ -7424,7 +7424,7 @@ func (goo *ReprElem2) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err er
 				typeUrl := pbo.Value.TypeUrl
 				bz := pbo.Value.Value
 				goorp := &(*goo).Value
-				err = cdc.UnmarshalBinaryAny(typeUrl, bz, goorp)
+				err = cdc.UnmarshalAny(typeUrl, bz, goorp)
 				if err != nil {
 					return
 				}
@@ -8780,7 +8780,7 @@ func (goo InterfaceFieldsStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Messag
 			if goo.F1 != nil {
 				typeUrl := cdc.GetTypeURL(goo.F1)
 				bz := []byte(nil)
-				bz, err = cdc.MarshalBinaryBare(goo.F1)
+				bz, err = cdc.Marshal(goo.F1)
 				if err != nil {
 					return
 				}
@@ -8791,7 +8791,7 @@ func (goo InterfaceFieldsStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Messag
 			if goo.F2 != nil {
 				typeUrl := cdc.GetTypeURL(goo.F2)
 				bz := []byte(nil)
-				bz, err = cdc.MarshalBinaryBare(goo.F2)
+				bz, err = cdc.Marshal(goo.F2)
 				if err != nil {
 					return
 				}
@@ -8802,7 +8802,7 @@ func (goo InterfaceFieldsStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Messag
 			if goo.F3 != nil {
 				typeUrl := cdc.GetTypeURL(goo.F3)
 				bz := []byte(nil)
-				bz, err = cdc.MarshalBinaryBare(goo.F3)
+				bz, err = cdc.Marshal(goo.F3)
 				if err != nil {
 					return
 				}
@@ -8813,7 +8813,7 @@ func (goo InterfaceFieldsStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Messag
 			if goo.F4 != nil {
 				typeUrl := cdc.GetTypeURL(goo.F4)
 				bz := []byte(nil)
-				bz, err = cdc.MarshalBinaryBare(goo.F4)
+				bz, err = cdc.Marshal(goo.F4)
 				if err != nil {
 					return
 				}
@@ -8837,7 +8837,7 @@ func (goo *InterfaceFieldsStruct) FromPBMessage(cdc *amino.Codec, msg proto.Mess
 				typeUrl := pbo.F1.TypeUrl
 				bz := pbo.F1.Value
 				goorp := &(*goo).F1
-				err = cdc.UnmarshalBinaryAny(typeUrl, bz, goorp)
+				err = cdc.UnmarshalAny(typeUrl, bz, goorp)
 				if err != nil {
 					return
 				}
@@ -8846,7 +8846,7 @@ func (goo *InterfaceFieldsStruct) FromPBMessage(cdc *amino.Codec, msg proto.Mess
 				typeUrl := pbo.F2.TypeUrl
 				bz := pbo.F2.Value
 				goorp := &(*goo).F2
-				err = cdc.UnmarshalBinaryAny(typeUrl, bz, goorp)
+				err = cdc.UnmarshalAny(typeUrl, bz, goorp)
 				if err != nil {
 					return
 				}
@@ -8855,7 +8855,7 @@ func (goo *InterfaceFieldsStruct) FromPBMessage(cdc *amino.Codec, msg proto.Mess
 				typeUrl := pbo.F3.TypeUrl
 				bz := pbo.F3.Value
 				goorp := &(*goo).F3
-				err = cdc.UnmarshalBinaryAny(typeUrl, bz, goorp)
+				err = cdc.UnmarshalAny(typeUrl, bz, goorp)
 				if err != nil {
 					return
 				}
@@ -8864,7 +8864,7 @@ func (goo *InterfaceFieldsStruct) FromPBMessage(cdc *amino.Codec, msg proto.Mess
 				typeUrl := pbo.F4.TypeUrl
 				bz := pbo.F4.Value
 				goorp := &(*goo).F4
-				err = cdc.UnmarshalBinaryAny(typeUrl, bz, goorp)
+				err = cdc.UnmarshalAny(typeUrl, bz, goorp)
 				if err != nil {
 					return
 				}

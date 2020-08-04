@@ -54,11 +54,11 @@ func Example() {
 
 	var bz []byte // the marshalled bytes.
 	var err error
-	bz, err = amino.MarshalBinaryInterfaceLengthPrefixed(msg)
+	bz, err = amino.MarshalAnyLengthPrefixed(msg)
 	fmt.Printf("Encoded: %X (err: %v)\n", bz, err)
 
 	var msg2 Message
-	err = amino.UnmarshalBinaryLengthPrefixed(bz, &msg2)
+	err = amino.UnmarshalLengthPrefixed(bz, &msg2)
 	fmt.Printf("Decoded: %v (err: %v)\n", msg2, err)
 	var bm2 = msg2.(*bcMessage)
 	fmt.Printf("Decoded successfully: %v\n", *bm == *bm2)

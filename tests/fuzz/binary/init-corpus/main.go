@@ -133,9 +133,9 @@ func main() {
 	cdc.RegisterPackage(tests.Package)
 
 	for i, seed := range seeds {
-		blob, err := cdc.MarshalBinaryLengthPrefixed(seed)
+		blob, err := cdc.MarshalLengthPrefixed(seed)
 		if err != nil {
-			log.Fatalf("Failed to marshalBinary on seed: %d", i)
+			log.Fatalf("Failed to Marshal on seed: %d", i)
 		}
 
 		fullPath := filepath.Join(corpusDir, fmt.Sprintf("%d", i))

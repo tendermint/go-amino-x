@@ -16,7 +16,7 @@ func TestAnyWellKnownNative(t *testing.T) {
 		F4: int(0),
 	}
 
-	bz, err := cdc.MarshalBinaryBare(s1)
+	bz, err := cdc.Marshal(s1)
 	assert.Nil(t, err)
 	assert.Equal(t, bz,
 		//     0x1a --> field #3 Typ3ByteLength (F3)
@@ -40,7 +40,7 @@ func TestAnyWellKnownNative(t *testing.T) {
 		"InterfaceFieldsStruct incorrectly serialized")
 
 	var s2 tests.InterfaceFieldsStruct
-	err = cdc.UnmarshalBinaryBare(bz, &s2)
+	err = cdc.Unmarshal(bz, &s2)
 	assert.NoError(t, err)
 
 	var s3 = tests.InterfaceFieldsStruct{

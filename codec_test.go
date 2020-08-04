@@ -28,54 +28,54 @@ func newSimpleStruct() SimpleStruct {
 	return s
 }
 
-func TestMarshalUnmarshalBinaryPointer0(t *testing.T) {
+func TestMarshalUnmarshalPointer0(t *testing.T) {
 
 	var s = newSimpleStruct()
 	cdc := amino.NewCodec()
-	b, err := cdc.MarshalBinaryLengthPrefixed(s) // no indirection
+	b, err := cdc.MarshalLengthPrefixed(s) // no indirection
 	assert.NoError(t, err)
 
 	var s2 SimpleStruct
-	err = cdc.UnmarshalBinaryLengthPrefixed(b, &s2) // no indirection
+	err = cdc.UnmarshalLengthPrefixed(b, &s2) // no indirection
 	assert.NoError(t, err)
 	assert.Equal(t, s, s2)
 
 }
 
-func TestMarshalUnmarshalBinaryPointer1(t *testing.T) {
+func TestMarshalUnmarshalPointer1(t *testing.T) {
 
 	var s = newSimpleStruct()
 	cdc := amino.NewCodec()
-	b, err := cdc.MarshalBinaryLengthPrefixed(&s) // extra indirection
+	b, err := cdc.MarshalLengthPrefixed(&s) // extra indirection
 	assert.NoError(t, err)
 
 	var s2 SimpleStruct
-	err = cdc.UnmarshalBinaryLengthPrefixed(b, &s2) // no indirection
+	err = cdc.UnmarshalLengthPrefixed(b, &s2) // no indirection
 	assert.NoError(t, err)
 	assert.Equal(t, s, s2)
 
 }
 
-func TestMarshalUnmarshalBinaryPointer2(t *testing.T) {
+func TestMarshalUnmarshalPointer2(t *testing.T) {
 
 	var s = newSimpleStruct()
 	var ptr = &s
 	cdc := amino.NewCodec()
 	assert.Panics(t, func() {
-		cdc.MarshalBinaryLengthPrefixed(&ptr) // double extra indirection panics.
+		cdc.MarshalLengthPrefixed(&ptr) // double extra indirection panics.
 		cdc.RegisterPackage(tests.Package)
 	})
 }
 
-func TestMarshalUnmarshalBinaryPointer3(t *testing.T) {
+func TestMarshalUnmarshalPointer3(t *testing.T) {
 
 	var s = newSimpleStruct()
 	cdc := amino.NewCodec()
-	b, err := cdc.MarshalBinaryLengthPrefixed(s) // no indirection
+	b, err := cdc.MarshalLengthPrefixed(s) // no indirection
 	assert.NoError(t, err)
 
 	var s2 *SimpleStruct
-	err = cdc.UnmarshalBinaryLengthPrefixed(b, &s2) // extra indirection
+	err = cdc.UnmarshalLengthPrefixed(b, &s2) // extra indirection
 	assert.NoError(t, err)
 	assert.Equal(t, s, *s2)
 }

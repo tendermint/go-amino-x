@@ -449,7 +449,7 @@ func (cdc *Codec) decodeReflectBinaryAny(typeURL string, value []byte, rv reflec
 	// is indistinguishable from a struct.
 	//
 	// See corresponding encoding message in this file, and also
-	// Codec.UnmarshalBinaryBare()
+	// Codec.Unmarshal()
 	var bareValue = true
 	if !cinfo.IsStructOrUnpacked(fopts) &&
 		len(value) > 0 {
