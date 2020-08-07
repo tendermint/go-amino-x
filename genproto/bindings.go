@@ -411,7 +411,7 @@ func go2pbStmts(rootPkg *amino.Package, isRoot bool, imports *ast.GenDecl, scope
 	}
 
 	// General case
-	switch goorType.Type.Kind() {
+	switch goork := goorType.Type.Kind(); goork {
 
 	case reflect.Interface:
 		typeUrl_ := addVarUniq(scope, "typeUrl")
@@ -536,7 +536,8 @@ func go2pbStmts(rootPkg *amino.Package, isRoot bool, imports *ast.GenDecl, scope
 
 	default:
 		// General translation.
-		b = append(b, _a(pbo, "=", maybeWrap(goor)))
+		b = append(b,
+			_a(pbo, "=", maybeWrap(_call(_i(goork.String()), goor))))
 
 	}
 	return b
