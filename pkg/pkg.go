@@ -101,7 +101,7 @@ func (pkg *Package) WithP3GoPkgPath(p3gopkg string) *Package {
 	return pkg
 }
 
-func (pkg *Package) WithP3GoPkgName(name string) *Package {
+func (pkg *Package) WithGoPkgName(name string) *Package {
 	pkg.GoPkgName = name
 	return pkg
 }

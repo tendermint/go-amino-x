@@ -128,6 +128,11 @@ func MarshalJSONIndent(o interface{}, prefix, indent string) ([]byte, error) {
 	return gcdc.MarshalJSONIndent(o, prefix, indent)
 }
 
+// XXX unstable API.
+func GetTypeURL(o interface{}) string {
+	return gcdc.GetTypeURL(o)
+}
+
 //----------------------------------------
 // Typ3
 
@@ -798,6 +803,7 @@ type Object interface {
 // TODO: this does need the cdc receiver,
 // as it should also work for non-pbbindings-optimized types.
 // Returns the default type url for the given concrete type.
+// NOTE: It must be fast, as it is used in pbbindings.
 // XXX Unstable API.
 func (cdc *Codec) GetTypeURL(o interface{}) string {
 	if obj, ok := o.(Object); ok {
@@ -810,6 +816,8 @@ func (cdc *Codec) GetTypeURL(o interface{}) string {
 		return "/google.protobuf.Duration"
 	}
 	rv := reflect.ValueOf(o)
+	// Wellknown override.
+	// TODO: move this to wellknown somehow.
 	switch rv.Kind() {
 	case reflect.String:
 		return "/google.protobuf.StringValue"
@@ -843,9 +851,17 @@ func (cdc *Codec) GetTypeURL(o interface{}) string {
 		} else {
 			panic("not yet supported")
 		}
-	default:
-		panic("not yet implemented")
 	}
+	// Doesn't have .GetTypeURL() and isn't well known.
+	// Do the slow thing (not relevant if pbbindings exists).
+	info, err := cdc.GetTypeInfo(rv.Type())
+	if err != nil {
+		panic(err)
+	}
+	if info.TypeURL == "" {
+		panic("not yet supported")
+	}
+	return info.TypeURL
 }
 
 //----------------------------------------

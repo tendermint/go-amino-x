@@ -16,6 +16,9 @@ https://github.com/tendermint/go-amino-x/pull/290#issuecomment-650717598.
  - MarshalBinaryBare() renamed to Marshal().  The default encoding is bare,
 use length-prefixed for streaming messages.
 
+NEW FEATURES:
+ - DeepEquals() placeholder, using binary encoding/decoding for equality testing (for now).
+
 ## 0.15.0 (May 2, 2018)
 
 BREAKING CHANGE:

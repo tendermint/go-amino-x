@@ -191,6 +191,7 @@ func (p3c *P3Context) GenerateProto3MessagePartial(p3doc *P3Doc, rt reflect.Type
 
 	p3msg.Name = info.Name // not rinfo.
 
+	// Append to p3msg.Fields, fields of the struct.
 	for _, field := range rsfields { // rinfo.
 		fp3, fp3IsRepeated, implicit :=
 			typeToP3Type(info.Package, field.TypeInfo, field.FieldOptions)

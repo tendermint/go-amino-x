@@ -606,7 +606,7 @@ func pb2goStmts(rootPkg *amino.Package, isRoot bool, imports *ast.GenDecl, scope
 	// Use *goor* for goo's repr.
 	var goor ast.Expr
 	var goorType *amino.TypeInfo
-	var goorte_ string
+	var goorteFn func() string
 
 	// Maybe unwrap pbo.
 	var unwrapImplicitStruct bool
@@ -622,7 +622,8 @@ func pb2goStmts(rootPkg *amino.Package, isRoot bool, imports *ast.GenDecl, scope
 	// NOTE: doesn't matter whether goo is ptr or not.
 	if gooType.IsAminoMarshaler {
 		// First, construct new repr instance.
-		goorte_ = goTypeExprString(rootPkg, imports, scope, false, gooType.ReprType)
+		goorteFn = goTypeExprStringFn(rootPkg, imports, scope, false, gooType.ReprType)
+		goorte_ := goorteFn() // goorteFn maybe still needed later.
 		goor_ := addVarUniq(scope, "goor")
 		b = append(b,
 			_var(goor_, _x(goorte_), nil))
@@ -672,7 +673,7 @@ func pb2goStmts(rootPkg *amino.Package, isRoot bool, imports *ast.GenDecl, scope
 			goor = _deref(goo)
 		}
 		goorType = gooType
-		goorte_ = goTypeExprString(rootPkg, imports, scope, false, gooType)
+		goorteFn = goTypeExprStringFn(rootPkg, imports, scope, false, gooType)
 	}
 
 	// Special case for time/duration.
@@ -707,22 +708,22 @@ func pb2goStmts(rootPkg *amino.Package, isRoot bool, imports *ast.GenDecl, scope
 
 	case reflect.Int:
 		b = append(b,
-			_a(goor, "=", _call(_i(goorte_), _call(_i("int"), maybeUnwrap(pbo)))))
+			_a(goor, "=", _call(_i(goorteFn()), _call(_i("int"), maybeUnwrap(pbo)))))
 	case reflect.Int16:
 		b = append(b,
-			_a(goor, "=", _call(_i(goorte_), _call(_i("int16"), maybeUnwrap(pbo)))))
+			_a(goor, "=", _call(_i(goorteFn()), _call(_i("int16"), maybeUnwrap(pbo)))))
 	case reflect.Int8:
 		b = append(b,
-			_a(goor, "=", _call(_i(goorte_), _call(_i("int8"), maybeUnwrap(pbo)))))
+			_a(goor, "=", _call(_i(goorteFn()), _call(_i("int8"), maybeUnwrap(pbo)))))
 	case reflect.Uint:
 		b = append(b,
-			_a(goor, "=", _call(_i(goorte_), _call(_i("uint"), maybeUnwrap(pbo)))))
+			_a(goor, "=", _call(_i(goorteFn()), _call(_i("uint"), maybeUnwrap(pbo)))))
 	case reflect.Uint16:
 		b = append(b,
-			_a(goor, "=", _call(_i(goorte_), _call(_i("uint16"), maybeUnwrap(pbo)))))
+			_a(goor, "=", _call(_i(goorteFn()), _call(_i("uint16"), maybeUnwrap(pbo)))))
 	case reflect.Uint8:
 		b = append(b,
-			_a(goor, "=", _call(_i(goorte_), _call(_i("uint8"), maybeUnwrap(pbo)))))
+			_a(goor, "=", _call(_i(goorteFn()), _call(_i("uint8"), maybeUnwrap(pbo)))))
 
 	case reflect.Array:
 		var newoptions uint64
@@ -835,7 +836,7 @@ func pb2goStmts(rootPkg *amino.Package, isRoot bool, imports *ast.GenDecl, scope
 
 	default:
 		// General translation.
-		b = append(b, _a(goor, "=", _call(_i(goorte_), maybeUnwrap(pbo))))
+		b = append(b, _a(goor, "=", _call(_i(goorteFn()), maybeUnwrap(pbo))))
 	}
 	return b
 }
@@ -1890,6 +1891,16 @@ OUTER:
 		}
 		scope.Insert(ast.NewObj(ast.Var, tryName))
 		return tryName
+	}
+}
+
+func goTypeExprStringFn(rootPkg *amino.Package, imports *ast.GenDecl, scope *ast.Scope, isPtr bool, info *amino.TypeInfo) func() string {
+	memo := ""
+	return func() string { // lazy.
+		if memo == "" {
+			memo = goTypeExprString(rootPkg, imports, scope, isPtr, info)
+		}
+		return memo // cached.
 	}
 }
 
