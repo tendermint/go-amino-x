@@ -133,7 +133,7 @@ func main() {
 	cdc.RegisterPackage(tests.Package)
 
 	for i, seed := range seeds {
-		blob, err := cdc.MarshalLengthPrefixed(seed)
+		blob, err := cdc.MarshalSized(seed)
 		if err != nil {
 			log.Fatalf("Failed to Marshal on seed: %d", i)
 		}

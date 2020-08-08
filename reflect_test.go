@@ -432,11 +432,11 @@ func TestCodecBinaryStructFieldNilInterface(t *testing.T) {
 	cdc.RegisterTypeFrom(reflect.TypeOf(tests.InterfaceFieldsStruct{}), tests.Package)
 
 	i1 := &tests.InterfaceFieldsStruct{F1: new(tests.InterfaceFieldsStruct), F2: nil}
-	bz, err := cdc.MarshalLengthPrefixed(i1)
+	bz, err := cdc.MarshalSized(i1)
 	assert.NoError(t, err)
 
 	i2 := new(tests.InterfaceFieldsStruct)
-	err = cdc.UnmarshalLengthPrefixed(bz, i2)
+	err = cdc.UnmarshalSized(bz, i2)
 
 	assert.NoError(t, err)
 	require.Equal(t, i2, i1, "i1 and i2 should be the same after decoding")

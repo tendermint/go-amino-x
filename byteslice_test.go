@@ -15,14 +15,14 @@ func TestReadByteSliceEquality(t *testing.T) {
 	}
 	// Write a byteslice
 	var testBytes = byteWrapper{[]byte("ThisIsSomeTestArrayEmbeddedInAStruct")}
-	encoded, err = cdc.MarshalLengthPrefixed(testBytes)
+	encoded, err = cdc.MarshalSized(testBytes)
 	if err != nil {
 		t.Error(err.Error())
 	}
 
 	// Read the byteslice, should return the same byteslice
 	var testBytes2 byteWrapper
-	err = cdc.UnmarshalLengthPrefixed(encoded, &testBytes2)
+	err = cdc.UnmarshalSized(encoded, &testBytes2)
 	if err != nil {
 		t.Error(err.Error())
 	}

@@ -13,7 +13,7 @@ import (
 func Fuzz(data []byte) int {
 	cdc := amino.NewCodec()
 	cst := tests.ComplexSt{}
-	err := cdc.UnmarshalLengthPrefixed(data, &cst)
+	err := cdc.UnmarshalSized(data, &cst)
 	if err != nil {
 		return 0
 	}

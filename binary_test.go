@@ -50,9 +50,9 @@ func TestNilSliceEmptySlice(t *testing.T) {
 		F: []*[]int{&eei},
 	}
 
-	abz := cdc.MustMarshalLengthPrefixed(a)
-	bbz := cdc.MustMarshalLengthPrefixed(b)
-	cbz := cdc.MustMarshalLengthPrefixed(c)
+	abz := cdc.MustMarshalSized(a)
+	bbz := cdc.MustMarshalSized(b)
+	cbz := cdc.MustMarshalSized(c)
 
 	assert.Equal(t, abz, bbz, "a != b")
 	assert.Equal(t, abz, cbz, "a != c")
@@ -197,11 +197,11 @@ func TestStructPointerSlice1(t *testing.T) {
 		C: []*Foo{nil, nil, nil},
 		D: "j",
 	}
-	bz, err := cdc.MarshalLengthPrefixed(f)
+	bz, err := cdc.MarshalSized(f)
 	assert.NoError(t, err)
 
 	var f2 Foo
-	err = cdc.UnmarshalLengthPrefixed(bz, &f2)
+	err = cdc.UnmarshalSized(bz, &f2)
 	assert.Nil(t, err)
 
 	assert.Equal(t, f, f2)
@@ -213,7 +213,7 @@ func TestStructPointerSlice1(t *testing.T) {
 		C: []*Foo{{}, {}, {}},
 		D: "j",
 	}
-	bz2, err := cdc.MarshalLengthPrefixed(f3)
+	bz2, err := cdc.MarshalSized(f3)
 	assert.NoError(t, err)
 	assert.Equal(t, bz, bz2, "empty slice elements should be encoded the same as nil")
 }
@@ -235,15 +235,15 @@ func TestStructPointerSlice2(t *testing.T) {
 		C: []*Foo{nil, nil, nil},
 		D: "j",
 	}
-	_, err := cdc.MarshalLengthPrefixed(f)
+	_, err := cdc.MarshalSized(f)
 	assert.Error(t, err, "nil elements of a slice/array not supported unless nil_elements field tag set.")
 
 	f.C = []*Foo{{}, {}, {}}
-	bz, err := cdc.MarshalLengthPrefixed(f)
+	bz, err := cdc.MarshalSized(f)
 	assert.NoError(t, err)
 
 	var f2 Foo
-	err = cdc.UnmarshalLengthPrefixed(bz, &f2)
+	err = cdc.UnmarshalSized(bz, &f2)
 	assert.Nil(t, err)
 
 	assert.Equal(t, f, f2)
@@ -256,12 +256,12 @@ func TestBasicTypes(t *testing.T) {
 
 	cdc := amino.NewCodec()
 	ba := byteAlias([]byte("this should work because it gets wrapped by a struct"))
-	bz, err := cdc.MarshalLengthPrefixed(ba)
+	bz, err := cdc.MarshalSized(ba)
 	assert.NotZero(t, bz)
 	require.NoError(t, err)
 
 	res := &byteAlias{}
-	err = cdc.UnmarshalLengthPrefixed(bz, res)
+	err = cdc.UnmarshalSized(bz, res)
 
 	require.NoError(t, err)
 	assert.Equal(t, ba, *res)
@@ -295,7 +295,7 @@ func TestUnmarshalFuncBinary(t *testing.T) {
 	cdc := amino.NewCodec()
 	// Binary doesn't support decoding to a func...
 	binBytes := []byte(`dontcare`)
-	err := cdc.UnmarshalLengthPrefixed(binBytes, &obj)
+	err := cdc.UnmarshalSized(binBytes, &obj)
 	// on length prefixed we return an error:
 	assert.Error(t, err)
 
@@ -310,7 +310,7 @@ func TestUnmarshalFuncBinary(t *testing.T) {
 
 	// ... nor encoding it.
 	assert.Panics(t, func() {
-		bz, err := cdc.MarshalLengthPrefixed(obj)
+		bz, err := cdc.MarshalSized(obj)
 		assert.Fail(t, "should have paniced but got bz: %X err: %v", bz, err)
 	})
 }

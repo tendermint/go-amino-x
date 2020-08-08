@@ -60,16 +60,16 @@ func (goo PrimitivesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, er
 			pbo.Int16 = int32(goo.Int16)
 		}
 		{
-			pbo.Int32 = goo.Int32
+			pbo.Int32 = int32(goo.Int32)
 		}
 		{
-			pbo.Int32Fixed = goo.Int32Fixed
+			pbo.Int32Fixed = int32(goo.Int32Fixed)
 		}
 		{
-			pbo.Int64 = goo.Int64
+			pbo.Int64 = int64(goo.Int64)
 		}
 		{
-			pbo.Int64Fixed = goo.Int64Fixed
+			pbo.Int64Fixed = int64(goo.Int64Fixed)
 		}
 		{
 			pbo.Int = int64(goo.Int)
@@ -84,22 +84,22 @@ func (goo PrimitivesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, er
 			pbo.Uint16 = uint32(goo.Uint16)
 		}
 		{
-			pbo.Uint32 = goo.Uint32
+			pbo.Uint32 = uint32(goo.Uint32)
 		}
 		{
-			pbo.Uint32Fixed = goo.Uint32Fixed
+			pbo.Uint32Fixed = uint32(goo.Uint32Fixed)
 		}
 		{
-			pbo.Uint64 = goo.Uint64
+			pbo.Uint64 = uint64(goo.Uint64)
 		}
 		{
-			pbo.Uint64Fixed = goo.Uint64Fixed
+			pbo.Uint64Fixed = uint64(goo.Uint64Fixed)
 		}
 		{
 			pbo.Uint = uint64(goo.Uint)
 		}
 		{
-			pbo.Str = goo.Str
+			pbo.Str = string(goo.Str)
 		}
 		{
 			goorl := len(goo.Bytes)
@@ -458,7 +458,7 @@ func (goo ArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.Int32Ar[i]
 						{
-							pbos[i] = goore
+							pbos[i] = int32(goore)
 						}
 					}
 				}
@@ -475,7 +475,7 @@ func (goo ArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.Int32FixedAr[i]
 						{
-							pbos[i] = goore
+							pbos[i] = int32(goore)
 						}
 					}
 				}
@@ -492,7 +492,7 @@ func (goo ArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.Int64Ar[i]
 						{
-							pbos[i] = goore
+							pbos[i] = int64(goore)
 						}
 					}
 				}
@@ -509,7 +509,7 @@ func (goo ArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.Int64FixedAr[i]
 						{
-							pbos[i] = goore
+							pbos[i] = int64(goore)
 						}
 					}
 				}
@@ -594,7 +594,7 @@ func (goo ArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.Uint32Ar[i]
 						{
-							pbos[i] = goore
+							pbos[i] = uint32(goore)
 						}
 					}
 				}
@@ -611,7 +611,7 @@ func (goo ArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.Uint32FixedAr[i]
 						{
-							pbos[i] = goore
+							pbos[i] = uint32(goore)
 						}
 					}
 				}
@@ -628,7 +628,7 @@ func (goo ArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.Uint64Ar[i]
 						{
-							pbos[i] = goore
+							pbos[i] = uint64(goore)
 						}
 					}
 				}
@@ -645,7 +645,7 @@ func (goo ArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.Uint64FixedAr[i]
 						{
-							pbos[i] = goore
+							pbos[i] = uint64(goore)
 						}
 					}
 				}
@@ -679,7 +679,7 @@ func (goo ArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.StrAr[i]
 						{
-							pbos[i] = goore
+							pbos[i] = string(goore)
 						}
 					}
 				}
@@ -1239,7 +1239,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = int32(goore)
 										}
 									}
 								}
@@ -1270,7 +1270,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = int32(goore)
 										}
 									}
 								}
@@ -1301,7 +1301,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = int64(goore)
 										}
 									}
 								}
@@ -1332,7 +1332,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = int64(goore)
 										}
 									}
 								}
@@ -1487,7 +1487,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = uint32(goore)
 										}
 									}
 								}
@@ -1518,7 +1518,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = uint32(goore)
 										}
 									}
 								}
@@ -1549,7 +1549,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = uint64(goore)
 										}
 									}
 								}
@@ -1580,7 +1580,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = uint64(goore)
 										}
 									}
 								}
@@ -1642,7 +1642,7 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = string(goore)
 										}
 									}
 								}
@@ -2436,7 +2436,7 @@ func (goo SlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.Int32Sl[i]
 						{
-							pbos[i] = goore
+							pbos[i] = int32(goore)
 						}
 					}
 				}
@@ -2453,7 +2453,7 @@ func (goo SlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.Int32FixedSl[i]
 						{
-							pbos[i] = goore
+							pbos[i] = int32(goore)
 						}
 					}
 				}
@@ -2470,7 +2470,7 @@ func (goo SlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.Int64Sl[i]
 						{
-							pbos[i] = goore
+							pbos[i] = int64(goore)
 						}
 					}
 				}
@@ -2487,7 +2487,7 @@ func (goo SlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.Int64FixedSl[i]
 						{
-							pbos[i] = goore
+							pbos[i] = int64(goore)
 						}
 					}
 				}
@@ -2572,7 +2572,7 @@ func (goo SlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.Uint32Sl[i]
 						{
-							pbos[i] = goore
+							pbos[i] = uint32(goore)
 						}
 					}
 				}
@@ -2589,7 +2589,7 @@ func (goo SlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.Uint32FixedSl[i]
 						{
-							pbos[i] = goore
+							pbos[i] = uint32(goore)
 						}
 					}
 				}
@@ -2606,7 +2606,7 @@ func (goo SlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.Uint64Sl[i]
 						{
-							pbos[i] = goore
+							pbos[i] = uint64(goore)
 						}
 					}
 				}
@@ -2623,7 +2623,7 @@ func (goo SlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.Uint64FixedSl[i]
 						{
-							pbos[i] = goore
+							pbos[i] = uint64(goore)
 						}
 					}
 				}
@@ -2657,7 +2657,7 @@ func (goo SlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					{
 						goore := goo.StrSl[i]
 						{
-							pbos[i] = goore
+							pbos[i] = string(goore)
 						}
 					}
 				}
@@ -3369,7 +3369,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = int32(goore)
 										}
 									}
 								}
@@ -3400,7 +3400,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = int32(goore)
 										}
 									}
 								}
@@ -3431,7 +3431,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = int64(goore)
 										}
 									}
 								}
@@ -3462,7 +3462,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = int64(goore)
 										}
 									}
 								}
@@ -3617,7 +3617,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = uint32(goore)
 										}
 									}
 								}
@@ -3648,7 +3648,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = uint32(goore)
 										}
 									}
 								}
@@ -3679,7 +3679,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = uint64(goore)
 										}
 									}
 								}
@@ -3710,7 +3710,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = uint64(goore)
 										}
 									}
 								}
@@ -3772,7 +3772,7 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 									{
 										goore := goore[i]
 										{
-											pbos1[i] = goore
+											pbos1[i] = string(goore)
 										}
 									}
 								}
@@ -4844,28 +4844,28 @@ func (goo PointersStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err 
 			if goo.Int32Pt != nil {
 				dgoor := *goo.Int32Pt
 				dgoor = dgoor
-				pbo.Int32Pt = dgoor
+				pbo.Int32Pt = int32(dgoor)
 			}
 		}
 		{
 			if goo.Int32FixedPt != nil {
 				dgoor := *goo.Int32FixedPt
 				dgoor = dgoor
-				pbo.Int32FixedPt = dgoor
+				pbo.Int32FixedPt = int32(dgoor)
 			}
 		}
 		{
 			if goo.Int64Pt != nil {
 				dgoor := *goo.Int64Pt
 				dgoor = dgoor
-				pbo.Int64Pt = dgoor
+				pbo.Int64Pt = int64(dgoor)
 			}
 		}
 		{
 			if goo.Int64FixedPt != nil {
 				dgoor := *goo.Int64FixedPt
 				dgoor = dgoor
-				pbo.Int64FixedPt = dgoor
+				pbo.Int64FixedPt = int64(dgoor)
 			}
 		}
 		{
@@ -4900,28 +4900,28 @@ func (goo PointersStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err 
 			if goo.Uint32Pt != nil {
 				dgoor := *goo.Uint32Pt
 				dgoor = dgoor
-				pbo.Uint32Pt = dgoor
+				pbo.Uint32Pt = uint32(dgoor)
 			}
 		}
 		{
 			if goo.Uint32FixedPt != nil {
 				dgoor := *goo.Uint32FixedPt
 				dgoor = dgoor
-				pbo.Uint32FixedPt = dgoor
+				pbo.Uint32FixedPt = uint32(dgoor)
 			}
 		}
 		{
 			if goo.Uint64Pt != nil {
 				dgoor := *goo.Uint64Pt
 				dgoor = dgoor
-				pbo.Uint64Pt = dgoor
+				pbo.Uint64Pt = uint64(dgoor)
 			}
 		}
 		{
 			if goo.Uint64FixedPt != nil {
 				dgoor := *goo.Uint64FixedPt
 				dgoor = dgoor
-				pbo.Uint64FixedPt = dgoor
+				pbo.Uint64FixedPt = uint64(dgoor)
 			}
 		}
 		{
@@ -4935,7 +4935,7 @@ func (goo PointersStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err 
 			if goo.StrPt != nil {
 				dgoor := *goo.StrPt
 				dgoor = dgoor
-				pbo.StrPt = dgoor
+				pbo.StrPt = string(dgoor)
 			}
 		}
 		{
@@ -5331,7 +5331,7 @@ func (goo PointerSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message,
 							if goore != nil {
 								dgoor := *goore
 								dgoor = dgoor
-								pbos[i] = dgoor
+								pbos[i] = int32(dgoor)
 							}
 						}
 					}
@@ -5352,7 +5352,7 @@ func (goo PointerSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message,
 							if goore != nil {
 								dgoor := *goore
 								dgoor = dgoor
-								pbos[i] = dgoor
+								pbos[i] = int32(dgoor)
 							}
 						}
 					}
@@ -5373,7 +5373,7 @@ func (goo PointerSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message,
 							if goore != nil {
 								dgoor := *goore
 								dgoor = dgoor
-								pbos[i] = dgoor
+								pbos[i] = int64(dgoor)
 							}
 						}
 					}
@@ -5394,7 +5394,7 @@ func (goo PointerSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message,
 							if goore != nil {
 								dgoor := *goore
 								dgoor = dgoor
-								pbos[i] = dgoor
+								pbos[i] = int64(dgoor)
 							}
 						}
 					}
@@ -5499,7 +5499,7 @@ func (goo PointerSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message,
 							if goore != nil {
 								dgoor := *goore
 								dgoor = dgoor
-								pbos[i] = dgoor
+								pbos[i] = uint32(dgoor)
 							}
 						}
 					}
@@ -5520,7 +5520,7 @@ func (goo PointerSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message,
 							if goore != nil {
 								dgoor := *goore
 								dgoor = dgoor
-								pbos[i] = dgoor
+								pbos[i] = uint32(dgoor)
 							}
 						}
 					}
@@ -5541,7 +5541,7 @@ func (goo PointerSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message,
 							if goore != nil {
 								dgoor := *goore
 								dgoor = dgoor
-								pbos[i] = dgoor
+								pbos[i] = uint64(dgoor)
 							}
 						}
 					}
@@ -5562,7 +5562,7 @@ func (goo PointerSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message,
 							if goore != nil {
 								dgoor := *goore
 								dgoor = dgoor
-								pbos[i] = dgoor
+								pbos[i] = uint64(dgoor)
 							}
 						}
 					}
@@ -5604,7 +5604,7 @@ func (goo PointerSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message,
 							if goore != nil {
 								dgoor := *goore
 								dgoor = dgoor
-								pbos[i] = dgoor
+								pbos[i] = string(dgoor)
 							}
 						}
 					}
@@ -6751,7 +6751,7 @@ func (goo EmbeddedSt4) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err err
 			pbo.PrimitivesStruct = pbom.(*testspb.PrimitivesStruct)
 		}
 		{
-			pbo.Foo2 = goo.Foo2
+			pbo.Foo2 = string(goo.Foo2)
 		}
 		{
 			pbom := proto.Message(nil)
@@ -6787,7 +6787,7 @@ func (goo EmbeddedSt4) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err err
 			pbo.SlicesStruct = pbom.(*testspb.SlicesStruct)
 		}
 		{
-			pbo.Foo4 = goo.Foo4
+			pbo.Foo4 = bool(goo.Foo4)
 		}
 		{
 			pbom := proto.Message(nil)
@@ -6966,7 +6966,7 @@ func (goo EmbeddedSt5) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err err
 			}
 		}
 		{
-			pbo.Foo2 = goo.Foo2
+			pbo.Foo2 = string(goo.Foo2)
 		}
 		{
 			if goo.ArraysStructField != nil {
@@ -7012,7 +7012,7 @@ func (goo EmbeddedSt5) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err err
 			}
 		}
 		{
-			pbo.Foo4 = goo.Foo4
+			pbo.Foo4 = bool(goo.Foo4)
 		}
 		{
 			if goo.PointersStructField != nil {
@@ -7184,10 +7184,10 @@ func (goo AminoMarshalerStruct1) ToPBMessage(cdc *amino.Codec) (msg proto.Messag
 		}
 		pbo = new(testspb.AminoMarshalerStruct1)
 		{
-			pbo.C = goor.C
+			pbo.C = int64(goor.C)
 		}
 		{
-			pbo.D = goor.D
+			pbo.D = int64(goor.D)
 		}
 	}
 	msg = pbo
@@ -7246,10 +7246,10 @@ func (goo ReprStruct1) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err err
 		}
 		pbo = new(testspb.ReprStruct1)
 		{
-			pbo.C = goo.C
+			pbo.C = int64(goo.C)
 		}
 		{
-			pbo.D = goo.D
+			pbo.D = int64(goo.D)
 		}
 	}
 	msg = pbo
@@ -7391,7 +7391,7 @@ func (goo ReprElem2) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error
 		}
 		pbo = new(testspb.ReprElem2)
 		{
-			pbo.Key = goo.Key
+			pbo.Key = string(goo.Key)
 		}
 		{
 			if goo.Value != nil {
@@ -7464,7 +7464,7 @@ func (goo AminoMarshalerStruct3) ToPBMessage(cdc *amino.Codec) (msg proto.Messag
 			msg = pbov
 			return
 		}
-		pbo = &testspb.AminoMarshalerStruct3{Value: goor}
+		pbo = &testspb.AminoMarshalerStruct3{Value: int32(goor)}
 	}
 	msg = pbo
 	return
@@ -7512,7 +7512,7 @@ func (goo AminoMarshalerInt4) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 		}
 		pbo = new(testspb.AminoMarshalerInt4)
 		{
-			pbo.A = goor.A
+			pbo.A = int32(goor.A)
 		}
 	}
 	msg = pbo
@@ -7565,7 +7565,7 @@ func (goo AminoMarshalerInt5) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			msg = pbov
 			return
 		}
-		pbo = &testspb.AminoMarshalerInt5{Value: goor}
+		pbo = &testspb.AminoMarshalerInt5{Value: string(goor)}
 	}
 	msg = pbo
 	return
@@ -8135,16 +8135,16 @@ func (goo PrimitivesStructDef) ToPBMessage(cdc *amino.Codec) (msg proto.Message,
 			pbo.Int16 = int32(goo.Int16)
 		}
 		{
-			pbo.Int32 = goo.Int32
+			pbo.Int32 = int32(goo.Int32)
 		}
 		{
-			pbo.Int32Fixed = goo.Int32Fixed
+			pbo.Int32Fixed = int32(goo.Int32Fixed)
 		}
 		{
-			pbo.Int64 = goo.Int64
+			pbo.Int64 = int64(goo.Int64)
 		}
 		{
-			pbo.Int64Fixed = goo.Int64Fixed
+			pbo.Int64Fixed = int64(goo.Int64Fixed)
 		}
 		{
 			pbo.Int = int64(goo.Int)
@@ -8159,22 +8159,22 @@ func (goo PrimitivesStructDef) ToPBMessage(cdc *amino.Codec) (msg proto.Message,
 			pbo.Uint16 = uint32(goo.Uint16)
 		}
 		{
-			pbo.Uint32 = goo.Uint32
+			pbo.Uint32 = uint32(goo.Uint32)
 		}
 		{
-			pbo.Uint32Fixed = goo.Uint32Fixed
+			pbo.Uint32Fixed = uint32(goo.Uint32Fixed)
 		}
 		{
-			pbo.Uint64 = goo.Uint64
+			pbo.Uint64 = uint64(goo.Uint64)
 		}
 		{
-			pbo.Uint64Fixed = goo.Uint64Fixed
+			pbo.Uint64Fixed = uint64(goo.Uint64Fixed)
 		}
 		{
 			pbo.Uint = uint64(goo.Uint)
 		}
 		{
-			pbo.Str = goo.Str
+			pbo.Str = string(goo.Str)
 		}
 		{
 			goorl := len(goo.Bytes)

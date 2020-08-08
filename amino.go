@@ -48,24 +48,28 @@ func init() {
 	}
 }
 
-func MarshalLengthPrefixed(o interface{}) ([]byte, error) {
-	return gcdc.MarshalLengthPrefixed(o)
+func MarshalSized(o interface{}) ([]byte, error) {
+	return gcdc.MarshalSized(o)
 }
 
-func MarshalLengthPrefixedWriter(w io.Writer, o interface{}) (n int64, err error) {
-	return gcdc.MarshalLengthPrefixedWriter(w, o)
+func MarshalSizedWriter(w io.Writer, o interface{}) (n int64, err error) {
+	return gcdc.MarshalSizedWriter(w, o)
 }
 
-func MustMarshalLengthPrefixed(o interface{}) []byte {
-	return gcdc.MustMarshalLengthPrefixed(o)
+func MustMarshalSized(o interface{}) []byte {
+	return gcdc.MustMarshalSized(o)
 }
 
-func MarshalAnyLengthPrefixed(o interface{}) ([]byte, error) {
-	return gcdc.MarshalAnyLengthPrefixed(o)
+func MarshalAnySized(o interface{}) ([]byte, error) {
+	return gcdc.MarshalAnySized(o)
 }
 
-func MustMarshalAnyLengthPrefixed(o interface{}) []byte {
-	return gcdc.MustMarshalAnyLengthPrefixed(o)
+func MustMarshalAnySized(o interface{}) []byte {
+	return gcdc.MustMarshalAnySized(o)
+}
+
+func MarshalAnySizedWriter(w io.Writer, o interface{}) (n int64, err error) {
+	return gcdc.MarshalAnySizedWriter(w, o)
 }
 
 func Marshal(o interface{}) ([]byte, error) {
@@ -84,16 +88,16 @@ func MustMarshalAny(o interface{}) []byte {
 	return gcdc.MustMarshalAny(o)
 }
 
-func UnmarshalLengthPrefixed(bz []byte, ptr interface{}) error {
-	return gcdc.UnmarshalLengthPrefixed(bz, ptr)
+func UnmarshalSized(bz []byte, ptr interface{}) error {
+	return gcdc.UnmarshalSized(bz, ptr)
 }
 
-func UnmarshalLengthPrefixedReader(r io.Reader, ptr interface{}, maxSize int64) (n int64, err error) {
-	return gcdc.UnmarshalLengthPrefixedReader(r, ptr, maxSize)
+func UnmarshalSizedReader(r io.Reader, ptr interface{}, maxSize int64) (n int64, err error) {
+	return gcdc.UnmarshalSizedReader(r, ptr, maxSize)
 }
 
-func MustUnmarshalLengthPrefixed(bz []byte, ptr interface{}) {
-	gcdc.MustUnmarshalLengthPrefixed(bz, ptr)
+func MustUnmarshalSized(bz []byte, ptr interface{}) {
+	gcdc.MustUnmarshalSized(bz, ptr)
 }
 
 func Unmarshal(bz []byte, ptr interface{}) error {
@@ -179,14 +183,14 @@ func (typ Typ3) String() string {
 //----------------------------------------
 // Marshal* methods
 
-// MarshalLengthPrefixed encodes the object o according to the Amino spec,
+// MarshalSized encodes the object o according to the Amino spec,
 // but prefixed by a uvarint encoding of the object to encode.
 // Use Marshal if you don't want byte-length prefixing.
 //
-// For consistency, MarshalLengthPrefixed will first dereference pointers
-// before encoding.  MarshalLengthPrefixed will panic if o is a nil-pointer,
+// For consistency, MarshalSized will first dereference pointers
+// before encoding.  MarshalSized will panic if o is a nil-pointer,
 // or if o is invalid.
-func (cdc *Codec) MarshalLengthPrefixed(o interface{}) ([]byte, error) {
+func (cdc *Codec) MarshalSized(o interface{}) ([]byte, error) {
 	cdc.doAutoseal()
 
 	// Write the bytes here.
@@ -213,14 +217,14 @@ func (cdc *Codec) MarshalLengthPrefixed(o interface{}) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-// MarshalLengthPrefixedWriter writes the bytes as would be returned from
-// MarshalLengthPrefixed to the writer w.
-func (cdc *Codec) MarshalLengthPrefixedWriter(w io.Writer, o interface{}) (n int64, err error) {
+// MarshalSizedWriter writes the bytes as would be returned from
+// MarshalSized to the writer w.
+func (cdc *Codec) MarshalSizedWriter(w io.Writer, o interface{}) (n int64, err error) {
 	var (
 		bz []byte
 		_n int
 	)
-	bz, err = cdc.MarshalLengthPrefixed(o)
+	bz, err = cdc.MarshalSized(o)
 	if err != nil {
 		return 0, err
 	}
@@ -230,15 +234,15 @@ func (cdc *Codec) MarshalLengthPrefixedWriter(w io.Writer, o interface{}) (n int
 }
 
 // Panics if error.
-func (cdc *Codec) MustMarshalLengthPrefixed(o interface{}) []byte {
-	bz, err := cdc.MarshalLengthPrefixed(o)
+func (cdc *Codec) MustMarshalSized(o interface{}) []byte {
+	bz, err := cdc.MarshalSized(o)
 	if err != nil {
 		panic(err)
 	}
 	return bz
 }
 
-func (cdc *Codec) MarshalAnyLengthPrefixed(o interface{}) ([]byte, error) {
+func (cdc *Codec) MarshalAnySized(o interface{}) ([]byte, error) {
 	cdc.doAutoseal()
 
 	// Write the bytes here.
@@ -265,12 +269,26 @@ func (cdc *Codec) MarshalAnyLengthPrefixed(o interface{}) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func (cdc *Codec) MustMarshalAnyLengthPrefixed(o interface{}) []byte {
-	bz, err := cdc.MarshalAnyLengthPrefixed(o)
+func (cdc *Codec) MustMarshalAnySized(o interface{}) []byte {
+	bz, err := cdc.MarshalAnySized(o)
 	if err != nil {
 		panic(err)
 	}
 	return bz
+}
+
+func (cdc *Codec) MarshalAnySizedWriter(w io.Writer, o interface{}) (n int64, err error) {
+	var (
+		bz []byte
+		_n int
+	)
+	bz, err = cdc.MarshalAnySized(o)
+	if err != nil {
+		return 0, err
+	}
+	_n, err = w.Write(bz) // TODO: handle overflow in 32-bit systems.
+	n = int64(_n)
+	return
 }
 
 // Marshal encodes the object o according to the Amino spec.
@@ -305,7 +323,7 @@ func (cdc *Codec) MarshalReflect(o interface{}) ([]byte, error) {
 		if rv.IsNil() {
 			panic("Marshal cannot marshal a nil pointer directly. Try wrapping in a struct?")
 			// NOTE: You can still do so by calling
-			// `.MarshalLengthPrefixed(struct{ *SomeType })` or so on.
+			// `.MarshalSized(struct{ *SomeType })` or so on.
 		}
 		rv = rv.Elem()
 		if rv.Kind() == reflect.Ptr {
@@ -426,11 +444,11 @@ func (cdc *Codec) MustMarshalAny(o interface{}) []byte {
 // Unmarshal* methods
 
 // Like Unmarshal, but will first decode the byte-length prefix.
-// UnmarshalLengthPrefixed will panic if ptr is a nil-pointer.
+// UnmarshalSized will panic if ptr is a nil-pointer.
 // Returns an error if not all of bz is consumed.
-func (cdc *Codec) UnmarshalLengthPrefixed(bz []byte, ptr interface{}) error {
+func (cdc *Codec) UnmarshalSized(bz []byte, ptr interface{}) error {
 	if len(bz) == 0 {
-		return errors.New("unmarshalLengthPrefixed cannot decode empty bytes")
+		return errors.New("unmarshalSized cannot decode empty bytes")
 	}
 
 	// Read byte-length prefix.
@@ -439,10 +457,10 @@ func (cdc *Codec) UnmarshalLengthPrefixed(bz []byte, ptr interface{}) error {
 		return errors.Errorf("Error reading msg byte-length prefix: got code %v", n)
 	}
 	if u64 > uint64(len(bz)-n) {
-		return errors.Errorf("Not enough bytes to read in UnmarshalLengthPrefixed, want %v more bytes but only have %v",
+		return errors.Errorf("Not enough bytes to read in UnmarshalSized, want %v more bytes but only have %v",
 			u64, len(bz)-n)
 	} else if u64 < uint64(len(bz)-n) {
-		return errors.Errorf("Bytes left over in UnmarshalLengthPrefixed, should read %v more bytes but have %v",
+		return errors.Errorf("Bytes left over in UnmarshalSized, should read %v more bytes but have %v",
 			u64, len(bz)-n)
 	}
 	bz = bz[n:]
@@ -452,9 +470,9 @@ func (cdc *Codec) UnmarshalLengthPrefixed(bz []byte, ptr interface{}) error {
 }
 
 // Like Unmarshal, but will first read the byte-length prefix.
-// UnmarshalLengthPrefixedReader will panic if ptr is a nil-pointer.
+// UnmarshalSizedReader will panic if ptr is a nil-pointer.
 // If maxSize is 0, there is no limit (not recommended).
-func (cdc *Codec) UnmarshalLengthPrefixedReader(r io.Reader, ptr interface{},
+func (cdc *Codec) UnmarshalSizedReader(r io.Reader, ptr interface{},
 	maxSize int64) (n int64, err error) {
 	if maxSize < 0 {
 		panic("maxSize cannot be negative.")
@@ -517,8 +535,8 @@ func (cdc *Codec) UnmarshalLengthPrefixedReader(r io.Reader, ptr interface{},
 }
 
 // Panics if error.
-func (cdc *Codec) MustUnmarshalLengthPrefixed(bz []byte, ptr interface{}) {
-	err := cdc.UnmarshalLengthPrefixed(bz, ptr)
+func (cdc *Codec) MustUnmarshalSized(bz []byte, ptr interface{}) {
+	err := cdc.UnmarshalSized(bz, ptr)
 	if err != nil {
 		panic(err)
 	}

@@ -24,12 +24,12 @@ func TestMarshal(t *testing.T) {
 		Time:   time.Now().UTC().Truncate(time.Millisecond), // strip monotonic and timezone.
 	}
 
-	b, err := cdc.MarshalLengthPrefixed(s)
+	b, err := cdc.MarshalSized(s)
 	assert.Nil(t, err)
-	t.Logf("MarshalLengthPrefixed(s) -> %X", b)
+	t.Logf("MarshalSized(s) -> %X", b)
 
 	var s2 SimpleStruct
-	err = cdc.UnmarshalLengthPrefixed(b, &s2)
+	err = cdc.UnmarshalSized(b, &s2)
 	assert.Nil(t, err)
 	assert.Equal(t, s, s2)
 }
@@ -49,12 +49,12 @@ func TestUnmarshalReader(t *testing.T) {
 		Time:   time.Now().UTC().Truncate(time.Millisecond), // strip monotonic and timezone.
 	}
 
-	b, err := cdc.MarshalLengthPrefixed(s)
+	b, err := cdc.MarshalSized(s)
 	assert.Nil(t, err)
-	t.Logf("MarshalLengthPrefixed(s) -> %X", b)
+	t.Logf("MarshalSized(s) -> %X", b)
 
 	var s2 SimpleStruct
-	_, err = cdc.UnmarshalLengthPrefixedReader(bytes.NewBuffer(b), &s2, 0)
+	_, err = cdc.UnmarshalSizedReader(bytes.NewBuffer(b), &s2, 0)
 	assert.Nil(t, err)
 
 	assert.Equal(t, s, s2)
@@ -68,13 +68,13 @@ func TestUnmarshalReaderSize(t *testing.T) {
 	var cdc = amino.NewCodec()
 
 	s1 := stringWrapper{"foo"}
-	b, err := cdc.MarshalLengthPrefixed(s1)
+	b, err := cdc.MarshalSized(s1)
 	assert.Nil(t, err)
-	t.Logf("MarshalLengthPrefixed(s) -> %X", b)
+	t.Logf("MarshalSized(s) -> %X", b)
 
 	var s2 stringWrapper
 	var n int64
-	n, err = cdc.UnmarshalLengthPrefixedReader(bytes.NewBuffer(b), &s2, 0)
+	n, err = cdc.UnmarshalSizedReader(bytes.NewBuffer(b), &s2, 0)
 	assert.Nil(t, err)
 	assert.Equal(t, s1, s2)
 	frameLengthBytes, msgLengthBytes, embedOverhead := 1, 1, 1
@@ -85,15 +85,15 @@ func TestUnmarshalReaderSizeLimit(t *testing.T) {
 	var cdc = amino.NewCodec()
 
 	s1 := stringWrapper{"foo"}
-	b, err := cdc.MarshalLengthPrefixed(s1)
+	b, err := cdc.MarshalSized(s1)
 	assert.Nil(t, err)
-	t.Logf("MarshalLengthPrefixed(s) -> %X", b)
+	t.Logf("MarshalSized(s) -> %X", b)
 
 	var s2 stringWrapper
 	var n int64
-	_, err = cdc.UnmarshalLengthPrefixedReader(bytes.NewBuffer(b), &s2, int64(len(b)-1))
+	_, err = cdc.UnmarshalSizedReader(bytes.NewBuffer(b), &s2, int64(len(b)-1))
 	assert.NotNil(t, err, "insufficient limit should lead to failure")
-	n, err = cdc.UnmarshalLengthPrefixedReader(bytes.NewBuffer(b), &s2, int64(len(b)))
+	n, err = cdc.UnmarshalSizedReader(bytes.NewBuffer(b), &s2, int64(len(b)))
 	assert.Nil(t, err, "sufficient limit should not cause failure")
 	assert.Equal(t, s1, s2)
 	frameLengthBytes, msgLengthBytes, embedOverhead := 1, 1, 1
@@ -115,12 +115,12 @@ func TestUnmarshalReaderTooLong(t *testing.T) {
 		Time:   time.Now().UTC().Truncate(time.Millisecond), // strip monotonic and timezone.
 	}
 
-	b, err := cdc.MarshalLengthPrefixed(s)
+	b, err := cdc.MarshalSized(s)
 	assert.Nil(t, err)
-	t.Logf("MarshalLengthPrefixed(s) -> %X", b)
+	t.Logf("MarshalSized(s) -> %X", b)
 
 	var s2 SimpleStruct
-	_, err = cdc.UnmarshalLengthPrefixedReader(bytes.NewBuffer(b), &s2, 1) // 1 byte limit is ridiculous.
+	_, err = cdc.UnmarshalSizedReader(bytes.NewBuffer(b), &s2, 1) // 1 byte limit is ridiculous.
 	assert.NotNil(t, err)
 }
 
@@ -130,27 +130,27 @@ func TestUnmarshalBufferedWritesReads(t *testing.T) {
 
 	// Write 3 times.
 	s1 := stringWrapper{"foo"}
-	_, err := cdc.MarshalLengthPrefixedWriter(buf, s1)
+	_, err := cdc.MarshalSizedWriter(buf, s1)
 	assert.Nil(t, err)
-	_, err = cdc.MarshalLengthPrefixedWriter(buf, s1)
+	_, err = cdc.MarshalSizedWriter(buf, s1)
 	assert.Nil(t, err)
-	_, err = cdc.MarshalLengthPrefixedWriter(buf, s1)
+	_, err = cdc.MarshalSizedWriter(buf, s1)
 	assert.Nil(t, err)
 
 	// Read 3 times.
 	s2 := stringWrapper{}
-	_, err = cdc.UnmarshalLengthPrefixedReader(buf, &s2, 0)
+	_, err = cdc.UnmarshalSizedReader(buf, &s2, 0)
 	assert.Nil(t, err)
 	assert.Equal(t, s1, s2)
-	_, err = cdc.UnmarshalLengthPrefixedReader(buf, &s2, 0)
+	_, err = cdc.UnmarshalSizedReader(buf, &s2, 0)
 	assert.Nil(t, err)
 	assert.Equal(t, s1, s2)
-	_, err = cdc.UnmarshalLengthPrefixedReader(buf, &s2, 0)
+	_, err = cdc.UnmarshalSizedReader(buf, &s2, 0)
 	assert.Nil(t, err)
 	assert.Equal(t, s1, s2)
 
 	// Reading 4th time fails.
-	_, err = cdc.UnmarshalLengthPrefixedReader(buf, &s2, 0)
+	_, err = cdc.UnmarshalSizedReader(buf, &s2, 0)
 	assert.NotNil(t, err)
 }
 

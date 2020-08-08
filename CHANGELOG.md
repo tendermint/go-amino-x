@@ -15,6 +15,7 @@ https://github.com/tendermint/go-amino-x/pull/290#issuecomment-650717598.
    with opposite behavior.
  - MarshalBinaryBare() renamed to Marshal().  The default encoding is bare,
 use length-prefixed for streaming messages.
+ - [Un]Marshal...LengthPrefixed... -> ...Sized...
 
 NEW FEATURES:
  - DeepEquals() placeholder, using binary encoding/decoding for equality testing (for now).
@@ -53,7 +54,7 @@ BREAKING CHANGE:
 BREAKING CHANGE:
  - `time.Time`: validate seconds since 1970 are in valid range during encoding; i.e. in the interval [-62135596800, 253402300800)
  - `time.Time`: match encoding of time.Time to protobuf's well known type [Timestamp] ([#224])
- - Rename `Marshal` to `MarshalLengthPrefixed` ([#222])
+ - Rename `Marshal` to `MarshalSized` ([#222])
  
 [Timestamp]: https://github.com/protocolbuffers/protobuf/blob/d2980062c859649523d5fd51d6b55ab310e47482/src/google/protobuf/timestamp.proto#L123-L135
 

@@ -21,19 +21,19 @@ func TestDecodeSkippedFieldsInTime(t *testing.T) {
 	tm, err := time.Parse("2006-01-02 15:04:05 +0000 UTC", "1970-01-01 00:00:00 +0000 UTC")
 	assert.NoError(t, err)
 
-	b, err := cdc.MarshalLengthPrefixed(testTime{Time: tm})
+	b, err := cdc.MarshalSized(testTime{Time: tm})
 	assert.NoError(t, err)
 	var ti testTime
-	err = cdc.UnmarshalLengthPrefixed(b, &ti)
+	err = cdc.UnmarshalSized(b, &ti)
 	assert.NoError(t, err)
 	assert.Equal(t, testTime{Time: tm}, ti)
 
 	tm2, err := time.Parse("2006-01-02 15:04:05 +0000 UTC", "1970-01-01 00:00:01.978131102 +0000 UTC")
 	assert.NoError(t, err)
 
-	b, err = cdc.MarshalLengthPrefixed(testTime{Time: tm2})
+	b, err = cdc.MarshalSized(testTime{Time: tm2})
 	assert.NoError(t, err)
-	err = cdc.UnmarshalLengthPrefixed(b, &ti)
+	err = cdc.UnmarshalSized(b, &ti)
 	assert.NoError(t, err)
 	assert.Equal(t, testTime{Time: tm2}, ti)
 
@@ -52,11 +52,11 @@ func TestDecodeSkippedFieldsInTime(t *testing.T) {
 	st := tArr{
 		TimeAr: [4]time.Time{t1, t2, t3, t4},
 	}
-	b, err = cdc.MarshalLengthPrefixed(st)
+	b, err = cdc.MarshalSized(st)
 	assert.NoError(t, err)
 
 	var tStruct tArr
-	err = cdc.UnmarshalLengthPrefixed(b, &tStruct)
+	err = cdc.UnmarshalSized(b, &tStruct)
 	assert.NoError(t, err)
 	assert.Equal(t, st, tStruct)
 }
