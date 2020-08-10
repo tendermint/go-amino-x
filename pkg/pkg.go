@@ -136,8 +136,6 @@ func (pkg *Package) WithTypes(objs ...interface{}) *Package {
 				panic("unexpected nested pointers")
 			}
 			pointerPreferred = true
-		} else {
-			pointerPreferred = false
 		}
 		if objDerefType.PkgPath() != pkg.GoPkgPath {
 			panic(fmt.Sprintf("unexpected package for %v, expected %v got %v for obj %v obj type %v", objDerefType, pkg.GoPkgPath, objDerefType.PkgPath(), obj, objType))
