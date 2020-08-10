@@ -19,13 +19,14 @@ func (t *Type) FullName(pkg *Package) string {
 	return fmt.Sprintf("%v.%v", pkg.P3PkgName, t.Name)
 }
 
+// amino: immutable TODO
 type Package struct {
 	// General info
 	GoPkgPath    string
 	GoPkgName    string
 	DirName      string
 	Dependencies []*Package
-	Types        []Type
+	Types        []*Type
 
 	// Proto3 info
 	P3GoPkgPath  string
@@ -112,11 +113,26 @@ func (pkg *Package) WithDependencies(deps ...*Package) *Package {
 }
 
 func (pkg *Package) WithTypes(objs ...interface{}) *Package {
+	var lastType *Type = nil
 	for _, obj := range objs {
-		var objType reflect.Type
-		var name string
-		var pointerPreferred bool
-		objType = reflect.TypeOf(obj)
+
+		// Initialize variables
+		var objType reflect.Type = reflect.TypeOf(obj)
+		var name string = ""
+		var pointerPreferred bool = false
+
+		// Two special cases.
+		// One: a string which follows a type declaration is a name.
+		if objType == reflect.TypeOf("string") {
+			if lastType == nil {
+				panic("Type names (specified via a string argument to WithTypes()) must come *after* the prototype object")
+			} else {
+				lastType.Name = obj.(string)
+				lastType = nil // no more updating is possible.
+				continue
+			}
+		}
+		// Two: pkg.Type{} can be specified directly
 		if objType.Kind() == reflect.Ptr && objType.Elem() == reflect.TypeOf(Type{}) {
 			panic("Use pkg.Type{}, not *pkg.Type{}")
 		}
@@ -128,6 +144,8 @@ func (pkg *Package) WithTypes(objs ...interface{}) *Package {
 			}
 			pointerPreferred = obj.(Type).PointerPreferred
 		}
+		// End of special cases.
+
 		// Init deref and ptr types.
 		objDerefType := objType
 		if objDerefType.Kind() == reflect.Ptr {
@@ -148,11 +166,12 @@ func (pkg *Package) WithTypes(objs ...interface{}) *Package {
 		if name == "" {
 			name = objDerefType.Name()
 		}
-		pkg.Types = append(pkg.Types, Type{
+		lastType = &Type{ // memoize for future modification.
 			Type:             objDerefType,
-			Name:             name,
+			Name:             name, // may get overridden later.
 			PointerPreferred: pointerPreferred,
-		})
+		}
+		pkg.Types = append(pkg.Types, lastType)
 	}
 	return pkg
 }
@@ -172,13 +191,14 @@ func (pkg *Package) WithP3SchemaFile(file string) *Package {
 	return pkg
 }
 
+// Result cannot be modified.
 func (pkg *Package) GetType(rt reflect.Type) (t Type, ok bool) {
 	if rt.Kind() == reflect.Ptr {
 		panic("unexpected pointer type")
 	}
 	for _, t := range pkg.Types {
 		if rt == t.Type {
-			return t, true
+			return *t, true
 		}
 	}
 	return Type{}, false
