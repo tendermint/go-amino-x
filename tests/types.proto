@@ -10,6 +10,7 @@ import "google/protobuf/any.proto";
 // messages
 message EmptyStruct {
 }
+
 message PrimitivesStruct {
 	sint32 Int8 = 1;
 	sint32 Int16 = 2;
@@ -31,9 +32,11 @@ message PrimitivesStruct {
 	google.protobuf.Timestamp Time = 18;
 	EmptyStruct Empty = 19;
 }
+
 message ShortArraysStruct {
 	repeated google.protobuf.Timestamp TimeAr = 1;
 }
+
 message ArraysStruct {
 	repeated sint32 Int8Ar = 1;
 	repeated sint32 Int16Ar = 2;
@@ -55,6 +58,7 @@ message ArraysStruct {
 	repeated google.protobuf.Timestamp TimeAr = 18;
 	repeated EmptyStruct EmptyAr = 19;
 }
+
 message ArraysArraysStruct {
 	repeated Int8List Int8ArAr = 1;
 	repeated Int16List Int16ArAr = 2;
@@ -76,6 +80,7 @@ message ArraysArraysStruct {
 	repeated TimestampList TimeArAr = 18;
 	repeated EmptyStructList EmptyArAr = 19;
 }
+
 message SlicesStruct {
 	repeated sint32 Int8Sl = 1;
 	repeated sint32 Int16Sl = 2;
@@ -97,6 +102,7 @@ message SlicesStruct {
 	repeated google.protobuf.Timestamp TimeSl = 18;
 	repeated EmptyStruct EmptySl = 19;
 }
+
 message SlicesSlicesStruct {
 	repeated Int8List Int8SlSl = 1;
 	repeated Int16List Int16SlSl = 2;
@@ -118,6 +124,7 @@ message SlicesSlicesStruct {
 	repeated TimestampList TimeSlSl = 18;
 	repeated EmptyStructList EmptySlSl = 19;
 }
+
 message PointersStruct {
 	sint32 Int8Pt = 1;
 	sint32 Int16Pt = 2;
@@ -139,6 +146,7 @@ message PointersStruct {
 	google.protobuf.Timestamp TimePt = 18;
 	EmptyStruct EmptyPt = 19;
 }
+
 message PointerSlicesStruct {
 	repeated sint32 Int8PtSl = 1;
 	repeated sint32 Int16PtSl = 2;
@@ -160,21 +168,25 @@ message PointerSlicesStruct {
 	repeated google.protobuf.Timestamp TimePtSl = 18;
 	repeated EmptyStruct EmptyPtSl = 19;
 }
+
 message ComplexSt {
 	PrimitivesStruct PrField = 1;
 	ArraysStruct ArField = 2;
 	SlicesStruct SlField = 3;
 	PointersStruct PtField = 4;
 }
+
 message EmbeddedSt1 {
 	PrimitivesStruct PrimitivesStruct = 1;
 }
+
 message EmbeddedSt2 {
 	PrimitivesStruct PrimitivesStruct = 1;
 	ArraysStruct ArraysStruct = 2;
 	SlicesStruct SlicesStruct = 3;
 	PointersStruct PointersStruct = 4;
 }
+
 message EmbeddedSt3 {
 	PrimitivesStruct PrimitivesStruct = 1;
 	ArraysStruct ArraysStruct = 2;
@@ -182,6 +194,7 @@ message EmbeddedSt3 {
 	PointersStruct PointersStruct = 4;
 	EmptyStruct EmptyStruct = 5;
 }
+
 message EmbeddedSt4 {
 	sint64 Foo1 = 1;
 	PrimitivesStruct PrimitivesStruct = 2;
@@ -193,6 +206,7 @@ message EmbeddedSt4 {
 	PointersStruct PointersStructField = 8;
 	uint64 Foo5 = 9;
 }
+
 message EmbeddedSt5NameOverride {
 	sint64 Foo1 = 1;
 	PrimitivesStruct PrimitivesStruct = 2;
@@ -204,54 +218,70 @@ message EmbeddedSt5NameOverride {
 	PointersStruct PointersStructField = 8;
 	uint64 Foo5 = 9;
 }
+
 message AminoMarshalerStruct1 {
 	sint64 C = 1;
 	sint64 D = 2;
 }
+
 message ReprStruct1 {
 	sint64 C = 1;
 	sint64 D = 2;
 }
+
 message AminoMarshalerStruct2 {
 	repeated ReprElem2 Value = 1;
 }
+
 message ReprElem2 {
 	string Key = 1;
 	google.protobuf.Any Value = 2;
 }
+
 message AminoMarshalerStruct3 {
 	sint32 Value = 1;
 }
+
 message AminoMarshalerInt4 {
 	sint32 A = 1;
 }
+
 message AminoMarshalerInt5 {
 	string Value = 1;
 }
+
 message AminoMarshalerStruct6 {
 	repeated AminoMarshalerStruct1 Value = 1;
 }
+
 message AminoMarshalerStruct7 {
 	bytes Value = 1;
 }
+
 message ReprElem7 {
 	uint32 Value = 1;
 }
+
 message IntDef {
 	sint64 Value = 1;
 }
+
 message IntAr {
 	repeated sint64 Value = 1;
 }
+
 message IntSl {
 	repeated sint64 Value = 1;
 }
+
 message ByteAr {
 	bytes Value = 1;
 }
+
 message ByteSl {
 	bytes Value = 1;
 }
+
 message PrimitivesStructDef {
 	sint32 Int8 = 1;
 	sint32 Int16 = 2;
@@ -273,73 +303,96 @@ message PrimitivesStructDef {
 	google.protobuf.Timestamp Time = 18;
 	EmptyStruct Empty = 19;
 }
+
 message PrimitivesStructSl {
 	repeated PrimitivesStruct Value = 1;
 }
+
 message PrimitivesStructAr {
 	repeated PrimitivesStruct Value = 1;
 }
+
 message Concrete1 {
 }
+
 message Concrete2 {
 }
+
 message ConcreteTypeDef {
 	bytes Value = 1;
 }
+
 message ConcreteWrappedBytes {
 	bytes Value = 1;
 }
+
 message InterfaceFieldsStruct {
 	google.protobuf.Any F1 = 1;
 	google.protobuf.Any F2 = 2;
 	google.protobuf.Any F3 = 3;
 	google.protobuf.Any F4 = 4;
 }
+
 message BytesList {
 	repeated bytes Value = 1;
 }
+
 message BytesListList {
 	repeated BytesList Value = 1;
 }
+
 message EmptyStructList {
 	repeated EmptyStruct Value = 1;
 }
+
 message Fixed32Int32ValueList {
 	repeated sfixed32 Value = 1;
 }
+
 message Fixed32UInt32ValueList {
 	repeated fixed32 Value = 1;
 }
+
 message Fixed64Int64ValueList {
 	repeated sfixed64 Value = 1;
 }
+
 message Fixed64UInt64ValueList {
 	repeated fixed64 Value = 1;
 }
+
 message Int16List {
 	repeated sint32 Value = 1;
 }
+
 message Int32ValueList {
 	repeated sint32 Value = 1;
 }
+
 message Int64ValueList {
 	repeated sint64 Value = 1;
 }
+
 message Int8List {
 	repeated sint32 Value = 1;
 }
+
 message StringValueList {
 	repeated string Value = 1;
 }
+
 message TimestampList {
 	repeated google.protobuf.Timestamp Value = 1;
 }
+
 message UInt16List {
 	repeated uint32 Value = 1;
 }
+
 message UInt32ValueList {
 	repeated uint32 Value = 1;
 }
+
 message UInt64ValueList {
 	repeated uint64 Value = 1;
 }

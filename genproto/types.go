@@ -198,6 +198,7 @@ func (doc P3Doc) PrintCode(p *press.Press) *press.Press {
 			p.Pl("// messages")
 		}
 		msg.PrintCode(p)
+		p.Ln()
 		if i == len(doc.Messages)-1 {
 			p.Ln()
 		}

@@ -65,7 +65,7 @@ func (p *Press) P(s string, args ...interface{}) *Press {
 }
 
 // Appends a new line.
-// It is also possible to print newline characters direclty,
+// It is also possible to print newline characters directly,
 // but Press doesn't treat them as newlines for the sake of indentation.
 func (p *Press) Ln() *Press {
 	p.lines = append(p.lines, newLine(p.indentPrefix, ""))
