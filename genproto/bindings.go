@@ -180,13 +180,13 @@ func generateMethodsForType(imports *ast.GenDecl, scope *ast.Scope, pkg *amino.P
 	}
 
 	//////////////////
-	// is*EmptyRepr()
+	// Is*ReprEmpty()
 	{
 		rinfo := info.ReprType
 		scope2 := ast.NewScope(scope)
 		addVars(scope2, "goo", "empty")
 		goorte := goTypeExpr(pkg, rinfo.Type, imports, scope2)
-		methods = append(methods, _func(fmt.Sprintf("is%vEmptyRepr", info.Name),
+		methods = append(methods, _func(fmt.Sprintf("Is%vReprEmpty", info.Name),
 			"", "",
 			_fields("goor", goorte),
 			_fields("empty", "bool"),
@@ -194,7 +194,7 @@ func generateMethodsForType(imports *ast.GenDecl, scope *ast.Scope, pkg *amino.P
 				// Body: check fields.
 				_block(append(
 					[]ast.Stmt{_a("empty", "=", "true")},
-					isEmptyReprStmts(true, imports, scope2, _i("goor"), false, info)...,
+					isReprEmptyStmts(pkg, true, imports, scope2, _i("goor"), false, info)...,
 				)...),
 				// Body: return.
 				_return(),
@@ -390,11 +390,12 @@ func go2pbStmts(rootPkg *amino.Package, isRoot bool, imports *ast.GenDecl, scope
 			pbote_ := p3goTypeExprString(rootPkg, imports, scope, gooType, fopts)
 			pbov_ := addVarUniq(scope, "pbov")
 			b = append(b,
-				_if(_call(_x("is%vEmptyRepr", gooType.Name), goor),
+				_if(_call(_x("Is%vReprEmpty", gooType.Name), goor),
 					_var(pbov_, _x(pbote_), nil),
 					_a("msg", "=", pbov_),
 					_return()))
 		} else if !gooIsPtr {
+			pkgPrefix := goPkgPrefix(rootPkg, gooType.Type, gooType, imports, scope)
 			// b switcharoo pattern
 			// statements after this pattern appended to b
 			// will come after the injected if-condition.
@@ -403,7 +404,7 @@ func go2pbStmts(rootPkg *amino.Package, isRoot bool, imports *ast.GenDecl, scope
 			defer func() {
 				newb := b // named for clarity
 				b = append(oldb,
-					_if(_not(_call(_x("is%vEmptyRepr", gooType.Name), goor)),
+					_if(_not(_call(_x("%vIs%vReprEmpty", pkgPrefix, gooType.Name), goor)),
 						newb...))
 			}()
 			// end b switcharoo pattern
@@ -842,7 +843,7 @@ func pb2goStmts(rootPkg *amino.Package, isRoot bool, imports *ast.GenDecl, scope
 	return b
 }
 
-func isEmptyReprStmts(isRoot bool, imports *ast.GenDecl, scope *ast.Scope, goo ast.Expr, gooIsPtr bool, gooType *amino.TypeInfo) (b []ast.Stmt) {
+func isReprEmptyStmts(rootPkg *amino.Package, isRoot bool, imports *ast.GenDecl, scope *ast.Scope, goo ast.Expr, gooIsPtr bool, gooType *amino.TypeInfo) (b []ast.Stmt) {
 
 	// Special case if non-nil struct-pointer.
 	// TODO: this could be precompiled and optimized (when !isRoot).
@@ -912,12 +913,13 @@ func isEmptyReprStmts(isRoot bool, imports *ast.GenDecl, scope *ast.Scope, goo a
 	// Below, goor is dereferenced if goo is pointer.
 
 	// External case.
-	// If gooType is registered, just call is*EmptyRepr
+	// If gooType is registered, just call is*ReprEmpty
 	// TODO If not registered?
 	if !isRoot && gooType.Registered && hasPBBindings(gooType) {
+		pkgPrefix := goPkgPrefix(rootPkg, gooType.Type, gooType, imports, scope)
 		e_ := addVarUniq(scope, "e")
 		b = append(b,
-			_a(e_, ":=", _call(_x("is%vEmptyRepr", gooType.Name), goor)),
+			_a(e_, ":=", _call(_x("%vIs%vReprEmpty", pkgPrefix, gooType.Name), goor)),
 			_if(_x("%v__==__false", e_),
 				_return(_i("false")),
 			),
@@ -954,7 +956,7 @@ func isEmptyReprStmts(isRoot bool, imports *ast.GenDecl, scope *ast.Scope, goo a
 				// Translate in place.
 				scope2 := ast.NewScope(scope)
 				b = append(b,
-					_block(isEmptyReprStmts(false, imports, scope2, goorf, goorfIsPtr, goorfType)...),
+					_block(isReprEmptyStmts(rootPkg, false, imports, scope2, goorf, goorfIsPtr, goorfType)...),
 				)
 			}
 		}
@@ -1183,12 +1185,14 @@ func _x(expr string, args ...interface{}) ast.Expr {
 				return _i("nil")
 			}
 		case 'i':
-			num := _x(expr[:len(expr)-1]).(*ast.BasicLit)
-			if num.Kind != token.INT && num.Kind != token.FLOAT {
-				panic("expected int or float before 'i'")
+			if '0' <= expr[0] && expr[0] <= '9' {
+				num := _x(expr[:len(expr)-1]).(*ast.BasicLit)
+				if num.Kind != token.INT && num.Kind != token.FLOAT {
+					panic("expected int or float before 'i'")
+				}
+				num.Kind = token.IMAG
+				return num
 			}
-			num.Kind = token.IMAG
-			return num
 		case '\'':
 			if first != last {
 				panic("unmatched quote")
@@ -1895,6 +1899,31 @@ OUTER:
 	}
 }
 
+// If rt.PkgPath() is "",
+func goPkgPrefix(rootPkg *amino.Package, rt reflect.Type, info *amino.TypeInfo, imports *ast.GenDecl, scope *ast.Scope) (pkgPrefix string) {
+	if rt.Name() == "" {
+		panic("expected rt to have name")
+	}
+	if rt.PkgPath() == "" {
+		return "" // native type.
+	}
+	var pkgName string
+	var pkgPath string = rt.PkgPath()
+	if pkgPath == "" || rootPkg.GoPkgPath == pkgPath {
+		return ""
+	}
+	if info != nil && info.Package != nil {
+		if info.Package.GoPkgPath != pkgPath {
+			panic("conflicting package paths")
+		}
+		pkgName = info.Package.GoPkgName
+	} else {
+		pkgName = pkg.DefaultPkgName(pkgPath)
+	}
+	pkgName = addImportAuto(imports, scope, pkgName, pkgPath)
+	return pkgName + "."
+}
+
 func goTypeExprStringFn(rootPkg *amino.Package, imports *ast.GenDecl, scope *ast.Scope, isPtr bool, info *amino.TypeInfo) func() string {
 	memo := ""
 	return func() string { // lazy.
@@ -1910,40 +1939,39 @@ func goTypeExprString(rootPkg *amino.Package, imports *ast.GenDecl, scope *ast.S
 		return "*" + goTypeExprString(rootPkg, imports, scope, false, info)
 	}
 	// Below, assume isPtr is false.
+	rt := info.Type
+	// Below, the logic mirrors that of goTypeExpr.
+	name := rt.Name()
+	if name != "" {
+		// If name exists, use the name rather than the kind.
+		pkgPath := rt.PkgPath()
+		// Sanity check
+		if info.Package != nil && pkgPath != info.Package.GoPkgPath {
+			panic(fmt.Sprintf("mismatching packages. info says %v, reflect says %v", info.Package.GoPkgPath, pkgPath))
+		}
+		// END Sanity check
+		pkgPrefix := goPkgPrefix(rootPkg, rt, info, imports, scope)
+		return fmt.Sprintf("%v%v", pkgPrefix, name)
+	}
 	switch info.Type.Kind() {
 	case reflect.Array:
 		return fmt.Sprintf("[%v]%v", info.Type.Len(), goTypeExprString(rootPkg, imports, scope, info.ElemIsPtr, info.Elem))
 	case reflect.Slice:
 		return fmt.Sprintf("[]%v", goTypeExprString(rootPkg, imports, scope, info.ElemIsPtr, info.Elem))
-	}
-	var pkgName string
-	var pkgPath string
-	if info.Package != nil {
-		pkgPath = info.Package.GoPkgPath
-		pkgName = info.Package.GoPkgName
-	} else {
-		pkgPath = info.Type.PkgPath()
-		pkgName = pkg.DefaultPkgName(pkgPath)
-	}
-	if pkgPath == "" || rootPkg.GoPkgPath == pkgPath {
-		return fmt.Sprintf("%v", info.Type.Name())
-	} else {
-		pkgName = addImportAuto(imports, scope, pkgName, pkgPath)
-		return fmt.Sprintf("%v.%v", pkgName, info.Type.Name())
+	default:
+		expr := rt.String()
+		if strings.Contains(expr, ".") {
+			panic("does not work (yet) with anonymous interface/struct types with imports")
+		}
+		return expr
 	}
 }
 
 func goTypeExpr(rootPkg *amino.Package, rt reflect.Type, imports *ast.GenDecl, scope *ast.Scope) ast.Expr {
 	name := rt.Name()
 	if name != "" {
-		pkgPath := rt.PkgPath()
-		if pkgPath != "" && pkgPath != rootPkg.GoPkgPath {
-			pkgName := pkg.DefaultPkgName(pkgPath)
-			pkgName = addImportAuto(imports, scope, pkgName, pkgPath)
-			return _x(fmt.Sprintf("%v.%v", pkgName, name))
-		} else {
-			return _i(name)
-		}
+		pkgPrefix := goPkgPrefix(rootPkg, rt, nil, imports, scope)
+		return _x(fmt.Sprintf("%v%v", pkgPrefix, name))
 	}
 	switch rt.Kind() {
 	case reflect.Array:

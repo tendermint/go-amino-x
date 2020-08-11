@@ -12,7 +12,7 @@ import (
 func (goo EmptyStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.EmptyStruct
 	{
-		if isEmptyStructEmptyRepr(goo) {
+		if IsEmptyStructReprEmpty(goo) {
 			var pbov *testspb.EmptyStruct
 			msg = pbov
 			return
@@ -38,7 +38,7 @@ func (goo *EmptyStruct) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err 
 func (_ EmptyStruct) GetTypeURL() (typeURL string) {
 	return "/tests.EmptyStruct"
 }
-func isEmptyStructEmptyRepr(goor EmptyStruct) (empty bool) {
+func IsEmptyStructReprEmpty(goor EmptyStruct) (empty bool) {
 	{
 		empty = true
 	}
@@ -47,7 +47,7 @@ func isEmptyStructEmptyRepr(goor EmptyStruct) (empty bool) {
 func (goo PrimitivesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.PrimitivesStruct
 	{
-		if isPrimitivesStructEmptyRepr(goo) {
+		if IsPrimitivesStructReprEmpty(goo) {
 			var pbov *testspb.PrimitivesStruct
 			msg = pbov
 			return
@@ -231,7 +231,7 @@ func (goo *PrimitivesStruct) FromPBMessage(cdc *amino.Codec, msg proto.Message) 
 func (_ PrimitivesStruct) GetTypeURL() (typeURL string) {
 	return "/tests.PrimitivesStruct"
 }
-func isPrimitivesStructEmptyRepr(goor PrimitivesStruct) (empty bool) {
+func IsPrimitivesStructReprEmpty(goor PrimitivesStruct) (empty bool) {
 	{
 		empty = true
 		{
@@ -325,7 +325,7 @@ func isPrimitivesStructEmptyRepr(goor PrimitivesStruct) (empty bool) {
 			}
 		}
 		{
-			e := isEmptyStructEmptyRepr(goor.Empty)
+			e := IsEmptyStructReprEmpty(goor.Empty)
 			if e == false {
 				return false
 			}
@@ -336,7 +336,7 @@ func isPrimitivesStructEmptyRepr(goor PrimitivesStruct) (empty bool) {
 func (goo ShortArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.ShortArraysStruct
 	{
-		if isShortArraysStructEmptyRepr(goo) {
+		if IsShortArraysStructReprEmpty(goo) {
 			var pbov *testspb.ShortArraysStruct
 			msg = pbov
 			return
@@ -394,7 +394,7 @@ func (goo *ShortArraysStruct) FromPBMessage(cdc *amino.Codec, msg proto.Message)
 func (_ ShortArraysStruct) GetTypeURL() (typeURL string) {
 	return "/tests.ShortArraysStruct"
 }
-func isShortArraysStructEmptyRepr(goor ShortArraysStruct) (empty bool) {
+func IsShortArraysStructReprEmpty(goor ShortArraysStruct) (empty bool) {
 	{
 		empty = true
 		{
@@ -408,7 +408,7 @@ func isShortArraysStructEmptyRepr(goor ShortArraysStruct) (empty bool) {
 func (goo ArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.ArraysStruct
 	{
-		if isArraysStructEmptyRepr(goo) {
+		if IsArraysStructReprEmpty(goo) {
 			var pbov *testspb.ArraysStruct
 			msg = pbov
 			return
@@ -1048,7 +1048,7 @@ func (goo *ArraysStruct) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err
 func (_ ArraysStruct) GetTypeURL() (typeURL string) {
 	return "/tests.ArraysStruct"
 }
-func isArraysStructEmptyRepr(goor ArraysStruct) (empty bool) {
+func IsArraysStructReprEmpty(goor ArraysStruct) (empty bool) {
 	{
 		empty = true
 		{
@@ -1152,7 +1152,7 @@ func isArraysStructEmptyRepr(goor ArraysStruct) (empty bool) {
 func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.ArraysArraysStruct
 	{
-		if isArraysArraysStructEmptyRepr(goo) {
+		if IsArraysArraysStructReprEmpty(goo) {
 			var pbov *testspb.ArraysArraysStruct
 			msg = pbov
 			return
@@ -2282,7 +2282,7 @@ func (goo *ArraysArraysStruct) FromPBMessage(cdc *amino.Codec, msg proto.Message
 func (_ ArraysArraysStruct) GetTypeURL() (typeURL string) {
 	return "/tests.ArraysArraysStruct"
 }
-func isArraysArraysStructEmptyRepr(goor ArraysArraysStruct) (empty bool) {
+func IsArraysArraysStructReprEmpty(goor ArraysArraysStruct) (empty bool) {
 	{
 		empty = true
 		{
@@ -2386,7 +2386,7 @@ func isArraysArraysStructEmptyRepr(goor ArraysArraysStruct) (empty bool) {
 func (goo SlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.SlicesStruct
 	{
-		if isSlicesStructEmptyRepr(goo) {
+		if IsSlicesStructReprEmpty(goo) {
 			var pbov *testspb.SlicesStruct
 			msg = pbov
 			return
@@ -3178,7 +3178,7 @@ func (goo *SlicesStruct) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err
 func (_ SlicesStruct) GetTypeURL() (typeURL string) {
 	return "/tests.SlicesStruct"
 }
-func isSlicesStructEmptyRepr(goor SlicesStruct) (empty bool) {
+func IsSlicesStructReprEmpty(goor SlicesStruct) (empty bool) {
 	{
 		empty = true
 		{
@@ -3282,7 +3282,7 @@ func isSlicesStructEmptyRepr(goor SlicesStruct) (empty bool) {
 func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.SlicesSlicesStruct
 	{
-		if isSlicesSlicesStructEmptyRepr(goo) {
+		if IsSlicesSlicesStructReprEmpty(goo) {
 			var pbov *testspb.SlicesSlicesStruct
 			msg = pbov
 			return
@@ -4716,7 +4716,7 @@ func (goo *SlicesSlicesStruct) FromPBMessage(cdc *amino.Codec, msg proto.Message
 func (_ SlicesSlicesStruct) GetTypeURL() (typeURL string) {
 	return "/tests.SlicesSlicesStruct"
 }
-func isSlicesSlicesStructEmptyRepr(goor SlicesSlicesStruct) (empty bool) {
+func IsSlicesSlicesStructReprEmpty(goor SlicesSlicesStruct) (empty bool) {
 	{
 		empty = true
 		{
@@ -4820,7 +4820,7 @@ func isSlicesSlicesStructEmptyRepr(goor SlicesSlicesStruct) (empty bool) {
 func (goo PointersStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.PointersStruct
 	{
-		if isPointersStructEmptyRepr(goo) {
+		if IsPointersStructReprEmpty(goo) {
 			var pbov *testspb.PointersStruct
 			msg = pbov
 			return
@@ -5098,7 +5098,7 @@ func (goo *PointersStruct) FromPBMessage(cdc *amino.Codec, msg proto.Message) (e
 func (_ PointersStruct) GetTypeURL() (typeURL string) {
 	return "/tests.PointersStruct"
 }
-func isPointersStructEmptyRepr(goor PointersStruct) (empty bool) {
+func IsPointersStructReprEmpty(goor PointersStruct) (empty bool) {
 	{
 		empty = true
 		{
@@ -5270,7 +5270,7 @@ func isPointersStructEmptyRepr(goor PointersStruct) (empty bool) {
 func (goo PointerSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.PointerSlicesStruct
 	{
-		if isPointerSlicesStructEmptyRepr(goo) {
+		if IsPointerSlicesStructReprEmpty(goo) {
 			var pbov *testspb.PointerSlicesStruct
 			msg = pbov
 			return
@@ -6156,7 +6156,7 @@ func (goo *PointerSlicesStruct) FromPBMessage(cdc *amino.Codec, msg proto.Messag
 func (_ PointerSlicesStruct) GetTypeURL() (typeURL string) {
 	return "/tests.PointerSlicesStruct"
 }
-func isPointerSlicesStructEmptyRepr(goor PointerSlicesStruct) (empty bool) {
+func IsPointerSlicesStructReprEmpty(goor PointerSlicesStruct) (empty bool) {
 	{
 		empty = true
 		{
@@ -6260,7 +6260,7 @@ func isPointerSlicesStructEmptyRepr(goor PointerSlicesStruct) (empty bool) {
 func (goo ComplexSt) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.ComplexSt
 	{
-		if isComplexStEmptyRepr(goo) {
+		if IsComplexStReprEmpty(goo) {
 			var pbov *testspb.ComplexSt
 			msg = pbov
 			return
@@ -6350,29 +6350,29 @@ func (goo *ComplexSt) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err er
 func (_ ComplexSt) GetTypeURL() (typeURL string) {
 	return "/tests.ComplexSt"
 }
-func isComplexStEmptyRepr(goor ComplexSt) (empty bool) {
+func IsComplexStReprEmpty(goor ComplexSt) (empty bool) {
 	{
 		empty = true
 		{
-			e := isPrimitivesStructEmptyRepr(goor.PrField)
+			e := IsPrimitivesStructReprEmpty(goor.PrField)
 			if e == false {
 				return false
 			}
 		}
 		{
-			e := isArraysStructEmptyRepr(goor.ArField)
+			e := IsArraysStructReprEmpty(goor.ArField)
 			if e == false {
 				return false
 			}
 		}
 		{
-			e := isSlicesStructEmptyRepr(goor.SlField)
+			e := IsSlicesStructReprEmpty(goor.SlField)
 			if e == false {
 				return false
 			}
 		}
 		{
-			e := isPointersStructEmptyRepr(goor.PtField)
+			e := IsPointersStructReprEmpty(goor.PtField)
 			if e == false {
 				return false
 			}
@@ -6383,7 +6383,7 @@ func isComplexStEmptyRepr(goor ComplexSt) (empty bool) {
 func (goo EmbeddedSt1) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.EmbeddedSt1
 	{
-		if isEmbeddedSt1EmptyRepr(goo) {
+		if IsEmbeddedSt1ReprEmpty(goo) {
 			var pbov *testspb.EmbeddedSt1
 			msg = pbov
 			return
@@ -6425,11 +6425,11 @@ func (goo *EmbeddedSt1) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err 
 func (_ EmbeddedSt1) GetTypeURL() (typeURL string) {
 	return "/tests.EmbeddedSt1"
 }
-func isEmbeddedSt1EmptyRepr(goor EmbeddedSt1) (empty bool) {
+func IsEmbeddedSt1ReprEmpty(goor EmbeddedSt1) (empty bool) {
 	{
 		empty = true
 		{
-			e := isPrimitivesStructEmptyRepr(goor.PrimitivesStruct)
+			e := IsPrimitivesStructReprEmpty(goor.PrimitivesStruct)
 			if e == false {
 				return false
 			}
@@ -6440,7 +6440,7 @@ func isEmbeddedSt1EmptyRepr(goor EmbeddedSt1) (empty bool) {
 func (goo EmbeddedSt2) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.EmbeddedSt2
 	{
-		if isEmbeddedSt2EmptyRepr(goo) {
+		if IsEmbeddedSt2ReprEmpty(goo) {
 			var pbov *testspb.EmbeddedSt2
 			msg = pbov
 			return
@@ -6530,29 +6530,29 @@ func (goo *EmbeddedSt2) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err 
 func (_ EmbeddedSt2) GetTypeURL() (typeURL string) {
 	return "/tests.EmbeddedSt2"
 }
-func isEmbeddedSt2EmptyRepr(goor EmbeddedSt2) (empty bool) {
+func IsEmbeddedSt2ReprEmpty(goor EmbeddedSt2) (empty bool) {
 	{
 		empty = true
 		{
-			e := isPrimitivesStructEmptyRepr(goor.PrimitivesStruct)
+			e := IsPrimitivesStructReprEmpty(goor.PrimitivesStruct)
 			if e == false {
 				return false
 			}
 		}
 		{
-			e := isArraysStructEmptyRepr(goor.ArraysStruct)
+			e := IsArraysStructReprEmpty(goor.ArraysStruct)
 			if e == false {
 				return false
 			}
 		}
 		{
-			e := isSlicesStructEmptyRepr(goor.SlicesStruct)
+			e := IsSlicesStructReprEmpty(goor.SlicesStruct)
 			if e == false {
 				return false
 			}
 		}
 		{
-			e := isPointersStructEmptyRepr(goor.PointersStruct)
+			e := IsPointersStructReprEmpty(goor.PointersStruct)
 			if e == false {
 				return false
 			}
@@ -6563,7 +6563,7 @@ func isEmbeddedSt2EmptyRepr(goor EmbeddedSt2) (empty bool) {
 func (goo EmbeddedSt3) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.EmbeddedSt3
 	{
-		if isEmbeddedSt3EmptyRepr(goo) {
+		if IsEmbeddedSt3ReprEmpty(goo) {
 			var pbov *testspb.EmbeddedSt3
 			msg = pbov
 			return
@@ -6699,7 +6699,7 @@ func (goo *EmbeddedSt3) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err 
 func (_ EmbeddedSt3) GetTypeURL() (typeURL string) {
 	return "/tests.EmbeddedSt3"
 }
-func isEmbeddedSt3EmptyRepr(goor EmbeddedSt3) (empty bool) {
+func IsEmbeddedSt3ReprEmpty(goor EmbeddedSt3) (empty bool) {
 	{
 		empty = true
 		{
@@ -6733,7 +6733,7 @@ func isEmbeddedSt3EmptyRepr(goor EmbeddedSt3) (empty bool) {
 func (goo EmbeddedSt4) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.EmbeddedSt4
 	{
-		if isEmbeddedSt4EmptyRepr(goo) {
+		if IsEmbeddedSt4ReprEmpty(goo) {
 			var pbov *testspb.EmbeddedSt4
 			msg = pbov
 			return
@@ -6885,7 +6885,7 @@ func (goo *EmbeddedSt4) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err 
 func (_ EmbeddedSt4) GetTypeURL() (typeURL string) {
 	return "/tests.EmbeddedSt4"
 }
-func isEmbeddedSt4EmptyRepr(goor EmbeddedSt4) (empty bool) {
+func IsEmbeddedSt4ReprEmpty(goor EmbeddedSt4) (empty bool) {
 	{
 		empty = true
 		{
@@ -6894,7 +6894,7 @@ func isEmbeddedSt4EmptyRepr(goor EmbeddedSt4) (empty bool) {
 			}
 		}
 		{
-			e := isPrimitivesStructEmptyRepr(goor.PrimitivesStruct)
+			e := IsPrimitivesStructReprEmpty(goor.PrimitivesStruct)
 			if e == false {
 				return false
 			}
@@ -6905,7 +6905,7 @@ func isEmbeddedSt4EmptyRepr(goor EmbeddedSt4) (empty bool) {
 			}
 		}
 		{
-			e := isArraysStructEmptyRepr(goor.ArraysStructField)
+			e := IsArraysStructReprEmpty(goor.ArraysStructField)
 			if e == false {
 				return false
 			}
@@ -6916,7 +6916,7 @@ func isEmbeddedSt4EmptyRepr(goor EmbeddedSt4) (empty bool) {
 			}
 		}
 		{
-			e := isSlicesStructEmptyRepr(goor.SlicesStruct)
+			e := IsSlicesStructReprEmpty(goor.SlicesStruct)
 			if e == false {
 				return false
 			}
@@ -6927,7 +6927,7 @@ func isEmbeddedSt4EmptyRepr(goor EmbeddedSt4) (empty bool) {
 			}
 		}
 		{
-			e := isPointersStructEmptyRepr(goor.PointersStructField)
+			e := IsPointersStructReprEmpty(goor.PointersStructField)
 			if e == false {
 				return false
 			}
@@ -6943,7 +6943,7 @@ func isEmbeddedSt4EmptyRepr(goor EmbeddedSt4) (empty bool) {
 func (goo EmbeddedSt5) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.EmbeddedSt5NameOverride
 	{
-		if isEmbeddedSt5NameOverrideEmptyRepr(goo) {
+		if IsEmbeddedSt5NameOverrideReprEmpty(goo) {
 			var pbov *testspb.EmbeddedSt5NameOverride
 			msg = pbov
 			return
@@ -7119,7 +7119,7 @@ func (goo *EmbeddedSt5) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err 
 func (_ EmbeddedSt5) GetTypeURL() (typeURL string) {
 	return "/tests.EmbeddedSt5NameOverride"
 }
-func isEmbeddedSt5NameOverrideEmptyRepr(goor EmbeddedSt5) (empty bool) {
+func IsEmbeddedSt5NameOverrideReprEmpty(goor EmbeddedSt5) (empty bool) {
 	{
 		empty = true
 		{
@@ -7177,7 +7177,7 @@ func (goo AminoMarshalerStruct1) ToPBMessage(cdc *amino.Codec) (msg proto.Messag
 		if err1 != nil {
 			return nil, err1
 		}
-		if isAminoMarshalerStruct1EmptyRepr(goor) {
+		if IsAminoMarshalerStruct1ReprEmpty(goor) {
 			var pbov *testspb.AminoMarshalerStruct1
 			msg = pbov
 			return
@@ -7220,7 +7220,7 @@ func (goo *AminoMarshalerStruct1) FromPBMessage(cdc *amino.Codec, msg proto.Mess
 func (_ AminoMarshalerStruct1) GetTypeURL() (typeURL string) {
 	return "/tests.AminoMarshalerStruct1"
 }
-func isAminoMarshalerStruct1EmptyRepr(goor ReprStruct1) (empty bool) {
+func IsAminoMarshalerStruct1ReprEmpty(goor ReprStruct1) (empty bool) {
 	{
 		empty = true
 		{
@@ -7239,7 +7239,7 @@ func isAminoMarshalerStruct1EmptyRepr(goor ReprStruct1) (empty bool) {
 func (goo ReprStruct1) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.ReprStruct1
 	{
-		if isReprStruct1EmptyRepr(goo) {
+		if IsReprStruct1ReprEmpty(goo) {
 			var pbov *testspb.ReprStruct1
 			msg = pbov
 			return
@@ -7277,7 +7277,7 @@ func (goo *ReprStruct1) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err 
 func (_ ReprStruct1) GetTypeURL() (typeURL string) {
 	return "/tests.ReprStruct1"
 }
-func isReprStruct1EmptyRepr(goor ReprStruct1) (empty bool) {
+func IsReprStruct1ReprEmpty(goor ReprStruct1) (empty bool) {
 	{
 		empty = true
 		{
@@ -7300,7 +7300,7 @@ func (goo AminoMarshalerStruct2) ToPBMessage(cdc *amino.Codec) (msg proto.Messag
 		if err1 != nil {
 			return nil, err1
 		}
-		if isAminoMarshalerStruct2EmptyRepr(goor) {
+		if IsAminoMarshalerStruct2ReprEmpty(goor) {
 			var pbov *testspb.AminoMarshalerStruct2
 			msg = pbov
 			return
@@ -7372,7 +7372,7 @@ func (goo *AminoMarshalerStruct2) FromPBMessage(cdc *amino.Codec, msg proto.Mess
 func (_ AminoMarshalerStruct2) GetTypeURL() (typeURL string) {
 	return "/tests.AminoMarshalerStruct2"
 }
-func isAminoMarshalerStruct2EmptyRepr(goor []ReprElem2) (empty bool) {
+func IsAminoMarshalerStruct2ReprEmpty(goor []ReprElem2) (empty bool) {
 	{
 		empty = true
 		if len(goor) != 0 {
@@ -7384,7 +7384,7 @@ func isAminoMarshalerStruct2EmptyRepr(goor []ReprElem2) (empty bool) {
 func (goo ReprElem2) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.ReprElem2
 	{
-		if isReprElem2EmptyRepr(goo) {
+		if IsReprElem2ReprEmpty(goo) {
 			var pbov *testspb.ReprElem2
 			msg = pbov
 			return
@@ -7436,7 +7436,7 @@ func (goo *ReprElem2) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err er
 func (_ ReprElem2) GetTypeURL() (typeURL string) {
 	return "/tests.ReprElem2"
 }
-func isReprElem2EmptyRepr(goor ReprElem2) (empty bool) {
+func IsReprElem2ReprEmpty(goor ReprElem2) (empty bool) {
 	{
 		empty = true
 		{
@@ -7459,7 +7459,7 @@ func (goo AminoMarshalerStruct3) ToPBMessage(cdc *amino.Codec) (msg proto.Messag
 		if err1 != nil {
 			return nil, err1
 		}
-		if isAminoMarshalerStruct3EmptyRepr(goor) {
+		if IsAminoMarshalerStruct3ReprEmpty(goor) {
 			var pbov *testspb.AminoMarshalerStruct3
 			msg = pbov
 			return
@@ -7489,7 +7489,7 @@ func (goo *AminoMarshalerStruct3) FromPBMessage(cdc *amino.Codec, msg proto.Mess
 func (_ AminoMarshalerStruct3) GetTypeURL() (typeURL string) {
 	return "/tests.AminoMarshalerStruct3"
 }
-func isAminoMarshalerStruct3EmptyRepr(goor int32) (empty bool) {
+func IsAminoMarshalerStruct3ReprEmpty(goor int32) (empty bool) {
 	{
 		empty = true
 		if goor != 0 {
@@ -7505,7 +7505,7 @@ func (goo AminoMarshalerInt4) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 		if err1 != nil {
 			return nil, err1
 		}
-		if isAminoMarshalerInt4EmptyRepr(goor) {
+		if IsAminoMarshalerInt4ReprEmpty(goor) {
 			var pbov *testspb.AminoMarshalerInt4
 			msg = pbov
 			return
@@ -7542,7 +7542,7 @@ func (goo *AminoMarshalerInt4) FromPBMessage(cdc *amino.Codec, msg proto.Message
 func (_ AminoMarshalerInt4) GetTypeURL() (typeURL string) {
 	return "/tests.AminoMarshalerInt4"
 }
-func isAminoMarshalerInt4EmptyRepr(goor ReprStruct4) (empty bool) {
+func IsAminoMarshalerInt4ReprEmpty(goor ReprStruct4) (empty bool) {
 	{
 		empty = true
 		{
@@ -7560,7 +7560,7 @@ func (goo AminoMarshalerInt5) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 		if err1 != nil {
 			return nil, err1
 		}
-		if isAminoMarshalerInt5EmptyRepr(goor) {
+		if IsAminoMarshalerInt5ReprEmpty(goor) {
 			var pbov *testspb.AminoMarshalerInt5
 			msg = pbov
 			return
@@ -7590,7 +7590,7 @@ func (goo *AminoMarshalerInt5) FromPBMessage(cdc *amino.Codec, msg proto.Message
 func (_ AminoMarshalerInt5) GetTypeURL() (typeURL string) {
 	return "/tests.AminoMarshalerInt5"
 }
-func isAminoMarshalerInt5EmptyRepr(goor string) (empty bool) {
+func IsAminoMarshalerInt5ReprEmpty(goor string) (empty bool) {
 	{
 		empty = true
 		if goor != "" {
@@ -7606,7 +7606,7 @@ func (goo AminoMarshalerStruct6) ToPBMessage(cdc *amino.Codec) (msg proto.Messag
 		if err1 != nil {
 			return nil, err1
 		}
-		if isAminoMarshalerStruct6EmptyRepr(goor) {
+		if IsAminoMarshalerStruct6ReprEmpty(goor) {
 			var pbov *testspb.AminoMarshalerStruct6
 			msg = pbov
 			return
@@ -7678,7 +7678,7 @@ func (goo *AminoMarshalerStruct6) FromPBMessage(cdc *amino.Codec, msg proto.Mess
 func (_ AminoMarshalerStruct6) GetTypeURL() (typeURL string) {
 	return "/tests.AminoMarshalerStruct6"
 }
-func isAminoMarshalerStruct6EmptyRepr(goor []AminoMarshalerStruct1) (empty bool) {
+func IsAminoMarshalerStruct6ReprEmpty(goor []AminoMarshalerStruct1) (empty bool) {
 	{
 		empty = true
 		if len(goor) != 0 {
@@ -7694,7 +7694,7 @@ func (goo AminoMarshalerStruct7) ToPBMessage(cdc *amino.Codec) (msg proto.Messag
 		if err1 != nil {
 			return nil, err1
 		}
-		if isAminoMarshalerStruct7EmptyRepr(goor) {
+		if IsAminoMarshalerStruct7ReprEmpty(goor) {
 			var pbov *testspb.AminoMarshalerStruct7
 			msg = pbov
 			return
@@ -7712,7 +7712,7 @@ func (goo AminoMarshalerStruct7) ToPBMessage(cdc *amino.Codec) (msg proto.Messag
 						if err2 != nil {
 							return nil, err2
 						}
-						if !isReprElem7EmptyRepr(goor1) {
+						if !IsReprElem7ReprEmpty(goor1) {
 							pbos[i] = byte(goor1)
 						}
 					}
@@ -7767,7 +7767,7 @@ func (goo *AminoMarshalerStruct7) FromPBMessage(cdc *amino.Codec, msg proto.Mess
 func (_ AminoMarshalerStruct7) GetTypeURL() (typeURL string) {
 	return "/tests.AminoMarshalerStruct7"
 }
-func isAminoMarshalerStruct7EmptyRepr(goor []ReprElem7) (empty bool) {
+func IsAminoMarshalerStruct7ReprEmpty(goor []ReprElem7) (empty bool) {
 	{
 		empty = true
 		if len(goor) != 0 {
@@ -7783,7 +7783,7 @@ func (goo ReprElem7) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error
 		if err1 != nil {
 			return nil, err1
 		}
-		if isReprElem7EmptyRepr(goor) {
+		if IsReprElem7ReprEmpty(goor) {
 			var pbov *testspb.ReprElem7
 			msg = pbov
 			return
@@ -7813,7 +7813,7 @@ func (goo *ReprElem7) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err er
 func (_ ReprElem7) GetTypeURL() (typeURL string) {
 	return "/tests.ReprElem7"
 }
-func isReprElem7EmptyRepr(goor uint8) (empty bool) {
+func IsReprElem7ReprEmpty(goor uint8) (empty bool) {
 	{
 		empty = true
 		if goor != 0 {
@@ -7825,7 +7825,7 @@ func isReprElem7EmptyRepr(goor uint8) (empty bool) {
 func (goo IntDef) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.IntDef
 	{
-		if isIntDefEmptyRepr(goo) {
+		if IsIntDefReprEmpty(goo) {
 			var pbov *testspb.IntDef
 			msg = pbov
 			return
@@ -7850,7 +7850,7 @@ func (goo *IntDef) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err error
 func (_ IntDef) GetTypeURL() (typeURL string) {
 	return "/tests.IntDef"
 }
-func isIntDefEmptyRepr(goor IntDef) (empty bool) {
+func IsIntDefReprEmpty(goor IntDef) (empty bool) {
 	{
 		empty = true
 		if goor != 0 {
@@ -7862,7 +7862,7 @@ func isIntDefEmptyRepr(goor IntDef) (empty bool) {
 func (goo IntAr) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.IntAr
 	{
-		if isIntArEmptyRepr(goo) {
+		if IsIntArReprEmpty(goo) {
 			var pbov *testspb.IntAr
 			msg = pbov
 			return
@@ -7911,7 +7911,7 @@ func (goo *IntAr) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err error)
 func (_ IntAr) GetTypeURL() (typeURL string) {
 	return "/tests.IntAr"
 }
-func isIntArEmptyRepr(goor IntAr) (empty bool) {
+func IsIntArReprEmpty(goor IntAr) (empty bool) {
 	{
 		empty = true
 		if len(goor) != 0 {
@@ -7923,7 +7923,7 @@ func isIntArEmptyRepr(goor IntAr) (empty bool) {
 func (goo IntSl) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.IntSl
 	{
-		if isIntSlEmptyRepr(goo) {
+		if IsIntSlReprEmpty(goo) {
 			var pbov *testspb.IntSl
 			msg = pbov
 			return
@@ -7980,7 +7980,7 @@ func (goo *IntSl) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err error)
 func (_ IntSl) GetTypeURL() (typeURL string) {
 	return "/tests.IntSl"
 }
-func isIntSlEmptyRepr(goor IntSl) (empty bool) {
+func IsIntSlReprEmpty(goor IntSl) (empty bool) {
 	{
 		empty = true
 		if len(goor) != 0 {
@@ -7992,7 +7992,7 @@ func isIntSlEmptyRepr(goor IntSl) (empty bool) {
 func (goo ByteAr) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.ByteAr
 	{
-		if isByteArEmptyRepr(goo) {
+		if IsByteArReprEmpty(goo) {
 			var pbov *testspb.ByteAr
 			msg = pbov
 			return
@@ -8041,7 +8041,7 @@ func (goo *ByteAr) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err error
 func (_ ByteAr) GetTypeURL() (typeURL string) {
 	return "/tests.ByteAr"
 }
-func isByteArEmptyRepr(goor ByteAr) (empty bool) {
+func IsByteArReprEmpty(goor ByteAr) (empty bool) {
 	{
 		empty = true
 		if len(goor) != 0 {
@@ -8053,7 +8053,7 @@ func isByteArEmptyRepr(goor ByteAr) (empty bool) {
 func (goo ByteSl) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.ByteSl
 	{
-		if isByteSlEmptyRepr(goo) {
+		if IsByteSlReprEmpty(goo) {
 			var pbov *testspb.ByteSl
 			msg = pbov
 			return
@@ -8110,7 +8110,7 @@ func (goo *ByteSl) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err error
 func (_ ByteSl) GetTypeURL() (typeURL string) {
 	return "/tests.ByteSl"
 }
-func isByteSlEmptyRepr(goor ByteSl) (empty bool) {
+func IsByteSlReprEmpty(goor ByteSl) (empty bool) {
 	{
 		empty = true
 		if len(goor) != 0 {
@@ -8122,7 +8122,7 @@ func isByteSlEmptyRepr(goor ByteSl) (empty bool) {
 func (goo PrimitivesStructDef) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.PrimitivesStructDef
 	{
-		if isPrimitivesStructDefEmptyRepr(goo) {
+		if IsPrimitivesStructDefReprEmpty(goo) {
 			var pbov *testspb.PrimitivesStructDef
 			msg = pbov
 			return
@@ -8306,7 +8306,7 @@ func (goo *PrimitivesStructDef) FromPBMessage(cdc *amino.Codec, msg proto.Messag
 func (_ PrimitivesStructDef) GetTypeURL() (typeURL string) {
 	return "/tests.PrimitivesStructDef"
 }
-func isPrimitivesStructDefEmptyRepr(goor PrimitivesStructDef) (empty bool) {
+func IsPrimitivesStructDefReprEmpty(goor PrimitivesStructDef) (empty bool) {
 	{
 		empty = true
 		{
@@ -8400,7 +8400,7 @@ func isPrimitivesStructDefEmptyRepr(goor PrimitivesStructDef) (empty bool) {
 			}
 		}
 		{
-			e := isEmptyStructEmptyRepr(goor.Empty)
+			e := IsEmptyStructReprEmpty(goor.Empty)
 			if e == false {
 				return false
 			}
@@ -8411,7 +8411,7 @@ func isPrimitivesStructDefEmptyRepr(goor PrimitivesStructDef) (empty bool) {
 func (goo PrimitivesStructSl) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.PrimitivesStructSl
 	{
-		if isPrimitivesStructSlEmptyRepr(goo) {
+		if IsPrimitivesStructSlReprEmpty(goo) {
 			var pbov *testspb.PrimitivesStructSl
 			msg = pbov
 			return
@@ -8478,7 +8478,7 @@ func (goo *PrimitivesStructSl) FromPBMessage(cdc *amino.Codec, msg proto.Message
 func (_ PrimitivesStructSl) GetTypeURL() (typeURL string) {
 	return "/tests.PrimitivesStructSl"
 }
-func isPrimitivesStructSlEmptyRepr(goor PrimitivesStructSl) (empty bool) {
+func IsPrimitivesStructSlReprEmpty(goor PrimitivesStructSl) (empty bool) {
 	{
 		empty = true
 		if len(goor) != 0 {
@@ -8490,7 +8490,7 @@ func isPrimitivesStructSlEmptyRepr(goor PrimitivesStructSl) (empty bool) {
 func (goo PrimitivesStructAr) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.PrimitivesStructAr
 	{
-		if isPrimitivesStructArEmptyRepr(goo) {
+		if IsPrimitivesStructArReprEmpty(goo) {
 			var pbov *testspb.PrimitivesStructAr
 			msg = pbov
 			return
@@ -8549,7 +8549,7 @@ func (goo *PrimitivesStructAr) FromPBMessage(cdc *amino.Codec, msg proto.Message
 func (_ PrimitivesStructAr) GetTypeURL() (typeURL string) {
 	return "/tests.PrimitivesStructAr"
 }
-func isPrimitivesStructArEmptyRepr(goor PrimitivesStructAr) (empty bool) {
+func IsPrimitivesStructArReprEmpty(goor PrimitivesStructAr) (empty bool) {
 	{
 		empty = true
 		if len(goor) != 0 {
@@ -8561,7 +8561,7 @@ func isPrimitivesStructArEmptyRepr(goor PrimitivesStructAr) (empty bool) {
 func (goo Concrete1) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.Concrete1
 	{
-		if isConcrete1EmptyRepr(goo) {
+		if IsConcrete1ReprEmpty(goo) {
 			var pbov *testspb.Concrete1
 			msg = pbov
 			return
@@ -8587,7 +8587,7 @@ func (goo *Concrete1) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err er
 func (_ Concrete1) GetTypeURL() (typeURL string) {
 	return "/tests.Concrete1"
 }
-func isConcrete1EmptyRepr(goor Concrete1) (empty bool) {
+func IsConcrete1ReprEmpty(goor Concrete1) (empty bool) {
 	{
 		empty = true
 	}
@@ -8596,7 +8596,7 @@ func isConcrete1EmptyRepr(goor Concrete1) (empty bool) {
 func (goo Concrete2) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.Concrete2
 	{
-		if isConcrete2EmptyRepr(goo) {
+		if IsConcrete2ReprEmpty(goo) {
 			var pbov *testspb.Concrete2
 			msg = pbov
 			return
@@ -8622,7 +8622,7 @@ func (goo *Concrete2) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err er
 func (_ Concrete2) GetTypeURL() (typeURL string) {
 	return "/tests.Concrete2"
 }
-func isConcrete2EmptyRepr(goor Concrete2) (empty bool) {
+func IsConcrete2ReprEmpty(goor Concrete2) (empty bool) {
 	{
 		empty = true
 	}
@@ -8631,7 +8631,7 @@ func isConcrete2EmptyRepr(goor Concrete2) (empty bool) {
 func (goo ConcreteTypeDef) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.ConcreteTypeDef
 	{
-		if isConcreteTypeDefEmptyRepr(goo) {
+		if IsConcreteTypeDefReprEmpty(goo) {
 			var pbov *testspb.ConcreteTypeDef
 			msg = pbov
 			return
@@ -8680,7 +8680,7 @@ func (goo *ConcreteTypeDef) FromPBMessage(cdc *amino.Codec, msg proto.Message) (
 func (_ ConcreteTypeDef) GetTypeURL() (typeURL string) {
 	return "/tests.ConcreteTypeDef"
 }
-func isConcreteTypeDefEmptyRepr(goor ConcreteTypeDef) (empty bool) {
+func IsConcreteTypeDefReprEmpty(goor ConcreteTypeDef) (empty bool) {
 	{
 		empty = true
 		if len(goor) != 0 {
@@ -8692,7 +8692,7 @@ func isConcreteTypeDefEmptyRepr(goor ConcreteTypeDef) (empty bool) {
 func (goo ConcreteWrappedBytes) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.ConcreteWrappedBytes
 	{
-		if isConcreteWrappedBytesEmptyRepr(goo) {
+		if IsConcreteWrappedBytesReprEmpty(goo) {
 			var pbov *testspb.ConcreteWrappedBytes
 			msg = pbov
 			return
@@ -8756,7 +8756,7 @@ func (goo *ConcreteWrappedBytes) FromPBMessage(cdc *amino.Codec, msg proto.Messa
 func (_ ConcreteWrappedBytes) GetTypeURL() (typeURL string) {
 	return "/tests.ConcreteWrappedBytes"
 }
-func isConcreteWrappedBytesEmptyRepr(goor ConcreteWrappedBytes) (empty bool) {
+func IsConcreteWrappedBytesReprEmpty(goor ConcreteWrappedBytes) (empty bool) {
 	{
 		empty = true
 		{
@@ -8770,7 +8770,7 @@ func isConcreteWrappedBytesEmptyRepr(goor ConcreteWrappedBytes) (empty bool) {
 func (goo InterfaceFieldsStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err error) {
 	var pbo *testspb.InterfaceFieldsStruct
 	{
-		if isInterfaceFieldsStructEmptyRepr(goo) {
+		if IsInterfaceFieldsStructReprEmpty(goo) {
 			var pbov *testspb.InterfaceFieldsStruct
 			msg = pbov
 			return
@@ -8876,7 +8876,7 @@ func (goo *InterfaceFieldsStruct) FromPBMessage(cdc *amino.Codec, msg proto.Mess
 func (_ InterfaceFieldsStruct) GetTypeURL() (typeURL string) {
 	return "/tests.InterfaceFieldsStruct"
 }
-func isInterfaceFieldsStructEmptyRepr(goor InterfaceFieldsStruct) (empty bool) {
+func IsInterfaceFieldsStructReprEmpty(goor InterfaceFieldsStruct) (empty bool) {
 	{
 		empty = true
 		{
