@@ -411,7 +411,7 @@ func (cdc *Codec) encodeReflectBinaryList(w io.Writer, info *TypeInfo, rv reflec
 					// Proto3's Golang client does.
 					// This also makes it easier to upgrade to Amino2
 					// which would enable the encoding of nil structs.
-					return errors.New("nil struct pointers not supported unless nil_elements field tag is also set")
+					return errors.New("nil struct pointers in lists not supported unless nil_elements field tag is also set")
 				}
 				// Nothing to encode, so the length is 0.
 				err = EncodeByte(buf, byte(0x00))

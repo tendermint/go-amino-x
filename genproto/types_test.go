@@ -50,6 +50,7 @@ message message_name {
 	// field_comment
 	repeated uint64 field_name = 2;
 }
+
 // message comment 2
 message message_name_2 {
 }`)
