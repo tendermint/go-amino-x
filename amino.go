@@ -858,13 +858,13 @@ func (cdc *Codec) GetTypeURL(o interface{}) string {
 	case reflect.Bool:
 		return "/google.protobuf.BoolValue"
 	case reflect.Array:
-		if rv.Elem().Kind() == reflect.Uint8 {
+		if rv.Type().Elem().Kind() == reflect.Uint8 {
 			return "/google.protobuf.BytesValue"
 		} else {
 			panic("not yet supported")
 		}
 	case reflect.Slice:
-		if rv.Elem().Kind() == reflect.Uint8 {
+		if rv.Type().Elem().Kind() == reflect.Uint8 {
 			return "/google.protobuf.BytesValue"
 		} else {
 			panic("not yet supported")
