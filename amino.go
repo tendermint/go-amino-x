@@ -833,46 +833,10 @@ func (cdc *Codec) GetTypeURL(o interface{}) string {
 	case time.Duration, *time.Duration, *durationpb.Duration:
 		return "/google.protobuf.Duration"
 	}
-	rv := reflect.ValueOf(o)
-	// Wellknown override.
-	// TODO: move this to wellknown somehow.
-	switch rv.Kind() {
-	case reflect.String:
-		return "/google.protobuf.StringValue"
-	case reflect.Int64, reflect.Int:
-		return "/google.protobuf.Int64Value"
-	case reflect.Int32:
-		return "/google.protobuf.Int32Value"
-	case reflect.Int16:
-		return "/google.protobuf.Int32Value"
-	case reflect.Int8:
-		return "/google.protobuf.Int32Value"
-	case reflect.Uint64, reflect.Uint:
-		return "/google.protobuf.UInt64Value"
-	case reflect.Uint32:
-		return "/google.protobuf.UInt32Value"
-	case reflect.Uint16:
-		return "/google.protobuf.UInt32Value"
-	case reflect.Uint8:
-		return "/google.protobuf.UInt32Value"
-	case reflect.Bool:
-		return "/google.protobuf.BoolValue"
-	case reflect.Array:
-		if rv.Type().Elem().Kind() == reflect.Uint8 {
-			return "/google.protobuf.BytesValue"
-		} else {
-			panic("not yet supported")
-		}
-	case reflect.Slice:
-		if rv.Type().Elem().Kind() == reflect.Uint8 {
-			return "/google.protobuf.BytesValue"
-		} else {
-			panic("not yet supported")
-		}
-	}
+	rt := reflect.TypeOf(o)
 	// Doesn't have .GetTypeURL() and isn't well known.
 	// Do the slow thing (not relevant if pbbindings exists).
-	info, err := cdc.GetTypeInfo(rv.Type())
+	info, err := cdc.GetTypeInfo(rt)
 	if err != nil {
 		panic(err)
 	}
