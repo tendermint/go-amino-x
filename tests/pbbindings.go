@@ -5,6 +5,7 @@ import (
 	amino "github.com/tendermint/go-amino-x"
 	testspb "github.com/tendermint/go-amino-x/tests/pb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	time "time"
 	anypb "google.golang.org/protobuf/types/known/anypb"
 )
@@ -124,6 +125,11 @@ func (goo PrimitivesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, er
 			}
 		}
 		{
+			if goo.Duration.Nanoseconds() != 0 {
+				pbo.Duration = durationpb.New(goo.Duration)
+			}
+		}
+		{
 			pbom := proto.Message(nil)
 			pbom, err = goo.Empty.ToPBMessage(cdc)
 			if err != nil {
@@ -215,6 +221,9 @@ func (goo *PrimitivesStruct) FromPBMessage(cdc *amino.Codec, msg proto.Message) 
 			}
 			{
 				(*goo).Time = pbo.Time.AsTime()
+			}
+			{
+				(*goo).Duration = pbo.Duration.AsDuration()
 			}
 			{
 				if pbo.Empty != nil {
@@ -325,6 +334,11 @@ func IsPrimitivesStructReprEmpty(goor PrimitivesStruct) (empty bool) {
 			}
 		}
 		{
+			if goor.Duration != 0 {
+				return false
+			}
+		}
+		{
 			e := IsEmptyStructReprEmpty(goor.Empty)
 			if e == false {
 				return false
@@ -361,6 +375,25 @@ func (goo ShortArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, e
 				pbo.TimeAr = pbos
 			}
 		}
+		{
+			goorl := len(goo.DurationAr)
+			if goorl == 0 {
+				pbo.DurationAr = nil
+			} else {
+				var pbos = make([]*durationpb.Duration, goorl)
+				for i := 0; i < goorl; i += 1 {
+					{
+						goore := goo.DurationAr[i]
+						{
+							if goore.Nanoseconds() != 0 {
+								pbos[i] = durationpb.New(goore)
+							}
+						}
+					}
+				}
+				pbo.DurationAr = pbos
+			}
+		}
 	}
 	msg = pbo
 	return
@@ -387,6 +420,19 @@ func (goo *ShortArraysStruct) FromPBMessage(cdc *amino.Codec, msg proto.Message)
 				}
 				(*goo).TimeAr = goors
 			}
+			{
+				var goors = [0]time.Duration{}
+				for i := 0; i < 0; i += 1 {
+					{
+						pboe := pbo.DurationAr[i]
+						{
+							pboev := pboe
+							goors[i] = pboev.AsDuration()
+						}
+					}
+				}
+				(*goo).DurationAr = goors
+			}
 		}
 	}
 	return
@@ -399,6 +445,11 @@ func IsShortArraysStructReprEmpty(goor ShortArraysStruct) (empty bool) {
 		empty = true
 		{
 			if len(goor.TimeAr) != 0 {
+				return false
+			}
+		}
+		{
+			if len(goor.DurationAr) != 0 {
 				return false
 			}
 		}
@@ -737,6 +788,25 @@ func (goo ArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 			}
 		}
 		{
+			goorl := len(goo.DurationAr)
+			if goorl == 0 {
+				pbo.DurationAr = nil
+			} else {
+				var pbos = make([]*durationpb.Duration, goorl)
+				for i := 0; i < goorl; i += 1 {
+					{
+						goore := goo.DurationAr[i]
+						{
+							if goore.Nanoseconds() != 0 {
+								pbos[i] = durationpb.New(goore)
+							}
+						}
+					}
+				}
+				pbo.DurationAr = pbos
+			}
+		}
+		{
 			goorl := len(goo.EmptyAr)
 			if goorl == 0 {
 				pbo.EmptyAr = nil
@@ -1024,6 +1094,19 @@ func (goo *ArraysStruct) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err
 				(*goo).TimeAr = goors
 			}
 			{
+				var goors = [4]time.Duration{}
+				for i := 0; i < 4; i += 1 {
+					{
+						pboe := pbo.DurationAr[i]
+						{
+							pboev := pboe
+							goors[i] = pboev.AsDuration()
+						}
+					}
+				}
+				(*goo).DurationAr = goors
+			}
+			{
 				var goors = [4]EmptyStruct{}
 				for i := 0; i < 4; i += 1 {
 					{
@@ -1138,6 +1221,11 @@ func IsArraysStructReprEmpty(goor ArraysStruct) (empty bool) {
 		}
 		{
 			if len(goor.TimeAr) != 0 {
+				return false
+			}
+		}
+		{
+			if len(goor.DurationAr) != 0 {
 				return false
 			}
 		}
@@ -1733,6 +1821,39 @@ func (goo ArraysArraysStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 			}
 		}
 		{
+			goorl := len(goo.DurationArAr)
+			if goorl == 0 {
+				pbo.DurationArAr = nil
+			} else {
+				var pbos = make([]*testspb.DurationList, goorl)
+				for i := 0; i < goorl; i += 1 {
+					{
+						goore := goo.DurationArAr[i]
+						{
+							goorl1 := len(goore)
+							if goorl1 == 0 {
+								pbos[i] = nil
+							} else {
+								var pbos1 = make([]*durationpb.Duration, goorl1)
+								for i := 0; i < goorl1; i += 1 {
+									{
+										goore := goore[i]
+										{
+											if goore.Nanoseconds() != 0 {
+												pbos1[i] = durationpb.New(goore)
+											}
+										}
+									}
+								}
+								pbos[i] = &testspb.DurationList{Value: pbos1}
+							}
+						}
+					}
+				}
+				pbo.DurationArAr = pbos
+			}
+		}
+		{
 			goorl := len(goo.EmptyArAr)
 			if goorl == 0 {
 				pbo.EmptyArAr = nil
@@ -2246,6 +2367,31 @@ func (goo *ArraysArraysStruct) FromPBMessage(cdc *amino.Codec, msg proto.Message
 				(*goo).TimeArAr = goors
 			}
 			{
+				var goors = [2][2]time.Duration{}
+				for i := 0; i < 2; i += 1 {
+					{
+						pboe := pbo.DurationArAr[i]
+						if pboe != nil {
+							{
+								pboev := pboe.Value
+								var goors1 = [2]time.Duration{}
+								for i := 0; i < 2; i += 1 {
+									{
+										pboe := pboev[i]
+										{
+											pboev := pboe
+											goors1[i] = pboev.AsDuration()
+										}
+									}
+								}
+								goors[i] = goors1
+							}
+						}
+					}
+				}
+				(*goo).DurationArAr = goors
+			}
+			{
 				var goors = [2][2]EmptyStruct{}
 				for i := 0; i < 2; i += 1 {
 					{
@@ -2372,6 +2518,11 @@ func IsArraysArraysStructReprEmpty(goor ArraysArraysStruct) (empty bool) {
 		}
 		{
 			if len(goor.TimeArAr) != 0 {
+				return false
+			}
+		}
+		{
+			if len(goor.DurationArAr) != 0 {
 				return false
 			}
 		}
@@ -2712,6 +2863,25 @@ func (goo SlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err er
 					}
 				}
 				pbo.TimeSl = pbos
+			}
+		}
+		{
+			goorl := len(goo.DurationSl)
+			if goorl == 0 {
+				pbo.DurationSl = nil
+			} else {
+				var pbos = make([]*durationpb.Duration, goorl)
+				for i := 0; i < goorl; i += 1 {
+					{
+						goore := goo.DurationSl[i]
+						{
+							if goore.Nanoseconds() != 0 {
+								pbos[i] = durationpb.New(goore)
+							}
+						}
+					}
+				}
+				pbo.DurationSl = pbos
 			}
 		}
 		{
@@ -3147,6 +3317,27 @@ func (goo *SlicesStruct) FromPBMessage(cdc *amino.Codec, msg proto.Message) (err
 			}
 			{
 				var pbol int = 0
+				if pbo.DurationSl != nil {
+					pbol = len(pbo.DurationSl)
+				}
+				if pbol == 0 {
+					(*goo).DurationSl = nil
+				} else {
+					var goors = make([]time.Duration, pbol)
+					for i := 0; i < pbol; i += 1 {
+						{
+							pboe := pbo.DurationSl[i]
+							{
+								pboev := pboe
+								goors[i] = pboev.AsDuration()
+							}
+						}
+					}
+					(*goo).DurationSl = goors
+				}
+			}
+			{
+				var pbol int = 0
 				if pbo.EmptySl != nil {
 					pbol = len(pbo.EmptySl)
 				}
@@ -3268,6 +3459,11 @@ func IsSlicesStructReprEmpty(goor SlicesStruct) (empty bool) {
 		}
 		{
 			if len(goor.TimeSl) != 0 {
+				return false
+			}
+		}
+		{
+			if len(goor.DurationSl) != 0 {
 				return false
 			}
 		}
@@ -3860,6 +4056,39 @@ func (goo SlicesSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, 
 					}
 				}
 				pbo.TimeSlSl = pbos
+			}
+		}
+		{
+			goorl := len(goo.DurationSlSl)
+			if goorl == 0 {
+				pbo.DurationSlSl = nil
+			} else {
+				var pbos = make([]*testspb.DurationList, goorl)
+				for i := 0; i < goorl; i += 1 {
+					{
+						goore := goo.DurationSlSl[i]
+						{
+							goorl1 := len(goore)
+							if goorl1 == 0 {
+								pbos[i] = nil
+							} else {
+								var pbos1 = make([]*durationpb.Duration, goorl1)
+								for i := 0; i < goorl1; i += 1 {
+									{
+										goore := goore[i]
+										{
+											if goore.Nanoseconds() != 0 {
+												pbos1[i] = durationpb.New(goore)
+											}
+										}
+									}
+								}
+								pbos[i] = &testspb.DurationList{Value: pbos1}
+							}
+						}
+					}
+				}
+				pbo.DurationSlSl = pbos
 			}
 		}
 		{
@@ -4665,6 +4894,47 @@ func (goo *SlicesSlicesStruct) FromPBMessage(cdc *amino.Codec, msg proto.Message
 			}
 			{
 				var pbol int = 0
+				if pbo.DurationSlSl != nil {
+					pbol = len(pbo.DurationSlSl)
+				}
+				if pbol == 0 {
+					(*goo).DurationSlSl = nil
+				} else {
+					var goors = make([][]time.Duration, pbol)
+					for i := 0; i < pbol; i += 1 {
+						{
+							pboe := pbo.DurationSlSl[i]
+							if pboe != nil {
+								{
+									pboev := pboe.Value
+									var pbol1 int = 0
+									if pboev != nil {
+										pbol1 = len(pboev)
+									}
+									if pbol1 == 0 {
+										goors[i] = nil
+									} else {
+										var goors1 = make([]time.Duration, pbol1)
+										for i := 0; i < pbol1; i += 1 {
+											{
+												pboe := pboev[i]
+												{
+													pboev := pboe
+													goors1[i] = pboev.AsDuration()
+												}
+											}
+										}
+										goors[i] = goors1
+									}
+								}
+							}
+						}
+					}
+					(*goo).DurationSlSl = goors
+				}
+			}
+			{
+				var pbol int = 0
 				if pbo.EmptySlSl != nil {
 					pbol = len(pbo.EmptySlSl)
 				}
@@ -4806,6 +5076,11 @@ func IsSlicesSlicesStructReprEmpty(goor SlicesSlicesStruct) (empty bool) {
 		}
 		{
 			if len(goor.TimeSlSl) != 0 {
+				return false
+			}
+		}
+		{
+			if len(goor.DurationSlSl) != 0 {
 				return false
 			}
 		}
@@ -4967,6 +5242,13 @@ func (goo PointersStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message, err 
 			}
 		}
 		{
+			if goo.DurationPt != nil {
+				dgoor := *goo.DurationPt
+				dgoor = dgoor
+				pbo.DurationPt = durationpb.New(dgoor)
+			}
+		}
+		{
 			if goo.EmptyPt != nil {
 				pbom := proto.Message(nil)
 				pbom, err = goo.EmptyPt.ToPBMessage(cdc)
@@ -5081,6 +5363,10 @@ func (goo *PointersStruct) FromPBMessage(cdc *amino.Codec, msg proto.Message) (e
 			{
 				(*goo).TimePt = new(time.Time)
 				*(*goo).TimePt = pbo.TimePt.AsTime()
+			}
+			{
+				(*goo).DurationPt = new(time.Duration)
+				*(*goo).DurationPt = pbo.DurationPt.AsDuration()
 			}
 			{
 				if pbo.EmptyPt != nil {
@@ -5257,6 +5543,15 @@ func IsPointersStructReprEmpty(goor PointersStruct) (empty bool) {
 		{
 			if goor.TimePt != nil {
 				return false
+			}
+		}
+		{
+			if goor.DurationPt != nil {
+				dgoor := *goor.DurationPt
+				dgoor = dgoor
+				if dgoor != 0 {
+					return false
+				}
 			}
 		}
 		{
@@ -5666,6 +5961,27 @@ func (goo PointerSlicesStruct) ToPBMessage(cdc *amino.Codec) (msg proto.Message,
 					}
 				}
 				pbo.TimePtSl = pbos
+			}
+		}
+		{
+			goorl := len(goo.DurationPtSl)
+			if goorl == 0 {
+				pbo.DurationPtSl = nil
+			} else {
+				var pbos = make([]*durationpb.Duration, goorl)
+				for i := 0; i < goorl; i += 1 {
+					{
+						goore := goo.DurationPtSl[i]
+						{
+							if goore != nil {
+								dgoor := *goore
+								dgoor = dgoor
+								pbos[i] = durationpb.New(dgoor)
+							}
+						}
+					}
+				}
+				pbo.DurationPtSl = pbos
 			}
 		}
 		{
@@ -6124,6 +6440,28 @@ func (goo *PointerSlicesStruct) FromPBMessage(cdc *amino.Codec, msg proto.Messag
 			}
 			{
 				var pbol int = 0
+				if pbo.DurationPtSl != nil {
+					pbol = len(pbo.DurationPtSl)
+				}
+				if pbol == 0 {
+					(*goo).DurationPtSl = nil
+				} else {
+					var goors = make([]*time.Duration, pbol)
+					for i := 0; i < pbol; i += 1 {
+						{
+							pboe := pbo.DurationPtSl[i]
+							{
+								pboev := pboe
+								goors[i] = new(time.Duration)
+								*goors[i] = pboev.AsDuration()
+							}
+						}
+					}
+					(*goo).DurationPtSl = goors
+				}
+			}
+			{
+				var pbol int = 0
 				if pbo.EmptyPtSl != nil {
 					pbol = len(pbo.EmptyPtSl)
 				}
@@ -6246,6 +6584,11 @@ func IsPointerSlicesStructReprEmpty(goor PointerSlicesStruct) (empty bool) {
 		}
 		{
 			if len(goor.TimePtSl) != 0 {
+				return false
+			}
+		}
+		{
+			if len(goor.DurationPtSl) != 0 {
 				return false
 			}
 		}
@@ -8199,6 +8542,11 @@ func (goo PrimitivesStructDef) ToPBMessage(cdc *amino.Codec) (msg proto.Message,
 			}
 		}
 		{
+			if goo.Duration.Nanoseconds() != 0 {
+				pbo.Duration = durationpb.New(goo.Duration)
+			}
+		}
+		{
 			pbom := proto.Message(nil)
 			pbom, err = goo.Empty.ToPBMessage(cdc)
 			if err != nil {
@@ -8290,6 +8638,9 @@ func (goo *PrimitivesStructDef) FromPBMessage(cdc *amino.Codec, msg proto.Messag
 			}
 			{
 				(*goo).Time = pbo.Time.AsTime()
+			}
+			{
+				(*goo).Duration = pbo.Duration.AsDuration()
 			}
 			{
 				if pbo.Empty != nil {
@@ -8396,6 +8747,11 @@ func IsPrimitivesStructDefReprEmpty(goor PrimitivesStructDef) (empty bool) {
 		}
 		{
 			if !amino.IsEmptyTime(goor.Time) {
+				return false
+			}
+		}
+		{
+			if goor.Duration != 0 {
 				return false
 			}
 		}

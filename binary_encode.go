@@ -502,7 +502,7 @@ func (cdc *Codec) encodeReflectBinaryStruct(w io.Writer, info *TypeInfo, rv refl
 		// Get dereferenced field value and info.
 		var frv = rv.Field(field.Index)
 		var dfrv, frvIsPtr, _ = maybeDerefValue(frv)
-		if isNonstructDefaultValue(frv) && !field.WriteEmpty {
+		if !field.WriteEmpty && isNonstructDefaultValue(frv) {
 			// Do not encode default value fields
 			// (except when `amino:"write_empty"` is set).
 			continue

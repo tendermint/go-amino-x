@@ -557,6 +557,28 @@ var fuzzFuncs = []interface{}{
 		// Also set to UTC.
 		*tyme = tyme.Truncate(0).UTC()
 	},
+	func(ptr **time.Duration, c fuzz.Continue) {
+		// Zero should decode to ptr to zero duration,
+		// rather than a nil duration pointer.
+		switch c.Intn(4) {
+		case 0:
+			ns := c.Int63n(20) - 10
+			dur := time.Duration(ns)
+			*ptr = &dur
+		case 1:
+			ns := c.Int63n(2e10) - 1e10
+			dur := time.Duration(ns)
+			*ptr = &dur
+		case 2: // NOTE: not max p3 duration
+			ns := 1<<63 - 1
+			dur := time.Duration(ns)
+			*ptr = &dur
+		case 3: // NOTE: not min p3 duration
+			ns := -1<<63 + 1
+			dur := time.Duration(ns)
+			*ptr = &dur
+		}
+	},
 	func(esz *[]*tests.EmptyStruct, c fuzz.Continue) {
 		n := c.Intn(4)
 		switch n {

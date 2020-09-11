@@ -314,3 +314,20 @@ func TestUnmarshalFuncBinary(t *testing.T) {
 		assert.Fail(t, "should have paniced but got bz: %X err: %v", bz, err)
 	})
 }
+
+func TestDuration(t *testing.T) {
+	cdc := amino.NewCodec()
+	d0 := time.Duration(0)
+	bz := cdc.MustMarshal(d0)
+	assert.Equal(t, bz, []byte(nil))
+	var d time.Duration
+	var dPtr *time.Duration
+	var dZero time.Duration
+	err := cdc.Unmarshal(nil, &d)
+	assert.NoError(t, err)
+	assert.Equal(t, d, time.Duration(0))
+	err = cdc.Unmarshal(nil, &dPtr)
+	assert.NoError(t, err)
+	assert.Equal(t, dPtr, &dZero)
+
+}

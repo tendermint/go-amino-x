@@ -31,13 +31,15 @@ type PrimitivesStruct struct {
 	Str         string
 	Bytes       []byte
 	Time        time.Time
+	Duration    time.Duration
 	Empty       EmptyStruct
 
 	unexposed int8
 }
 
 type ShortArraysStruct struct {
-	TimeAr [0]time.Time
+	TimeAr     [0]time.Time
+	DurationAr [0]time.Duration
 }
 
 type ArraysStruct struct {
@@ -59,6 +61,7 @@ type ArraysStruct struct {
 	StrAr         [4]string
 	BytesAr       [4][]byte
 	TimeAr        [4]time.Time
+	DurationAr    [4]time.Duration
 	EmptyAr       [4]EmptyStruct
 }
 
@@ -81,6 +84,7 @@ type ArraysArraysStruct struct {
 	StrArAr         [2][2]string
 	BytesArAr       [2][2][]byte
 	TimeArAr        [2][2]time.Time
+	DurationArAr    [2][2]time.Duration
 	EmptyArAr       [2][2]EmptyStruct
 }
 
@@ -103,6 +107,7 @@ type SlicesStruct struct {
 	StrSl         []string
 	BytesSl       [][]byte
 	TimeSl        []time.Time
+	DurationSl    []time.Duration
 	EmptySl       []EmptyStruct
 }
 
@@ -125,6 +130,7 @@ type SlicesSlicesStruct struct {
 	StrSlSl         [][]string
 	BytesSlSl       [][][]byte
 	TimeSlSl        [][]time.Time
+	DurationSlSl    [][]time.Duration
 	EmptySlSl       [][]EmptyStruct
 }
 
@@ -147,6 +153,7 @@ type PointersStruct struct {
 	StrPt         *string
 	BytesPt       *[]byte
 	TimePt        *time.Time
+	DurationPt    *time.Duration
 	EmptyPt       *EmptyStruct
 }
 
@@ -169,6 +176,7 @@ type PointerSlicesStruct struct {
 	StrPtSl         []*string
 	BytesPtSl       []*[]byte
 	TimePtSl        []*time.Time
+	DurationPtSl    []*time.Duration
 	EmptyPtSl       []*EmptyStruct
 }
 

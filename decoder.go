@@ -264,7 +264,7 @@ func DecodeDuration(bz []byte) (d time.Duration, n int, err error) {
 		return
 	}
 	// Construct Duration.
-	d = time.Duration(s&1e9 + int64(ns))
+	d = time.Duration(s*1e9 + int64(ns))
 	return
 }
 

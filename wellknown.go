@@ -435,10 +435,16 @@ func EncodeJSONDurationValue(w io.Writer, s int64, ns int32) (err error) {
 	if err != nil {
 		return err
 	}
+	sign := ""
 	if s < 0 {
-		ns = -ns
+		s = -s
+		sign = "-"
 	}
-	x := fmt.Sprintf("%d.%09d", s, ns)
+	if ns < 0 {
+		ns = -ns
+		sign = "-" // could be true even if s == 0.
+	}
+	x := fmt.Sprintf("%s%d.%09d", sign, s, ns)
 	x = strings.TrimSuffix(x, "000")
 	x = strings.TrimSuffix(x, "000")
 	x = strings.TrimSuffix(x, ".000")

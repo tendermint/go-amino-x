@@ -74,6 +74,13 @@ func maybeDerefAndConstruct(rv reflect.Value) reflect.Value {
 // NOTE: Also works for Maps, Chans, and Funcs, though they are not
 // otherwise supported by Amino.  For future?
 func isNonstructDefaultValue(rv reflect.Value) (isDefault bool) {
+	// time.Duration is a special case,
+	// it is considered a struct for encoding purposes.
+	switch rv.Type() {
+	case durationType:
+		return false
+	}
+	// general cae
 	switch rv.Kind() {
 	case reflect.Ptr:
 		if rv.IsNil() {

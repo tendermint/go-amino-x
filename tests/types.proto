@@ -5,6 +5,7 @@ option go_package = "github.com/tendermint/go-amino-x/tests/pb";
 
 // imports
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
 import "google/protobuf/any.proto";
 
 // messages
@@ -30,11 +31,13 @@ message PrimitivesStruct {
 	string Str = 16;
 	bytes Bytes = 17;
 	google.protobuf.Timestamp Time = 18;
-	EmptyStruct Empty = 19;
+	google.protobuf.Duration Duration = 19;
+	EmptyStruct Empty = 20;
 }
 
 message ShortArraysStruct {
 	repeated google.protobuf.Timestamp TimeAr = 1;
+	repeated google.protobuf.Duration DurationAr = 2;
 }
 
 message ArraysStruct {
@@ -56,7 +59,8 @@ message ArraysStruct {
 	repeated string StrAr = 16;
 	repeated bytes BytesAr = 17;
 	repeated google.protobuf.Timestamp TimeAr = 18;
-	repeated EmptyStruct EmptyAr = 19;
+	repeated google.protobuf.Duration DurationAr = 19;
+	repeated EmptyStruct EmptyAr = 20;
 }
 
 message ArraysArraysStruct {
@@ -78,7 +82,8 @@ message ArraysArraysStruct {
 	repeated StringValueList StrArAr = 16;
 	repeated BytesList BytesArAr = 17;
 	repeated TimestampList TimeArAr = 18;
-	repeated EmptyStructList EmptyArAr = 19;
+	repeated DurationList DurationArAr = 19;
+	repeated EmptyStructList EmptyArAr = 20;
 }
 
 message SlicesStruct {
@@ -100,7 +105,8 @@ message SlicesStruct {
 	repeated string StrSl = 16;
 	repeated bytes BytesSl = 17;
 	repeated google.protobuf.Timestamp TimeSl = 18;
-	repeated EmptyStruct EmptySl = 19;
+	repeated google.protobuf.Duration DurationSl = 19;
+	repeated EmptyStruct EmptySl = 20;
 }
 
 message SlicesSlicesStruct {
@@ -122,7 +128,8 @@ message SlicesSlicesStruct {
 	repeated StringValueList StrSlSl = 16;
 	repeated BytesList BytesSlSl = 17;
 	repeated TimestampList TimeSlSl = 18;
-	repeated EmptyStructList EmptySlSl = 19;
+	repeated DurationList DurationSlSl = 19;
+	repeated EmptyStructList EmptySlSl = 20;
 }
 
 message PointersStruct {
@@ -144,7 +151,8 @@ message PointersStruct {
 	string StrPt = 16;
 	bytes BytesPt = 17;
 	google.protobuf.Timestamp TimePt = 18;
-	EmptyStruct EmptyPt = 19;
+	google.protobuf.Duration DurationPt = 19;
+	EmptyStruct EmptyPt = 20;
 }
 
 message PointerSlicesStruct {
@@ -166,7 +174,8 @@ message PointerSlicesStruct {
 	repeated string StrPtSl = 16;
 	repeated bytes BytesPtSl = 17;
 	repeated google.protobuf.Timestamp TimePtSl = 18;
-	repeated EmptyStruct EmptyPtSl = 19;
+	repeated google.protobuf.Duration DurationPtSl = 19;
+	repeated EmptyStruct EmptyPtSl = 20;
 }
 
 message ComplexSt {
@@ -301,7 +310,8 @@ message PrimitivesStructDef {
 	string Str = 16;
 	bytes Bytes = 17;
 	google.protobuf.Timestamp Time = 18;
-	EmptyStruct Empty = 19;
+	google.protobuf.Duration Duration = 19;
+	EmptyStruct Empty = 20;
 }
 
 message PrimitivesStructSl {
@@ -339,6 +349,10 @@ message BytesList {
 
 message BytesListList {
 	repeated BytesList Value = 1;
+}
+
+message DurationList {
+	repeated google.protobuf.Duration Value = 1;
 }
 
 message EmptyStructList {
