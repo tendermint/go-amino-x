@@ -1,7 +1,5 @@
 # AminoX 
 
-http://github.com/tendermint/aminox
-
 AminoX is an encoding/decoding library for structures.
 
 In AminoX, all structures are declared in a restricted set of Go.
